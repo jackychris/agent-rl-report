@@ -253,7 +253,7 @@ h1,h2,h3,h4,h5,h6,strong,b,th{font-weight:400}h1{font-size:30px;line-height:1.45
 <p>这两条轨迹都在文件查询后尝试发送，被环境阻止后才取得分享策略。它们符合 §4.2 的推测，即模型把完成文件查询当作可以继续发送的线索。新增训练已经包含分享策略工具，两组数值测试中仍然出现相同的过早尝试。工具是否在训练中出现，与模型是否会在缺少信息时及时调用它，是这里需要分别检查的两件事。</p>
 <h3>本章小结</h3>
 <p>在 <code>SFT #1</code> 的基础上继续进行 GRPO，模型完成了全部原始邮件任务，也恢复了付款和日程中沿用原有规则的任务表现。与此同时，邮件双工具任务中原先正确的查询顺序丢失了。把需要调用分享策略工具的任务加入训练后，两组数值测试中的写前查询仍然为零。把这个工具加入训练任务，没有让模型在新的任务要求下及时调用它。</p>
-<nav class="chapter-navigation"><a href="chapter-3.zh-CN.html">上一页</a><a href="chapter-5.zh-CN.html">下一章</a></nav></main><footer class="downloads"><a download href="downloads/TECHNICAL_REPORT_V2.zh-CN.pdf">下载完整报告 PDF · 3.2 MB</a></footer><script>
+<nav class="chapter-navigation"><a href="chapter-3.zh-CN.html">上一页</a><a href="chapter-5.zh-CN.html">下一章</a></nav></main><footer class="downloads"><a download href="downloads/TECHNICAL_REPORT_V2.zh-CN.pdf">下载完整报告 PDF · 3.2 MB</a><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">报告内容：CC BY 4.0</a></footer><script>
 const languageLink=document.querySelector('[data-language]');
 const headings=[...document.querySelectorAll('main h1[id],main h2[id],main h3[id]')];
 function syncLanguage(){let id=location.hash.slice(1);const target=document.getElementById(id);if(!target||target.getBoundingClientRect().top<0||target.getBoundingClientRect().top>innerHeight){for(const h of headings){if(h.getBoundingClientRect().top<240)id=h.id;else break;}}languageLink.href=languageLink.dataset.language+(id?'#'+id:'');}

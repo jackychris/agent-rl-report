@@ -471,7 +471,7 @@ Q_{\text{直接购买}}=1.
 <p>这些实验把中间评分的作用落实到了实际优势和测试行为上。GiGPO 的局部项与轨迹项合并后，才得到动作获得的完整优势。固定任务集合的比较显示，组外评分和正确答案评分都改善了对照模型的中间同分任务上的选项匹配，整体提升则不明显。</p>
 <p>对这里的训练，目标动作被采到之后，评分才有机会直接鼓励它。优势计算和损失加权决定这份评分怎样进入更新，测试任务则显示训练后的模型是否更可靠地执行了目标动作。</p>
 <hr>
-<nav class="chapter-navigation"><a href="chapter-7.zh-CN.html">上一页</a><a href="chapter-9.zh-CN.html">下一章</a></nav></main><footer class="downloads"><a download href="downloads/TECHNICAL_REPORT_V2.zh-CN.pdf">下载完整报告 PDF · 3.2 MB</a></footer><script>
+<nav class="chapter-navigation"><a href="chapter-7.zh-CN.html">上一页</a><a href="chapter-9.zh-CN.html">下一章</a></nav></main><footer class="downloads"><a download href="downloads/TECHNICAL_REPORT_V2.zh-CN.pdf">下载完整报告 PDF · 3.2 MB</a><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">报告内容：CC BY 4.0</a></footer><script>
 const languageLink=document.querySelector('[data-language]');
 const headings=[...document.querySelectorAll('main h1[id],main h2[id],main h3[id]')];
 function syncLanguage(){let id=location.hash.slice(1);const target=document.getElementById(id);if(!target||target.getBoundingClientRect().top<0||target.getBoundingClientRect().top>innerHeight){for(const h of headings){if(h.getBoundingClientRect().top<240)id=h.id;else break;}}languageLink.href=languageLink.dataset.language+(id?'#'+id:'');}

@@ -21,7 +21,7 @@ h1,h2,h3,h4,h5,h6,strong,b,th{font-weight:400}h1{font-size:30px;line-height:1.45
 <p>Ask-or-Act 包含五个模拟世界中的 1,780 个确定性任务。以 192 条示范训练的 SFT 模型继续 GRPO 后，原始训练任务成功数从 178/192 提高到 192/192。在 20 个澄清—确认配对任务上，成功数保持 20/20，过早行动从 19/20 降至 0/20；在同一组 60 个双工具数值任务上，成功的始终是相同的 50 个任务，满足写前查询条件的计数却从 60/60 降至 0/60。该条件包括查询后不写入的轨迹，过早行动包括被环境阻止的写入尝试。直接 GRPO 的写前查询为 58/60，但仍存在意图等行动条件错误。在需要传递工具返回编号的 30 个日程任务上，直接 GRPO 成功 30/30，实际传递仅 6/30；具体轨迹显示模型也能通过询问用户和失败后补救完成预约。</p>
 <p>WebShop 中，访问奖励把受奖子页面访问从 94/500 提高到 498/499。文本处理按条件分别从初始页面运行，保存的购买布尔值与完整动作变化分别报告。训练后的组内评测对 500 个任务各采样八条轨迹。197 个任务的八条轨迹同分且得分介于 0 和 1 之间，标准 GRPO 的奖励优势因而为零；其中 121 个任务还重复了完全相同的环境动作序列。</p>
 <p>我们把这些案例整理成一组诊断检查，说明如何从行为差异定位评测、采样或优势计算中的问题。报告保留了三条训练路线中的行为改善和失败实验。这些实验也引出一个训练机制上的问题：动作获得正优势后，模型会在多大程度上更倾向于选择它？</p>
-<nav class="chapter-navigation"><a href="chapter-1.zh-CN.html">开始阅读</a></nav></main><footer class="downloads"><a download href="downloads/TECHNICAL_REPORT_V2.zh-CN.pdf">下载完整报告 PDF · 3.2 MB</a></footer><script>
+<nav class="chapter-navigation"><a href="chapter-1.zh-CN.html">开始阅读</a></nav></main><footer class="downloads"><a download href="downloads/TECHNICAL_REPORT_V2.zh-CN.pdf">下载完整报告 PDF · 3.2 MB</a><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">报告内容：CC BY 4.0</a></footer><script>
 const languageLink=document.querySelector('[data-language]');
 const headings=[...document.querySelectorAll('main h1[id],main h2[id],main h3[id]')];
 function syncLanguage(){let id=location.hash.slice(1);const target=document.getElementById(id);if(!target||target.getBoundingClientRect().top<0||target.getBoundingClientRect().top>innerHeight){for(const h of headings){if(h.getBoundingClientRect().top<240)id=h.id;else break;}}languageLink.href=languageLink.dataset.language+(id?'#'+id:'');}

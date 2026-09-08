@@ -1,0 +1,263 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>第 4 章　SFT-GRPO：继续训练后的行为变化</title><link rel="stylesheet" href="report.css"><style>
+html{scroll-behavior:smooth;scroll-padding-top:2rem}body{font-family:Arial,"Microsoft YaHei",sans-serif;font-size:16px;line-height:1.85;background:#fff;color:#303030;margin:0}
+main,body.quick main{box-sizing:border-box;max-width:860px;margin:0 0 0 304px;padding:34px 48px 72px}
+.sitebar{margin-left:304px;max-width:860px;box-sizing:border-box;border-bottom:1px solid #ddd;padding:20px 48px 12px;display:flex;gap:22px;align-items:center;flex-wrap:wrap;font:400 14px/1.5 Arial,sans-serif}
+.sitebar{justify-content:flex-end}.sitebar a{color:#164e7a;text-decoration:none}.sitebar .brand{display:none}.sitebar a:hover{text-decoration:underline}
+.downloads{margin-left:304px;max-width:860px;box-sizing:border-box;font:14px/1.8 Arial,sans-serif;padding:22px 48px 36px;color:#666;border-top:1px solid #dce3e9;display:flex;gap:20px;flex-wrap:wrap}.author-credit{font-size:14px;font-weight:400;color:#555;margin:-10px 0 32px}
+.contents-panel{box-sizing:border-box;position:fixed;left:0;top:0;bottom:0;width:304px;overflow:auto;background:#142e49;border-right:1px solid #142e49;padding:28px 18px;font:14px/1.6 Arial,"Microsoft YaHei",sans-serif;color:#fff}
+.contents-panel a{display:block;color:#dbe6f0;text-decoration:none;padding:7px 10px}.contents-panel a:hover{background:#203e5c;color:#fff}.contents-panel a[aria-current=page]{background:#294b6c;color:#fff;border-left:2px solid #c0d7eb;padding-left:8px}
+.contents-panel summary{font-weight:400;cursor:pointer;margin:0 10px 20px;font-size:17px;list-style:none}.contents-panel .subsection{padding-left:22px;font-size:14px}.contents-panel .subsection:hover{padding-left:22px}
+h1,h2,h3,h4,h5,h6,strong,b,th{font-weight:400}h1{font-size:30px;line-height:1.45;color:#222;margin:0 0 26px}h2{font-size:24px;margin:38px 0 18px;color:#222}h3{font-size:20px;margin:30px 0 14px;color:#333}h4,h5{font-size:17px;color:#333}h2,h3,h4{scroll-margin-top:2rem;line-height:1.5}p{overflow-wrap:break-word}a{color:#164e7a;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}a:hover{color:#0b3558}a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid #608cb5;outline-offset:3px}
+.formula,.katex-display{max-width:100%;overflow-x:auto;overflow-y:hidden}pre{position:relative;overflow:auto;white-space:pre;max-width:100%;padding-top:38px}pre code{font-size:14px;white-space:pre}
+.copy-code{position:absolute;right:7px;top:5px;font:14px/1.5 Arial,sans-serif;border:1px solid #ccc;background:#fff;color:#555;border-radius:2px;cursor:pointer;padding:2px 9px}
+.table-wrap{overflow-x:auto;max-width:100%}table{font-size:14px}th,td{border-color:#ddd}th{background:#f3f3f3}pre,.code-list td{background:#f7f7f7;border-color:#ddd}.code-list{table-layout:auto}.code-list pre code{font-size:14px}.code-list .code-lines{font-size:12px;color:#777}.code-list th{color:#555}blockquote{border-color:#ccc;background:#f8f8f8}.chapter-navigation{border-top:1px solid #ddd;margin-top:48px;padding-top:20px;display:flex;justify-content:space-between;gap:24px;font-size:14px}
+@media(max-width:900px){main,body.quick main{margin:0 auto;padding:28px 24px 60px}.sitebar,.downloads{margin:0;padding-left:24px;padding-right:24px}.sitebar .brand{display:block;margin-right:auto}.contents-panel{position:static;width:auto;max-height:none;padding:14px 24px;border:0;border-bottom:1px solid #ddd}.contents-panel summary{font-size:14px;margin:0;list-style:revert}.contents-panel nav{max-height:45vh;overflow:auto}.contents-panel a{padding:6px 8px}}
+@media(max-width:600px){.sitebar{gap:12px;padding:12px 16px;font-size:14px}.sitebar .brand{width:100%}main,body.quick main{padding:24px 16px 60px}.downloads{padding:10px 16px;gap:12px}.contents-panel{padding:12px 16px}h1{font-size:26px}h2{font-size:22px}.code-list{min-width:620px}pre code{font-size:14px}.table-wrap th:first-child,.table-wrap td:first-child{background:#f5f5f5}.table-wrap th:first-child{background:#eee}}
+@media print{.sitebar,.downloads,.contents-panel,.copy-code{display:none!important}main{margin:0!important;max-width:none}body{font-size:10pt}pre{padding-top:9px}}
+</style></head><body class="full"><header class="sitebar"><a data-language="chapter-4.en.html" href="chapter-4.en.html" lang="en">English</a></header><aside class="contents-panel"><details open><summary>智能体强化学习</summary><nav><a href="index.html">研究概览</a><a href="overview.zh-CN.html">摘要</a><a href="chapter-1.zh-CN.html">第 1 章　目标行为学习的证据</a><a href="chapter-2.zh-CN.html">第 2 章　Ask-or-Act 任务与评测</a><a href="chapter-3.zh-CN.html">第 3 章　SFT 的训练与泛化</a><a href="chapter-4.zh-CN.html" aria-current="page">第 4 章　SFT-GRPO：继续训练后的行为变化</a><a class="subsection" href="#section-4-1">4.1 原始任务与跨领域测试</a><a class="subsection" href="#section-4-2">4.2 双工具任务中的行动顺序</a><a class="subsection" href="#section-4-3">4.3 增加新工具的训练任务</a><a href="chapter-5.zh-CN.html">第 5 章　从 Instruct 开始的 GRPO</a><a href="chapter-6.zh-CN.html">第 6 章　泛化差异与行为诊断</a><a href="chapter-7.zh-CN.html">第 7 章　WebShop 的访问奖励与内容响应</a><a href="chapter-8.zh-CN.html">第 8 章　组相对训练的奖励信号</a><a href="chapter-9.zh-CN.html">第 9 章　相关工作</a><a href="chapter-10.zh-CN.html">第 10 章　智能体强化学习的行为与训练诊断</a><a href="appendix-a.zh-CN.html">附录 A　Ask-or-Act 系统与动作链</a><a href="appendix-b.zh-CN.html">附录 B　奖励、估计器与实现</a><a href="appendix-c.zh-CN.html">附录 C　补充实验与诊断</a><a href="appendix-d.zh-CN.html">附录 D　公开实现、统计规则与资源</a><a href="references.zh-CN.html">References / 参考文献</a></nav></details></aside><main><h1 id="chapter-4">第 4 章　SFT-GRPO：继续训练后的行为变化</h1>
+<h2 id="section-4-1">4.1 原始任务与跨领域测试</h2>
+<p>我们从第三章的 <code>SFT #1</code> 继续进行 GRPO，检查强化学习如何改变模型已经学到的能力。训练仍使用那 192 个原始邮件任务，每个任务采用四种请求表述，共构成 768 条输入。与 SFT 提供完整示范不同，这些输入只包含系统提示和用户请求，模型自行生成后续工具调用，并按第 2 章的基准奖励评分。</p>
+<p>每个训练批次包含 32 条输入，模型对每条输入以温度 1.0 采样八条轨迹。我们根据同一输入下八条轨迹的奖励计算 GRPO 优势，并更新 LoRA 参数。每轮训练包含 24 步，五轮共 120 步。本章比较的是训练前的 <code>SFT #1</code> 与第五轮结束时的 <code>SFT-GRPO #1</code>。关键超参数见附录 D.2。</p>
+<p>训练过程中，我们用第三章更换人物和文件后的 48 个任务检查模型表现。每个任务套用附录 A.1 中的六种请求模板，共构成 288 条验证输入。其中四种模板同时用于训练，另外两种只用于验证。我们在训练开始前验证一次，之后每训练 12 步验证一次。</p>
+<p>训练结束后，我们沿用第三章的评测任务，对比 <code>SFT #1</code> 与 <code>SFT-GRPO #1</code>。下表包括 192 个训练任务、48 个更换人物和文件后的任务，以及 20 个澄清—确认配对任务。评测统一使用附录 A.1 的第一种请求模板，每个模型在每个任务上运行一次。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>评测划分</th>
+<th>测量字段</th>
+<th align="right"><code>SFT #1</code></th>
+<th align="right"><code>SFT-GRPO #1</code></th>
+<th align="right">计数变化</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>训练任务（192 个）</td>
+<td>任务成功</td>
+<td align="right">178/192</td>
+<td align="right">192/192</td>
+<td align="right">+14</td>
+</tr>
+<tr>
+<td>训练任务（192 个）</td>
+<td>交互签名匹配</td>
+<td align="right">146/192</td>
+<td align="right">192/192</td>
+<td align="right">+46</td>
+</tr>
+<tr>
+<td>更换人物和文件（48 个）</td>
+<td>任务成功</td>
+<td align="right">44/48</td>
+<td align="right">48/48</td>
+<td align="right">+4</td>
+</tr>
+<tr>
+<td>更换人物和文件（48 个）</td>
+<td>交互签名匹配</td>
+<td align="right">36/48</td>
+<td align="right">48/48</td>
+<td align="right">+12</td>
+</tr>
+<tr>
+<td>澄清—确认配对测试（20 个）</td>
+<td>任务成功</td>
+<td align="right">20/20</td>
+<td align="right">20/20</td>
+<td align="right">0</td>
+</tr>
+<tr>
+<td>澄清—确认配对测试（20 个）</td>
+<td>交互签名匹配</td>
+<td align="right">20/20</td>
+<td align="right">20/20</td>
+<td align="right">0</td>
+</tr>
+</tbody></table></div>
+<p>继续 GRPO 后，表中任务全部成功，也全部通过交互签名检查。20 个澄清—确认配对任务中，两个模型均为 20/20 成功、20/20 签名匹配，但发生过早行动的任务从 19/20 降至 0/20。继续训练减少了原始配对任务中出现过早写入尝试的任务数。</p>
+<h3>付款与日程任务</h3>
+<p>第三章中，<code>SFT #1</code> 在沿用原有规则的付款和日程任务上，表现低于 Instruct。我们用同一组任务检查，继续优化邮件任务是否也能改善模型在新领域中执行这些要求的能力。训练仍只使用原始邮件任务，没有加入付款或日程任务。下表箭头表示 <code>SFT #1</code> 到 <code>SFT-GRPO #1</code> 的变化。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>评测任务</th>
+<th align="right">任务成功</th>
+<th align="right">交互签名匹配</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>付款：沿用原有规则</td>
+<td align="right">207/260 → 242/260</td>
+<td align="right">48/260 → 186/260</td>
+</tr>
+<tr>
+<td>日程：沿用原有规则</td>
+<td align="right">23/260 → 235/260</td>
+<td align="right">6/260 → 53/260</td>
+</tr>
+<tr>
+<td>付款：增加数值判断</td>
+<td align="right">50/60 → 50/60</td>
+<td align="right">0/60 → 27/60</td>
+</tr>
+<tr>
+<td>日程：增加参数传递</td>
+<td align="right">29/60 → 37/60</td>
+<td align="right">0/60 → 6/60</td>
+</tr>
+</tbody></table></div>
+<p>从 <code>SFT #1</code> 继续 GRPO 后，基础付款任务的成功数从 207/260 提高到 242/260，日程任务从 23/260 提高到 235/260，均超过初始 Instruct。增加数值判断后的付款任务保持 50/60，增加参数传递后的日程任务从 29/60 提高到 37/60。</p>
+<p>第三章还测试了从 Instruct 开始、用多样示范训练两轮的 SFT 模型；它在付款数值任务和日程参数传递任务上分别完成 3/60、30/60。本节从 <code>SFT #1</code> 继续 GRPO，得到的终点分别为 50/60、37/60。两条路线都恢复了基础跨领域任务的完成率，新增要求下的结果仍有明显差别。</p>
+<p>付款数值任务中，交互签名匹配的轨迹从零增至 27/60。日程参数传递任务虽然有所恢复，成功数仍低于 Instruct 的 52/60。</p>
+<h2 id="section-4-2">4.2 双工具任务中的行动顺序</h2>
+<p>我们在第三章的同一组 60 个双工具任务上，对比 <code>SFT #1</code> 和 <code>SFT-GRPO #1</code>，检查继续训练后，模型是否仍会在写入前查询分享策略。</p>
+<p>写前查询沿用第一章的定义。这里的查询指 <code>retrieve_sharing_policy</code>，写入指 <code>create_draft</code> 或 <code>send_email</code>。</p>
+<h3>查询与发送</h3>
+<p>同一个双工具任务中，<code>SFT #1</code> 先查询分享策略再发送；<code>SFT-GRPO #1</code> 先尝试发送，被环境阻止后才查询并重新发送。两者最终都成功，第一次发送尝试的时机却不同。完整调用、工具返回和逐轨迹判定放在 <a href="chapter-6.zh-CN.html#case-timing">§6.1 的成对案例</a> 中，与原始组合任务上的改善并列比较。</p>
+<h3>双工具任务的结果</h3>
+<p>两个模型在同一组 60 个双工具任务上的表现如下：</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>检查内容</th>
+<th align="right"><code>SFT #1</code></th>
+<th align="right"><code>SFT-GRPO #1</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>完成任务</td>
+<td align="right">50/60</td>
+<td align="right">50/60</td>
+</tr>
+<tr>
+<td>交互签名匹配</td>
+<td align="right">30/60</td>
+<td align="right">30/60</td>
+</tr>
+<tr>
+<td>满足写前查询条件</td>
+<td align="right">60/60</td>
+<td align="right">0/60</td>
+</tr>
+<tr>
+<td>发生过早行动</td>
+<td align="right">0/60</td>
+<td align="right">60/60</td>
+</tr>
+</tbody></table></div>
+<p>在这 60 个邮件双工具任务中，两个模型都完成了同一批 50 个任务。然而，<code>SFT #1</code> 在全部任务中都满足写前查询条件，继续 GRPO 后的模型一个也没有做到，全部任务都发生了过早行动。两者交互签名匹配的也是同一批 30 个任务，变化发生在动作顺序上。</p>
+<p>第三章中，增加 SFT 训练后，双工具任务的完成率和写前查询都出现了下降。从 <code>SFT #1</code> 继续 GRPO，则保留了这组任务的完成率，同时丢失了正确的查询顺序。两种训练都提高了原始任务的表现，双工具任务中的退化以不同方式出现。</p>
+<p>结合 §4.1 的跨领域结果，模型恢复了陌生业务中的基础任务表现，对新增行动要求的适应仍然不稳定。</p>
+<p>我们推测，GRPO 强化了原始邮件任务中有效的执行流程，其中一些做法也适用于付款和日程，因此跨领域完成率得到恢复。但原始邮件任务通过文件查询就能取得共享规则，模型可能逐渐习惯在这次查询后直接行动。当共享规则移到另一个工具时，它仍沿用原来的顺序，便会在取得必要信息前尝试写入。这样，跨领域任务的改善与邮件双工具任务的退化就可能同时发生。</p>
+<h2 id="section-4-3">4.3 增加新工具的训练任务</h2>
+<p>原始任务中，<code>retrieve_files</code> 在返回文件信息时，也会告知是否允许发送、是否需要确认。新增任务从文件查询结果中移除了这两项规则，改由 <code>retrieve_sharing_policy</code> 返回。模型因此需要多调用一个工具，才能取得原先一次查询就能获得的信息。</p>
+<p>我们仍从 <code>SFT #1</code> 开始进行 GRPO。新增的 60 个任务各使用四种请求模板，构成 240 条输入，与原有 768 条合并，共 1,008 条。训练后的模型记为 <code>SFT-GRPO #2</code>。</p>
+<p>训练后，我们用原始邮件任务和两组各 60 个数值判断任务评测模型。双工具数值判断任务中，文件大小和共享阈值分别由两个工具返回；单工具数值判断任务中，这些数值都由分享策略工具一次返回。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>测试任务</th>
+<th>文件查询返回</th>
+<th>分享策略查询返回</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>双工具数值判断任务</td>
+<td>文件大小</td>
+<td>审批阈值和禁止共享上限</td>
+</tr>
+<tr>
+<td>单工具数值判断任务</td>
+<td>文件信息，不含大小</td>
+<td>文件大小、审批阈值和禁止共享上限</td>
+</tr>
+</tbody></table></div>
+<p>这两组任务都没有参与训练。新增训练任务让模型从分享策略工具直接取得规则，测试则要求它根据返回的数值判断是否发送、是否需要确认。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>评测</th>
+<th>行为字段</th>
+<th align="right"><code>SFT-GRPO #1</code></th>
+<th align="right"><code>SFT-GRPO #2</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>原始邮件任务（260 个）</td>
+<td>任务成功</td>
+<td align="right">260/260</td>
+<td align="right">260/260</td>
+</tr>
+<tr>
+<td>原始邮件任务（260 个）</td>
+<td>交互签名匹配</td>
+<td align="right">260/260</td>
+<td align="right">250/260</td>
+</tr>
+<tr>
+<td>双工具数值判断任务（60 个）</td>
+<td>任务成功</td>
+<td align="right">50/60</td>
+<td align="right">50/60</td>
+</tr>
+<tr>
+<td>双工具数值判断任务（60 个）</td>
+<td>交互签名匹配</td>
+<td align="right">30/60</td>
+<td align="right">30/60</td>
+</tr>
+<tr>
+<td>双工具数值判断任务（60 个）</td>
+<td>写前调用 <code>retrieve_sharing_policy</code></td>
+<td align="right">0/60</td>
+<td align="right">0/60</td>
+</tr>
+<tr>
+<td>双工具数值判断任务（60 个）</td>
+<td>过早行动</td>
+<td align="right">60/60</td>
+<td align="right">60/60</td>
+</tr>
+<tr>
+<td>单工具数值判断任务（60 个）</td>
+<td>任务成功</td>
+<td align="right">未运行</td>
+<td align="right">49/60</td>
+</tr>
+<tr>
+<td>单工具数值判断任务（60 个）</td>
+<td>交互签名匹配</td>
+<td align="right">未运行</td>
+<td align="right">29/60</td>
+</tr>
+<tr>
+<td>单工具数值判断任务（60 个）</td>
+<td>写前调用 <code>retrieve_sharing_policy</code></td>
+<td align="right">未运行</td>
+<td align="right">0/60</td>
+</tr>
+</tbody></table></div>
+<p>新增训练保留了原始邮件任务的完成率，交互签名匹配的轨迹减少了 10 条。双工具测试的四项结果均未改变。把文件大小和阈值放到同一次返回中后，模型完成了 49/60 个任务，写前查询同样为零。</p>
+<p>在两组测试中，各有一个向张伟发送报告的任务，<code>SFT-GRPO #2</code> 执行了完全相同的动作：</p>
+<pre><code class="language-text">retrieve_outbox({})
+→ retrieve_contacts({&quot;query&quot;:&quot;张伟&quot;})
+→ retrieve_files({&quot;query&quot;:&quot;报告&quot;})
+→ send_email({
+     &quot;file_id&quot;:&quot;report_target_1&quot;,
+     &quot;recipient_id&quot;:&quot;contact_target_1&quot;
+   })                                  ← 第一次写入尝试
+   =&gt; {&quot;error&quot;:&quot;missing required facts&quot;,
+       &quot;missing&quot;:[&quot;external_allowed&quot;,&quot;confirmation_required&quot;]}
+→ retrieve_sharing_policy({})
+→ request_confirmation({})
+→ send_email({
+     &quot;file_id&quot;:&quot;report_target_1&quot;,
+     &quot;recipient_id&quot;:&quot;contact_target_1&quot;
+   }) =&gt; {&quot;created_id&quot;:1}              ← 邮件实际发出
+→ finish({})
+</code></pre>
+<p>这两条轨迹都在文件查询后尝试发送，被环境阻止后才取得分享策略。它们符合 §4.2 的推测，即模型把完成文件查询当作可以继续发送的线索。新增训练已经包含分享策略工具，两组数值测试中仍然出现相同的过早尝试。工具是否在训练中出现，与模型是否会在缺少信息时及时调用它，是这里需要分别检查的两件事。</p>
+<h3>本章小结</h3>
+<p>在 <code>SFT #1</code> 的基础上继续进行 GRPO，模型完成了全部原始邮件任务，也恢复了付款和日程中沿用原有规则的任务表现。与此同时，邮件双工具任务中原先正确的查询顺序丢失了。把需要调用分享策略工具的任务加入训练后，两组数值测试中的写前查询仍然为零。把这个工具加入训练任务，没有让模型在新的任务要求下及时调用它。</p>
+<nav class="chapter-navigation"><a href="chapter-3.zh-CN.html">上一页</a><a href="chapter-5.zh-CN.html">下一章</a></nav></main><footer class="downloads"><a download href="downloads/TECHNICAL_REPORT_V2.zh-CN.pdf">下载完整报告 PDF · 3.2 MB</a></footer><script>
+const languageLink=document.querySelector('[data-language]');
+const headings=[...document.querySelectorAll('main h1[id],main h2[id],main h3[id]')];
+function syncLanguage(){let id=location.hash.slice(1);const target=document.getElementById(id);if(!target||target.getBoundingClientRect().top<0||target.getBoundingClientRect().top>innerHeight){for(const h of headings){if(h.getBoundingClientRect().top<240)id=h.id;else break;}}languageLink.href=languageLink.dataset.language+(id?'#'+id:'');}
+addEventListener('scroll',syncLanguage,{passive:true});addEventListener('hashchange',syncLanguage);addEventListener('load',syncLanguage);document.fonts.ready.then(syncLanguage);syncLanguage();
+for(const pre of document.querySelectorAll('pre')){const code=pre.querySelector('code');if(!code)continue;const button=document.createElement('button');button.className='copy-code';button.textContent=document.documentElement.lang==='en'?'Copy':'复制';button.setAttribute('aria-label',button.textContent+' code');button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(code.textContent);button.textContent=document.documentElement.lang==='en'?'Copied':'已复制';}catch{button.textContent=document.documentElement.lang==='en'?'Select to copy':'请选中复制';}});pre.append(button);}
+if(innerWidth<=900){document.querySelector('.contents-panel details')?.removeAttribute('open');}
+</script></body></html>

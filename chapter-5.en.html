@@ -1,0 +1,651 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Chapter 5. GRPO Starting from Instruct</title><link rel="stylesheet" href="report.css"><style>
+html{scroll-behavior:smooth;scroll-padding-top:2rem}body{font-family:Arial,"Microsoft YaHei",sans-serif;font-size:16px;line-height:1.85;background:#fff;color:#303030;margin:0}
+main,body.quick main{box-sizing:border-box;max-width:860px;margin:0 0 0 304px;padding:34px 48px 72px}
+.sitebar{margin-left:304px;max-width:860px;box-sizing:border-box;border-bottom:1px solid #ddd;padding:20px 48px 12px;display:flex;gap:22px;align-items:center;flex-wrap:wrap;font:400 14px/1.5 Arial,sans-serif}
+.sitebar{justify-content:flex-end}.sitebar a{color:#164e7a;text-decoration:none}.sitebar .brand{display:none}.sitebar a:hover{text-decoration:underline}
+.downloads{margin-left:304px;max-width:860px;box-sizing:border-box;font:14px/1.8 Arial,sans-serif;padding:22px 48px 36px;color:#666;border-top:1px solid #dce3e9;display:flex;gap:20px;flex-wrap:wrap}.author-credit{font-size:14px;font-weight:400;color:#555;margin:-10px 0 32px}
+.contents-panel{box-sizing:border-box;position:fixed;left:0;top:0;bottom:0;width:304px;overflow:auto;background:#142e49;border-right:1px solid #142e49;padding:28px 18px;font:14px/1.6 Arial,"Microsoft YaHei",sans-serif;color:#fff}
+.contents-panel a{display:block;color:#dbe6f0;text-decoration:none;padding:7px 10px}.contents-panel a:hover{background:#203e5c;color:#fff}.contents-panel a[aria-current=page]{background:#294b6c;color:#fff;border-left:2px solid #c0d7eb;padding-left:8px}
+.contents-panel summary{font-weight:400;cursor:pointer;margin:0 10px 20px;font-size:17px;list-style:none}.contents-panel .subsection{padding-left:22px;font-size:14px}.contents-panel .subsection:hover{padding-left:22px}
+h1,h2,h3,h4,h5,h6,strong,b,th{font-weight:400}h1{font-size:30px;line-height:1.45;color:#222;margin:0 0 26px}h2{font-size:24px;margin:38px 0 18px;color:#222}h3{font-size:20px;margin:30px 0 14px;color:#333}h4,h5{font-size:17px;color:#333}h2,h3,h4{scroll-margin-top:2rem;line-height:1.5}p{overflow-wrap:break-word}a{color:#164e7a;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}a:hover{color:#0b3558}a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid #608cb5;outline-offset:3px}
+.formula,.katex-display{max-width:100%;overflow-x:auto;overflow-y:hidden}pre{position:relative;overflow:auto;white-space:pre;max-width:100%;padding-top:38px}pre code{font-size:14px;white-space:pre}
+.copy-code{position:absolute;right:7px;top:5px;font:14px/1.5 Arial,sans-serif;border:1px solid #ccc;background:#fff;color:#555;border-radius:2px;cursor:pointer;padding:2px 9px}
+.table-wrap{overflow-x:auto;max-width:100%}table{font-size:14px}th,td{border-color:#ddd}th{background:#f3f3f3}pre,.code-list td{background:#f7f7f7;border-color:#ddd}.code-list{table-layout:auto}.code-list pre code{font-size:14px}.code-list .code-lines{font-size:12px;color:#777}.code-list th{color:#555}blockquote{border-color:#ccc;background:#f8f8f8}.chapter-navigation{border-top:1px solid #ddd;margin-top:48px;padding-top:20px;display:flex;justify-content:space-between;gap:24px;font-size:14px}
+@media(max-width:900px){main,body.quick main{margin:0 auto;padding:28px 24px 60px}.sitebar,.downloads{margin:0;padding-left:24px;padding-right:24px}.sitebar .brand{display:block;margin-right:auto}.contents-panel{position:static;width:auto;max-height:none;padding:14px 24px;border:0;border-bottom:1px solid #ddd}.contents-panel summary{font-size:14px;margin:0;list-style:revert}.contents-panel nav{max-height:45vh;overflow:auto}.contents-panel a{padding:6px 8px}}
+@media(max-width:600px){.sitebar{gap:12px;padding:12px 16px;font-size:14px}.sitebar .brand{width:100%}main,body.quick main{padding:24px 16px 60px}.downloads{padding:10px 16px;gap:12px}.contents-panel{padding:12px 16px}h1{font-size:26px}h2{font-size:22px}.code-list{min-width:620px}pre code{font-size:14px}.table-wrap th:first-child,.table-wrap td:first-child{background:#f5f5f5}.table-wrap th:first-child{background:#eee}}
+@media print{.sitebar,.downloads,.contents-panel,.copy-code{display:none!important}main{margin:0!important;max-width:none}body{font-size:10pt}pre{padding-top:9px}}
+</style></head><body class="full"><header class="sitebar"><a data-language="chapter-5.zh-CN.html" href="chapter-5.zh-CN.html" lang="zh-CN">中文</a></header><aside class="contents-panel"><details open><summary>Agent Reinforcement Learning</summary><nav><a href="quick.en.html">Research overview</a><a href="overview.en.html">Abstract</a><a href="chapter-1.en.html">Chapter 1. Evidence for Learned Target Behavior</a><a href="chapter-2.en.html">Chapter 2. Ask-or-Act Tasks and Evaluation</a><a href="chapter-3.en.html">Chapter 3. SFT Training and Generalization</a><a href="chapter-4.en.html">Chapter 4. SFT-GRPO: Behavioral Change During Continued Training</a><a href="chapter-5.en.html" aria-current="page">Chapter 5. GRPO Starting from Instruct</a><a class="subsection" href="#section-5-1">5.1 Training from Instruct</a><a class="subsection" href="#section-5-2">5.2 Reward and Optimization Settings</a><a class="subsection" href="#section-5-3">5.3 State Baselines and Random Seeds</a><a class="subsection" href="#section-5-4">5.4 Choosing Actions from Returned Information</a><a href="chapter-6.en.html">Chapter 6. Generalization Differences and Behavioral Diagnosis</a><a href="chapter-7.en.html">Chapter 7. Visit Rewards and Content Responses in WebShop</a><a href="chapter-8.en.html">Chapter 8. Reward Signals in Group-Relative Training</a><a href="chapter-9.en.html">Chapter 9. Related Work</a><a href="chapter-10.en.html">Chapter 10. Diagnosing Behavior and Training in Agent RL</a><a href="appendix-a.en.html">Appendix A. The Ask-or-Act System and Action Chains</a><a href="appendix-b.en.html">Appendix B. Rewards, Estimators, and Implementation</a><a href="appendix-c.en.html">Appendix C. Supplementary Experiments and Diagnostics</a><a href="appendix-d.en.html">Appendix D. Public Implementation, Statistics, and Resources</a><a href="references.en.html">References / 参考文献</a></nav></details></aside><main><h1 id="chapter-5">Chapter 5. GRPO Starting from Instruct</h1>
+<h2 id="section-5-1">5.1 Training from Instruct</h2>
+<p>We start GRPO directly from the initial Instruct model to examine whether reinforcement learning teaches it to follow task rules and transfer these capabilities to changed tasks. We call the trained model <code>GRPO #1</code>. Compared with Chapter 4, this route omits the preceding SFT stage.</p>
+<p>Training uses the same 192 original email tasks, each with four request templates, giving 768 inputs. The model generates its own tool calls, and the evaluator scores the trajectories using the baseline reward from Chapter 2. Each batch contains 32 inputs, with eight trajectories sampled per input at temperature 1.0. We compute advantages from within-group rewards and update the LoRA parameters for 120 training steps.</p>
+<p>The validation set uses the 48 tasks with changed people and files from Chapter 4. Each task uses six request templates, giving 288 inputs.</p>
+<h3>Original tasks and holdouts</h3>
+<p>We compare Instruct before training with <code>GRPO #1</code> after training on the same evaluation tasks.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Evaluation tasks</th>
+<th align="right">Task success</th>
+<th align="right">Interaction signature match</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Training tasks (192)</td>
+<td align="right">156/192 → 176/192</td>
+<td align="right">72/192 → 168/192</td>
+</tr>
+<tr>
+<td>Changed people and files (48)</td>
+<td align="right">41/48 → 44/48</td>
+<td align="right">30/48 → 42/48</td>
+</tr>
+<tr>
+<td>Clarification–confirmation paired test (20)</td>
+<td align="right">18/20 → 20/20</td>
+<td align="right">9/20 → 20/20</td>
+</tr>
+</tbody></table></div>
+<p>Starting GRPO directly from Instruct yields 20 more successful training tasks and 96 more trajectories matching the interaction signature. Improvements also appear when people and files change, and all 20 clarification–confirmation paired tasks succeed. However, all 20 contain premature action. The model more often completes the request and matches the interaction signature while still violating action conditions.</p>
+<h3>Payment and Scheduling Tasks</h3>
+<p>We use the payment and scheduling tasks from Chapter 3 to examine whether changes from email GRPO training transfer to other domains. The table compares Instruct before training with <code>GRPO #1</code> after training.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Tasks</th>
+<th align="right">Tasks completed</th>
+<th align="right">Interaction signature match</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Basic payment tasks</td>
+<td align="right">226/260 → 236/260</td>
+<td align="right">51/260 → 85/260</td>
+</tr>
+<tr>
+<td>Basic scheduling tasks</td>
+<td align="right">214/260 → 228/260</td>
+<td align="right">91/260 → 117/260</td>
+</tr>
+<tr>
+<td>Numerical payment tasks</td>
+<td align="right">28/60 → 43/60</td>
+<td align="right">18/60 → 51/60</td>
+</tr>
+<tr>
+<td>Argument-passing scheduling tasks</td>
+<td align="right">52/60 → 60/60</td>
+<td align="right">10/60 → 20/60</td>
+</tr>
+</tbody></table></div>
+<p>After direct GRPO, both task success and the number of trajectories matching the interaction signature increase on all four sets. Improvements occur on basic tasks as well as tasks with added numerical comparison or argument passing.</p>
+<p>Compared with <code>SFT-GRPO #1</code> in Chapter 4, direct GRPO completes 60/60 argument-passing scheduling tasks, above the former&#39;s 37/60. Numerical payment tasks show a different pattern: direct GRPO succeeds on 43/60, below the former&#39;s 50/60, but produces 51/60 trajectories matching the interaction signature, above the former&#39;s 27/60. The two routes adapt differently to the added requirements, and their rankings by task completion and interaction-signature matches do not always agree.</p>
+<p>The 60 added scheduling tasks contain two branches. One branch of 30 tasks requires passing the owner identifier returned by the group query, <code>owner_handle</code>, to the member lookup. All three models call the group lookup on these tasks. <code>SFT #1</code>, <code>SFT-GRPO #1</code>, and <code>GRPO #1</code> use the returned identifier on 30/30, 1/30, and 6/30 tasks, respectively; their task-success counts are 28/30, 9/30, and 30/30. The complete case in Chapter 6 shows how direct GRPO can complete a booking by asking the user after an incorrect call is blocked, bypassing this parameter dependency.</p>
+<h3>Two-tool numerical-comparison tasks</h3>
+<p>We use the same 60 email two-tool numerical-comparison tasks to check whether <code>GRPO #1</code> queries the new information source before acting.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Check</th>
+<th align="right"><code>GRPO #1</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Task success</td>
+<td align="right">39/60</td>
+</tr>
+<tr>
+<td>Interaction signature match</td>
+<td align="right">56/60</td>
+</tr>
+<tr>
+<td>Sharing-policy tool called</td>
+<td align="right">58/60</td>
+</tr>
+<tr>
+<td>Sharing policy queried before the first relevant write</td>
+<td align="right">58/60</td>
+</tr>
+<tr>
+<td>Premature action occurred</td>
+<td align="right">60/60</td>
+</tr>
+<tr>
+<td>All write attempts pass the action-condition checks</td>
+<td align="right">0/60</td>
+</tr>
+</tbody></table></div>
+<p>The model queries the sharing policy on 58 tasks, always before the first relevant write. It omits the tool on the other two tasks. However, premature action still occurs on every task, and no task has all its write attempts pass the action-condition checks.</p>
+<p>Pre-write lookup checks the order of the sharing-policy query and the first write. Premature action checks whether the conditions required for acting have been met. Querying the sharing policy first is one of these requirements, so the two checks can give different results.</p>
+<p>Below is a complete saved sequence of tool calls.</p>
+<pre><code class="language-text">retrieve_files({&quot;query&quot;:&quot;报告&quot;})
+→ retrieve_contacts({&quot;query&quot;:&quot;张伟&quot;})
+→ retrieve_sharing_policy({})
+→ create_draft({
+     &quot;file_id&quot;:&quot;report_target_1&quot;,
+     &quot;recipient_id&quot;:&quot;contact_target_1&quot;
+   })
+→ send_email({
+     &quot;file_id&quot;:&quot;report_target_1&quot;,
+     &quot;recipient_id&quot;:&quot;contact_target_1&quot;
+   })
+→ finish({})
+</code></pre>
+<p>This trajectory queries the policy before attempting to create a draft and send the email. The draft attempt conflicts with the send intent and therefore fails the evaluator’s action-condition check even after a lookup. Across the 60 two-tool tasks, 28 trajectories receive the premature-action flag solely because of such intent mismatches, with the other checked conditions satisfied. The 60/60 premature-action count includes these intent errors.</p>
+<p>On the original email tasks, <code>SFT-GRPO #1</code> completes 260/260 and <code>GRPO #1</code> completes 240/260, both above the initial Instruct model&#39;s 215/260. When the sharing rules move behind another tool, the former never queries the sharing policy before writing, while the latter does so on 58/60 tasks. The model with higher original-task performance performs worse on this lookup requirement.</p>
+<p><code>SFT #1</code> originally satisfies the pre-write lookup condition on all 60 two-tool tasks; this behavior is lost during continued GRPO. GRPO trained directly from Instruct produces a different query order. The difference between these routes therefore involves the changes arising from the training starting point together with subsequent reinforcement learning.</p>
+<p>We hypothesize that GRPO reinforces different behaviors from different starting points. Starting from <code>SFT #1</code>, the model may increasingly settle into sending as soon as it finds the file. Starting from Instruct, it more often continues seeking information when the sharing rules are missing. The original tasks provide the rules through the file lookup, so both approaches complete most tasks. The two-tool tasks change the information source, exposing the difference in how the models adjust their query order.</p>
+<h3>Tool-source cue</h3>
+<p>To test whether explicitly pointing to the information source helps, we use another set of email tasks. The sharing-policy tool directly returns whether sending is allowed and whether confirmation is required; the model does not need to compare file size with thresholds. We add <code>sharing_policy_id</code> to the file response to cue a sharing-policy lookup and compare it with the version without the cue.</p>
+<p>The cue does not contain the sharing rules. The model must call <code>retrieve_sharing_policy</code> to obtain them. We separately count whether it calls the tool and whether the call precedes the first relevant write.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Test condition</th>
+<th align="right">Sharing-policy tool called</th>
+<th align="right">Sharing policy queried before writing</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>No source cue</td>
+<td align="right">12/60</td>
+<td align="right">0/60</td>
+</tr>
+<tr>
+<td><code>sharing_policy_id</code> added</td>
+<td align="right">22/60</td>
+<td align="right">0/60</td>
+</tr>
+</tbody></table></div>
+<p>Adding the cue increases the number of tasks on which <code>GRPO #1</code> calls the sharing-policy tool from 12 to 22, while pre-write lookup remains zero. The table compares tool calls for the same task under both conditions, with some arguments omitted.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th align="right">Step</th>
+<th>No source cue</th>
+<th>Source cue added</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">0</td>
+<td><code>retrieve_files({&quot;query&quot;:&quot;预算&quot;})</code></td>
+<td><code>retrieve_files({&quot;query&quot;:&quot;预算&quot;})</code></td>
+</tr>
+<tr>
+<td align="right">1</td>
+<td><code>retrieve_contacts({&quot;query&quot;:&quot;李娜&quot;})</code></td>
+<td><code>retrieve_contacts({&quot;query&quot;:&quot;李娜&quot;})</code></td>
+</tr>
+<tr>
+<td align="right">2</td>
+<td><code>create_draft(...)</code></td>
+<td><code>create_draft(...)</code></td>
+</tr>
+<tr>
+<td align="right">3</td>
+<td><code>send_email(...)</code></td>
+<td><code>send_email(...)</code></td>
+</tr>
+<tr>
+<td align="right">4</td>
+<td><code>ask_clarification({&quot;field&quot;:&quot;external_allowed&quot;})</code></td>
+<td><code>retrieve_sharing_policy({})</code></td>
+</tr>
+<tr>
+<td align="right">5</td>
+<td><code>ask_clarification({&quot;field&quot;:&quot;confirmation_required&quot;})</code></td>
+<td><code>finish({})</code></td>
+</tr>
+<tr>
+<td align="right">6</td>
+<td><code>abstain(...)</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td align="right">7</td>
+<td><code>finish({})</code></td>
+<td>—</td>
+</tr>
+</tbody></table></div>
+<p>Both versions attempt to create a draft at step 2 and send at step 3. The environment blocks the calls for an intent mismatch and missing sharing rules, respectively. Without the cue, the model subsequently asks the user about the rules. With the cue, it queries the sharing-policy tool, then terminates without sending again. The cue changes the later query, not the initial send attempt, and does not complete this task.</p>
+<p>For agent-workflow design, source cues and execution checks serve different roles. In this example, the cue directs the model to the rules, while the environment&#39;s condition check blocks premature sending. Completing the request also requires the model to choose an action again after obtaining the rules.</p>
+<h2 id="section-5-2">5.2 Reward and Optimization Settings</h2>
+<p>We separately change the reward function and policy-clipping range to test whether these interventions improve action order. Both experiments compare against <code>GRPO #1</code> on the original and generalization tasks.</p>
+<h3><code>GRPO #3</code>: Penalizing Premature Action</h3>
+<p>We keep the training start and setup of <code>GRPO #1</code> and add a premature-action penalty to the reward, producing <code>GRPO #3</code>. For the same trajectory, the score difference with and without the penalty is</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>R</mi><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">y</mi></mrow></msub><mo stretchy="false">(</mo><mi>τ</mi><mo stretchy="false">)</mo><mo>−</mo><msub><mi>R</mi><mrow><mi mathvariant="normal">b</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">e</mi></mrow></msub><mo stretchy="false">(</mo><mi>τ</mi><mo stretchy="false">)</mo><mo>=</mo><mrow><mo fence="true">{</mo><mtable rowspacing="0.36em" columnalign="left left" columnspacing="1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mo>−</mo><mn>1</mn><mo separator="true">,</mo></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mtext>if premature action occurs and the hard gate does not fire</mtext><mo separator="true">,</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mn>0</mn><mo separator="true">,</mo></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mtext>otherwise</mtext><mi mathvariant="normal">.</mi></mrow></mstyle></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+R_{\mathrm{penalty}}(\tau)-R_{\mathrm{baseline}}(\tau)
+=
+\begin{cases}
+-1, &amp; \text{if premature action occurs and the hard gate does not fire},\\
+0, &amp; \text{otherwise}.
+\end{cases}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0361em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0077em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight" style="margin-right:0.01389em;">penalty</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.1132em;">τ</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0077em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">baseline</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.1132em;">τ</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:3em;vertical-align:-1.25em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size4">{</span></span><span class="mord"><span class="mtable"><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.69em;"><span style="top:-3.69em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord">−</span><span class="mord">1</span><span class="mpunct">,</span></span></span><span style="top:-2.25em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord">0</span><span class="mpunct">,</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.19em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:1em;"></span><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.69em;"><span style="top:-3.69em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord text"><span class="mord">if premature action occurs and the hard gate does not fire</span></span><span class="mpunct">,</span></span></span><span style="top:-2.25em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord text"><span class="mord">otherwise</span></span><span class="mord">.</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.19em;"><span></span></span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></div>
+<p>We use the hard-gate rule defined in Chapter 2. Multiple premature actions in the same trajectory still incur only one additional penalty point.</p>
+<h4>Original-Task Results</h4>
+<p>The historical experiment summary reports the following results for 250 original email tasks; Appendix C gives the source. These counts are kept separate from the preceding 260-task evaluation.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Check</th>
+<th align="right"><code>GRPO #1</code></th>
+<th align="right"><code>GRPO #3</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tasks with premature action</td>
+<td align="right">213/250</td>
+<td align="right">20/250</td>
+</tr>
+<tr>
+<td>Intent-mismatch events (<code>wrong_intent</code>)</td>
+<td align="right">200</td>
+<td align="right">0</td>
+</tr>
+<tr>
+<td>Necessary-clarification recall</td>
+<td align="right">1.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr>
+<td>Clarification precision</td>
+<td align="right">0.750</td>
+<td align="right">0.857</td>
+</tr>
+</tbody></table></div>
+<p>In this summary, 193 fewer tasks contain premature action after the penalty is added, and intent-mismatch events fall to zero. Necessary-clarification recall stays unchanged while clarification precision improves: the model retains necessary questions and reduces unnecessary questions or questions about the wrong field. Behavior on the original tasks changes with the penalty.</p>
+<h4>Two-Tool Numerical Comparison Tasks</h4>
+<p>The two models produce the following results on the 60 two-tool numerical comparison tasks introduced above. Appendix D gives the recomputation procedure.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Check</th>
+<th align="right"><code>GRPO #1</code></th>
+<th align="right"><code>GRPO #3</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Task success</td>
+<td align="right">39/60</td>
+<td align="right">48/60</td>
+</tr>
+<tr>
+<td>Interaction signature match</td>
+<td align="right">56/60</td>
+<td align="right">24/60</td>
+</tr>
+<tr>
+<td>Sharing-policy tool called</td>
+<td align="right">58/60</td>
+<td align="right">60/60</td>
+</tr>
+<tr>
+<td>Sharing policy queried before the first relevant write</td>
+<td align="right">58/60</td>
+<td align="right">0/60</td>
+</tr>
+<tr>
+<td>Premature action</td>
+<td align="right">60/60</td>
+<td align="right">60/60</td>
+</tr>
+<tr>
+<td>All write attempts pass the action-condition checks</td>
+<td align="right">0/60</td>
+<td align="right">0/60</td>
+</tr>
+</tbody></table></div>
+<p>With the penalty, the model completes nine more tasks, but all 60 trajectories attempt a write before querying the sharing policy. The following successful trajectory follows this order.</p>
+<pre><code class="language-text">retrieve_files({&quot;query&quot;:&quot;报告&quot;})
+→ retrieve_contacts({&quot;query&quot;:&quot;张伟&quot;})
+→ send_email({
+     &quot;file_id&quot;:&quot;report_target_1&quot;,
+     &quot;recipient_id&quot;:&quot;contact_target_1&quot;
+   })
+  Blocked: sharing rules missing; no email created
+→ retrieve_sharing_policy({})
+→ request_confirmation({})
+→ send_email({
+     &quot;file_id&quot;:&quot;report_target_1&quot;,
+     &quot;recipient_id&quot;:&quot;contact_target_1&quot;
+   })
+→ finish({})
+</code></pre>
+<p>The first send attempt is blocked because the sharing rules are missing. The model then queries the sharing policy and requests confirmation; the second send attempt successfully creates the email.</p>
+<p>Premature action decreases substantially on the original tasks, while pre-write lookup on the two-tool tasks falls from 58/60 to zero. The penalty improves action order on familiar tasks. That improvement does not carry over when the sharing rules must be obtained from another tool.</p>
+<h4>Payment and Scheduling Tasks</h4>
+<p>We use the payment and scheduling tasks from §5.1 to examine how the penalty affects cross-domain performance. Arrows in the table run from <code>GRPO #1</code> to <code>GRPO #3</code>, trained with the added penalty.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Evaluation tasks</th>
+<th align="right">Task success</th>
+<th align="right">Interaction signature match</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Basic payment tasks</td>
+<td align="right">236/260 → 233/260</td>
+<td align="right">85/260 → 190/260</td>
+</tr>
+<tr>
+<td>Basic scheduling tasks</td>
+<td align="right">228/260 → 227/260</td>
+<td align="right">117/260 → 133/260</td>
+</tr>
+<tr>
+<td>Numerical payment tasks</td>
+<td align="right">43/60 → 19/60</td>
+<td align="right">51/60 → 1/60</td>
+</tr>
+<tr>
+<td>Argument-passing scheduling tasks</td>
+<td align="right">60/60 → 56/60</td>
+<td align="right">20/60 → 23/60</td>
+</tr>
+</tbody></table></div>
+<p>With the penalty, completion counts change little on the two basic task sets, while more trajectories match the interaction signature. On basic payment tasks, this count rises from 85/260 to 190/260. Numerical payment performance declines substantially: success falls from 43/60 to 19/60, and only one trajectory matches the interaction signature. The change on argument-passing scheduling tasks is smaller, with four fewer tasks completed.</p>
+<p>The penalty reduces premature action on the original email tasks and increases interaction-signature matches on the base payment and scheduling tasks: the combination of clarification, confirmation, and terminal effects more often meets the requirements. When the model needs to combine new information to decide how to act, both pre-write lookup in email and numerical payment performance deteriorate. We hypothesize that the learned adjustments rely more on familiar training procedures and adapt poorly to the action conditions in the new tasks.</p>
+<h3><code>GRPO #4</code>: Raising the Upper Clipping Bound</h3>
+<p>We keep the reward and other training settings of <code>GRPO #1</code> and raise the upper probability-ratio clipping bound from 1.20 to 1.28, producing <code>GRPO #4</code>. This experiment tests whether relaxing the update constraint helps the model adapt to changed tasks.</p>
+<p>For a generated token <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">a_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>, the ratio of its probability under the current model to its probability under the pre-update model is</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>r</mi><mi>t</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>π</mi><mi>θ</mi></msub><mo stretchy="false">(</mo><msub><mi>a</mi><mi>t</mi></msub><mo>∣</mo><msub><mi>h</mi><mi>t</mi></msub><mo stretchy="false">)</mo></mrow><mrow><msub><mi>π</mi><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">d</mi></mrow></msub><mo stretchy="false">(</mo><msub><mi>a</mi><mi>t</mi></msub><mo>∣</mo><msub><mi>h</mi><mi>t</mi></msub><mo stretchy="false">)</mo></mrow></mfrac><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">
+r_t=
+\frac{\pi_\theta(a_t\mid h_t)}
+{\pi_{\mathrm{old}}(a_t\mid h_t)}.
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.363em;vertical-align:-0.936em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">old</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord">.</span></span></span></span></span></div>
+<p>Here, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>h</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">h_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> is the context before generating this token, and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mi>θ</mi></msub></mrow><annotation encoding="application/x-tex">\pi_\theta</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">d</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\pi_{\mathrm{old}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">old</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> denote the current and pre-update models. With token advantage <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">A_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>, the clipped objective is</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>L</mi><mi>t</mi></msub><mo>=</mo><mi>min</mi><mo>⁡</mo><mrow><mo fence="true">[</mo><msub><mi>r</mi><mi>t</mi></msub><msub><mi>A</mi><mi>t</mi></msub><mo separator="true">,</mo><mtext>  </mtext><mi mathvariant="normal">clip</mi><mo>⁡</mo><mo stretchy="false">(</mo><msub><mi>r</mi><mi>t</mi></msub><mo separator="true">,</mo><mtext> </mtext><mn>0.80</mn><mo separator="true">,</mo><mtext> </mtext><mi>u</mi><mo stretchy="false">)</mo><msub><mi>A</mi><mi>t</mi></msub><mo fence="true">]</mo></mrow><mo separator="true">,</mo></mrow><annotation encoding="application/x-tex">
+L_t=
+\min\left[
+r_tA_t,\;
+\operatorname{clip}(r_t,\,0.80,\,u)A_t
+\right],
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop">min</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">[</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop"><span class="mord mathrm">clip</span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">0.80</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">u</span><span class="mclose">)</span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;">]</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mpunct">,</span></span></span></span></span></div>
+<p>where <code>GRPO #1</code> uses <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><mn>1.20</mn></mrow><annotation encoding="application/x-tex">u=1.20</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">u</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1.20</span></span></span></span> and <code>GRPO #4</code> uses <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><mn>1.28</mn></mrow><annotation encoding="application/x-tex">u=1.28</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">u</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1.28</span></span></span></span>. Both use a lower bound of 0.80.</p>
+<p>For example, when <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mi>t</mi></msub><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">A_t&gt;0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span> and the probability ratio reaches 1.25, the objective term for <code>GRPO #1</code> is already clipped to <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1.20</mn><msub><mi>A</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">1.20A_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord">1.20</span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>, while <code>GRPO #4</code> still uses <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1.25</mn><msub><mi>A</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">1.25A_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord">1.25</span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>. Raising the upper bound lets the probability of a positive-advantage token increase further before clipping takes effect. Appendix B gives the complete objective.</p>
+<h4>Results Across Task Types</h4>
+<p>We compare the two models on the same tasks. Arrows in the table run from <code>GRPO #1</code> to <code>GRPO #4</code>, trained with the higher upper clipping bound.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Evaluation tasks</th>
+<th align="right">Task success</th>
+<th align="right">Interaction signature match</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Original email tasks</td>
+<td align="right">240/260 → 240/260</td>
+<td align="right">230/260 → 226/260</td>
+</tr>
+<tr>
+<td>Two-tool numerical email tasks</td>
+<td align="right">39/60 → 29/60</td>
+<td align="right">56/60 → 6/60</td>
+</tr>
+<tr>
+<td>Basic payment tasks</td>
+<td align="right">236/260 → 217/260</td>
+<td align="right">85/260 → 160/260</td>
+</tr>
+<tr>
+<td>Numerical payment tasks</td>
+<td align="right">43/60 → 41/60</td>
+<td align="right">51/60 → 57/60</td>
+</tr>
+<tr>
+<td>Basic scheduling tasks</td>
+<td align="right">228/260 → 228/260</td>
+<td align="right">117/260 → 130/260</td>
+</tr>
+<tr>
+<td>Argument-passing scheduling tasks</td>
+<td align="right">60/60 → 60/60</td>
+<td align="right">20/60 → 27/60</td>
+</tr>
+</tbody></table></div>
+<p>With the higher upper clipping bound, success on the original email tasks is unchanged, while performance on two-tool numerical comparison tasks declines substantially. Success falls from 39/60 to 29/60, and trajectories matching the interaction signature fall from 56/60 to 6/60. The adjustment preserves original-task completion but weakens performance when email tasks introduce new information requirements.</p>
+<p>The cross-domain results differ. All four payment and scheduling test sets show more trajectories matching the interaction signature. Basic payment success falls by 19 tasks and numerical payment success by two, while success on both scheduling sets remains unchanged. The model passes the signature check more often without completing more tasks.</p>
+<p>The same clipping adjustment increases interaction-signature matches on cross-domain tasks while worsening performance on two-tool email tasks. It changes how the model acts across tasks, with effects that depend on the specific task requirements.</p>
+<h4>Failure on a Two-Tool Task</h4>
+<p>In the following trajectory, <code>GRPO #4</code> first calls the send function, then asks the user for rules that should come from the sharing-policy tool, and finally abandons the task.</p>
+<pre><code class="language-text">retrieve_files({&quot;query&quot;:&quot;报告&quot;})
+→ retrieve_contacts({&quot;query&quot;:&quot;张伟&quot;})
+→ send_email({
+     &quot;file_id&quot;:&quot;report_target_1&quot;,
+     &quot;recipient_id&quot;:&quot;contact_target_1&quot;
+   })
+  Blocked: sharing rules missing; no email created
+→ ask_clarification({&quot;field&quot;:&quot;external_allowed&quot;})
+→ ask_clarification({&quot;field&quot;:&quot;confirmation_required&quot;})
+→ abstain({&quot;reason&quot;:&quot;无法确定外部共享和确认要求&quot;})
+→ finish({})
+</code></pre>
+<p>The model never queries the sharing policy in this trajectory. The evaluator flags premature action and a failed ledger-based action-condition check; the task also remains incomplete. The earlier successful <code>GRPO #3</code> trajectory queries the policy after a blocked send attempt; this recovery step never occurs here. This failure involves both query timing and the choice of information source.</p>
+<p>Both experiments change model behavior. The premature-action penalty substantially improves action order on the original email tasks, while wider clipping increases interaction-signature matches on cross-domain tasks. Performance on two-tool email tasks does not improve alongside these changes, showing that transfer depends on how the model handles the changed information requirements.</p>
+<h2 id="section-5-3">5.3 State Baselines and Random Seeds</h2>
+<p>We change the advantage calculation, constructing a baseline from facts marked known in the environment ledger before each action, then test whether this training preserves pre-write lookup.</p>
+<p>Training starts from Instruct. The inputs come from the original email tasks. We adjust how often each task is repeated according to its success rate over multiple sampled trajectories, increasing the share of tasks on which both success and failure occur. This produces 1,500 inputs. Each batch contains 32 inputs, with eight trajectories sampled per input, and training runs for five passes and 230 steps. The three runs reuse the same dataset and vary the data-loading random seed.</p>
+<p>Standard GRPO subtracts the group mean return from each trajectory&#39;s return. Here, we instead subtract a baseline calculated from the ledger before the action:</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>D</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><mo>=</mo><msub><mi>G</mi><mi>i</mi></msub><mo>−</mo><mn>1.5</mn><msub><mi>m</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">
+D_{it}=G_i-1.5m_{it}.
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">G</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7944em;vertical-align:-0.15em;"></span><span class="mord">1.5</span><span class="mord"><span class="mord mathnormal">m</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">.</span></span></span></span></span></div>
+<p>Here, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>G</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">G_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">G</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> is the terminal return of trajectory <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi></mrow><annotation encoding="application/x-tex">i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal">i</span></span></span></span>, and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>m</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">m_{it}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">m</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> counts resolved fields in the environment ledger before action <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi></mrow><annotation encoding="application/x-tex">t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6151em;"></span><span class="mord mathnormal">t</span></span></span></span>. For example, finding a file ID adds <code>file_id</code>; learning that external sharing is forbidden also adds one field, <code>external_allowed=false</code>. This counts resolved answers, whether they permit or prohibit an action. The coefficient remains fixed at 1.5.</p>
+<p>For example, consider a trajectory with terminal return 9. An action preceded by two resolved facts has <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><mo>=</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">D_{it}=6</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">6</span></span></span></span>; another preceded by four resolved facts has <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">D_{it}=3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span></span></span></span>. Actions within the same trajectory can therefore receive different return-minus-baseline differences.</p>
+<p class="formula-lead">During training, we divide these values by the standard deviation of the return-minus-baseline differences for all actions in the current batch:</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>A</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><mo>=</mo><mfrac><msub><mi>D</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><mrow><msub><mi>σ</mi><mi>D</mi></msub><mo>+</mo><mi>ϵ</mi></mrow></mfrac><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">
+A_{it}=\frac{D_{it}}{\sigma_D+\epsilon}.
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.1963em;vertical-align:-0.836em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3603em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">D</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">ϵ</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.836em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord">.</span></span></span></span></span></div>
+<p>Here, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">ϵ</span></span></span></span> is a small constant that prevents division by zero. Tokens in the same action-generation span share the same <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">A_{it}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>. This calculation does not subtract the group mean, so equal returns across a task&#39;s eight trajectories do not necessarily produce zero advantages.</p>
+<h4>Results Across Random Seeds</h4>
+<p>We use two-tool numerical comparison, single-tool numerical comparison, and table-lookup tasks to test whether each model queries the sharing policy before the first relevant write. Each task set contains 60 tasks.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Evaluation tasks</th>
+<th align="right">Seed 1</th>
+<th align="right">Seed 2</th>
+<th align="right">Seed 3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Two-tool numerical comparison</td>
+<td align="right">60/60</td>
+<td align="right">0/60</td>
+<td align="right">60/60</td>
+</tr>
+<tr>
+<td>Single-tool numerical comparison</td>
+<td align="right">60/60</td>
+<td align="right">0/60</td>
+<td align="right">60/60</td>
+</tr>
+<tr>
+<td>Table lookup</td>
+<td align="right">60/60</td>
+<td align="right">20/60</td>
+<td align="right">60/60</td>
+</tr>
+</tbody></table></div>
+<p>The models trained with seeds 1 and 3 perform pre-write lookup on every task in all three sets. The model trained with seed 2 does so on none of the numerical comparison tasks and only 20 table-lookup tasks. The same training setup produces markedly different query orders.</p>
+<p>To check evaluation variability when regenerating model outputs, we also evaluate the same standard-GRPO control model in each session. Its pre-write lookup results are shown below.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Evaluation tasks</th>
+<th align="right">Session paired with seed 1</th>
+<th align="right">Session paired with seed 2</th>
+<th align="right">Session paired with seed 3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Two-tool numerical comparison</td>
+<td align="right">33/60</td>
+<td align="right">37/60</td>
+<td align="right">36/60</td>
+</tr>
+<tr>
+<td>Single-tool numerical comparison</td>
+<td align="right">22/60</td>
+<td align="right">21/60</td>
+<td align="right">21/60</td>
+</tr>
+<tr>
+<td>Table lookup</td>
+<td align="right">53/60</td>
+<td align="right">53/60</td>
+<td align="right">53/60</td>
+</tr>
+</tbody></table></div>
+<p>The control model&#39;s counts differ by at most four tasks across sessions, far less than the gap from 60/60 to 0/60 between the state-baseline models. This supports attributing the main difference to the trained behavior rather than evaluation variability. State-baseline training can produce a model that fully preserves pre-write lookup, but this result is sensitive to the training seed.</p>
+<h4>Query Order on the Same Task</h4>
+<p>The following three trajectories come from the same two-tool numerical comparison task.</p>
+<p><strong>Seed 1</strong></p>
+<p>The model queries the sharing policy and email context before calling the send function.</p>
+<pre><code class="language-text">retrieve_files({&quot;query&quot;:&quot;报告&quot;})
+→ retrieve_contacts({&quot;query&quot;:&quot;张伟&quot;})
+→ retrieve_sharing_policy({&quot;query&quot;:&quot;报告&quot;})
+→ retrieve_email_context({&quot;query&quot;:&quot;张伟&quot;})
+→ retrieve_outbox({&quot;query&quot;:&quot;报告&quot;})
+→ send_email({
+     &quot;file_id&quot;:&quot;report_target_1&quot;,
+     &quot;recipient_id&quot;:&quot;contact_target_1&quot;
+   })
+→ finish(...)
+</code></pre>
+<p><strong>Seed 2</strong></p>
+<p>The model attempts to send immediately after finding the file and contact, but the environment blocks the call. Although it subsequently queries the sharing policy, it abandons the task, stating that it cannot determine whether sending is permitted. No email is sent.</p>
+<pre><code class="language-text">retrieve_files({&quot;query&quot;:&quot;报告&quot;})
+→ retrieve_contacts({&quot;query&quot;:&quot;张伟&quot;})
+→ send_email({
+     &quot;file_id&quot;:&quot;report_target_1&quot;,
+     &quot;recipient_id&quot;:&quot;contact_target_1&quot;
+   })
+  Blocked: sharing rules missing; no email created
+→ ask_clarification({&quot;field&quot;:&quot;file_id&quot;})
+→ retrieve_sharing_policy({})
+→ ask_clarification({&quot;field&quot;:&quot;recipient_id&quot;})
+→ retrieve_email_context({&quot;query&quot;:&quot;张伟&quot;})
+→ abstain({&quot;reason&quot;:&quot;无法确定是否允许发送给外部联系人&quot;})
+→ finish({})
+</code></pre>
+<p><strong>Seed 3</strong></p>
+<p>The model also obtains the sharing policy before calling the send function. Its tool-call order matches seed 1, with differences in some query arguments.</p>
+<pre><code class="language-text">retrieve_files({&quot;query&quot;:&quot;报告&quot;})
+→ retrieve_contacts({&quot;query&quot;:&quot;张伟&quot;})
+→ retrieve_sharing_policy({})
+→ retrieve_email_context({&quot;query&quot;:&quot;张伟&quot;})
+→ retrieve_outbox({})
+→ send_email({
+     &quot;file_id&quot;:&quot;report_target_1&quot;,
+     &quot;recipient_id&quot;:&quot;contact_target_1&quot;
+   })
+→ finish({})
+</code></pre>
+<h4>Training Logs and Behavioral Differences</h4>
+<p>The three runs have similar late-training mean scores and mean advantages, yet their pre-write lookup behavior differs sharply. The table reports the mean and across-step standard deviation over steps 121–230, alongside the two-tool task evaluation after training.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Measure</th>
+<th align="right">Seed 1</th>
+<th align="right">Seed 2</th>
+<th align="right">Seed 3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Training score</td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>8.668</mn><mo>±</mo><mn>0.878</mn></mrow><annotation encoding="application/x-tex">8.668\pm0.878</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">8.668</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">±</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.878</span></span></span></span></td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>8.638</mn><mo>±</mo><mn>0.977</mn></mrow><annotation encoding="application/x-tex">8.638\pm0.977</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">8.638</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">±</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.977</span></span></span></span></td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>8.736</mn><mo>±</mo><mn>0.831</mn></mrow><annotation encoding="application/x-tex">8.736\pm0.831</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">8.736</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">±</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.831</span></span></span></span></td>
+</tr>
+<tr>
+<td>Mean advantage</td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.741</mn><mo>±</mo><mn>0.440</mn></mrow><annotation encoding="application/x-tex">0.741\pm0.440</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.741</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">±</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.440</span></span></span></span></td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.755</mn><mo>±</mo><mn>0.453</mn></mrow><annotation encoding="application/x-tex">0.755\pm0.453</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.755</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">±</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.453</span></span></span></span></td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.702</mn><mo>±</mo><mn>0.458</mn></mrow><annotation encoding="application/x-tex">0.702\pm0.458</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.702</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">±</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.458</span></span></span></span></td>
+</tr>
+<tr>
+<td>Pre-write lookup on two-tool tasks</td>
+<td align="right">60/60</td>
+<td align="right">0/60</td>
+<td align="right">60/60</td>
+</tr>
+</tbody></table></div>
+<p>Training score and mean advantage do not reflect the differences in query order across the three models. Appendix C gives the training logs and recomputation procedure.</p>
+<p>We hypothesize that different trajectories sampled early in training are progressively reinforced, leading the models to adopt different action orders. This suggests screening runs across seeds with early behavioral tests and prioritizing models that already perform pre-write lookup, rather than selecting solely by training score. Whether this screening strategy works depends on whether early behavior predicts the final outcome.</p>
+<h2 id="section-5-4">5.4 Choosing Actions from Returned Information</h2>
+<p>The WebShop visit reward makes the model open the designated subpage on almost every task, raising a further question: does it adjust its actions to the returned content? In Ask-or-Act, we make the returned rules determine whether sending is allowed and whether confirmation is required, then test this capability with paired tasks. We use the model trained with seed 1 in the previous section. Chapter 7 gives the actual comparison protocol and readings for the WebShop text-treatment experiment.</p>
+<p>We construct three paired tests, each containing ten task pairs, for 60 tasks in total. Within each pair, the request, file, and contact are the same; the sharing policy or the user&#39;s confirmation reply differs.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Test</th>
+<th>First condition</th>
+<th>Second condition</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Is confirmation required?</td>
+<td>No confirmation needed; send directly</td>
+<td>Confirmation required; send after the user agrees</td>
+</tr>
+<tr>
+<td>Is sending permitted?</td>
+<td>Sending permitted</td>
+<td>Sending forbidden; abstain</td>
+</tr>
+<tr>
+<td>Does the user agree?</td>
+<td>User agrees; send</td>
+<td>User declines; abstain</td>
+</tr>
+</tbody></table></div>
+<p>All these tasks require the model to first retrieve the file, contact, and sharing policy information.</p>
+<pre><code class="language-text">retrieve_files
+→ retrieve_contacts
+→ retrieve_sharing_policy
+</code></pre>
+<p>The first two tests change the rules returned by the sharing-policy tool. In the third test, both conditions require confirmation, and the difference is the user&#39;s reply returned by <code>request_confirmation</code>. We check whether the model follows these returns when choosing to send, request confirmation, or abstain.</p>
+<p>The following recorded trajectories come from a pair of permission-to-send tasks. Both requests ask the model to send the report to Zhang Wei; the sharing policy permits sending in one task and forbids it in the other.</p>
+<pre><code class="language-text">Sending permitted
+
+retrieve_files({&quot;query&quot;:&quot;报告&quot;})
+→ retrieve_contacts({&quot;query&quot;:&quot;张伟&quot;})
+→ retrieve_sharing_policy({&quot;query&quot;:&quot;报告&quot;})
+→ send_email({
+     &quot;file_id&quot;:&quot;report_target_1&quot;,
+     &quot;recipient_id&quot;:&quot;contact_target_1&quot;
+   })
+→ finish(...)
+</code></pre>
+<pre><code class="language-text">Sending forbidden
+
+retrieve_files({&quot;query&quot;:&quot;报告&quot;})
+→ retrieve_contacts({&quot;query&quot;:&quot;张伟&quot;})
+→ retrieve_sharing_policy({&quot;query&quot;:&quot;报告&quot;})
+→ abstain({
+     &quot;reason&quot;:&quot;根据分享策略，无法将报告发送给外部联系人。&quot;
+   })
+→ finish(...)
+</code></pre>
+<p>Of the 60 tasks, 40 require sending and 20 require stopping. The model&#39;s results are shown below.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Check</th>
+<th align="right">Result</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Sends when required</td>
+<td align="right">40/40</td>
+</tr>
+<tr>
+<td>Abstains when required to stop</td>
+<td align="right">20/20</td>
+</tr>
+<tr>
+<td>Task success</td>
+<td align="right">60/60</td>
+</tr>
+<tr>
+<td>Interaction signature match</td>
+<td align="right">60/60</td>
+</tr>
+</tbody></table></div>
+<p>With the request held unchanged, the model changes its send-or-stop decision with the sharing rules and user replies, correctly following these content-dependent branches. The returned information directly determines the required action, and the paired tasks make that correspondence inspectable. We hypothesize that the explicit link between information and task requirements helps the model act on the returned content.</p>
+<nav class="chapter-navigation"><a href="chapter-4.en.html">Previous</a><a href="chapter-6.en.html">Next</a></nav></main><footer class="downloads"><a download href="downloads/TECHNICAL_REPORT_V2.en.pdf">Download full report PDF · 2.8 MB</a></footer><script>
+const languageLink=document.querySelector('[data-language]');
+const headings=[...document.querySelectorAll('main h1[id],main h2[id],main h3[id]')];
+function syncLanguage(){let id=location.hash.slice(1);const target=document.getElementById(id);if(!target||target.getBoundingClientRect().top<0||target.getBoundingClientRect().top>innerHeight){for(const h of headings){if(h.getBoundingClientRect().top<240)id=h.id;else break;}}languageLink.href=languageLink.dataset.language+(id?'#'+id:'');}
+addEventListener('scroll',syncLanguage,{passive:true});addEventListener('hashchange',syncLanguage);addEventListener('load',syncLanguage);document.fonts.ready.then(syncLanguage);syncLanguage();
+for(const pre of document.querySelectorAll('pre')){const code=pre.querySelector('code');if(!code)continue;const button=document.createElement('button');button.className='copy-code';button.textContent=document.documentElement.lang==='en'?'Copy':'复制';button.setAttribute('aria-label',button.textContent+' code');button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(code.textContent);button.textContent=document.documentElement.lang==='en'?'Copied':'已复制';}catch{button.textContent=document.documentElement.lang==='en'?'Select to copy':'请选中复制';}});pre.append(button);}
+if(innerWidth<=900){document.querySelector('.contents-panel details')?.removeAttribute('open');}
+</script></body></html>

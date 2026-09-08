@@ -1,0 +1,603 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Appendix D. Public Implementation, Statistics, and Resources</title><link rel="stylesheet" href="report.css"><style>
+html{scroll-behavior:smooth;scroll-padding-top:2rem}body{font-family:Arial,"Microsoft YaHei",sans-serif;font-size:16px;line-height:1.85;background:#fff;color:#303030;margin:0}
+main,body.quick main{box-sizing:border-box;max-width:860px;margin:0 0 0 304px;padding:34px 48px 72px}
+.sitebar{margin-left:304px;max-width:860px;box-sizing:border-box;border-bottom:1px solid #ddd;padding:20px 48px 12px;display:flex;gap:22px;align-items:center;flex-wrap:wrap;font:400 14px/1.5 Arial,sans-serif}
+.sitebar{justify-content:flex-end}.sitebar a{color:#164e7a;text-decoration:none}.sitebar .brand{display:none}.sitebar a:hover{text-decoration:underline}
+.downloads{margin-left:304px;max-width:860px;box-sizing:border-box;font:14px/1.8 Arial,sans-serif;padding:22px 48px 36px;color:#666;border-top:1px solid #dce3e9;display:flex;gap:20px;flex-wrap:wrap}.author-credit{font-size:14px;font-weight:400;color:#555;margin:-10px 0 32px}
+.contents-panel{box-sizing:border-box;position:fixed;left:0;top:0;bottom:0;width:304px;overflow:auto;background:#142e49;border-right:1px solid #142e49;padding:28px 18px;font:14px/1.6 Arial,"Microsoft YaHei",sans-serif;color:#fff}
+.contents-panel a{display:block;color:#dbe6f0;text-decoration:none;padding:7px 10px}.contents-panel a:hover{background:#203e5c;color:#fff}.contents-panel a[aria-current=page]{background:#294b6c;color:#fff;border-left:2px solid #c0d7eb;padding-left:8px}
+.contents-panel summary{font-weight:400;cursor:pointer;margin:0 10px 20px;font-size:17px;list-style:none}.contents-panel .subsection{padding-left:22px;font-size:14px}.contents-panel .subsection:hover{padding-left:22px}
+h1,h2,h3,h4,h5,h6,strong,b,th{font-weight:400}h1{font-size:30px;line-height:1.45;color:#222;margin:0 0 26px}h2{font-size:24px;margin:38px 0 18px;color:#222}h3{font-size:20px;margin:30px 0 14px;color:#333}h4,h5{font-size:17px;color:#333}h2,h3,h4{scroll-margin-top:2rem;line-height:1.5}p{overflow-wrap:break-word}a{color:#164e7a;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}a:hover{color:#0b3558}a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid #608cb5;outline-offset:3px}
+.formula,.katex-display{max-width:100%;overflow-x:auto;overflow-y:hidden}pre{position:relative;overflow:auto;white-space:pre;max-width:100%;padding-top:38px}pre code{font-size:14px;white-space:pre}
+.copy-code{position:absolute;right:7px;top:5px;font:14px/1.5 Arial,sans-serif;border:1px solid #ccc;background:#fff;color:#555;border-radius:2px;cursor:pointer;padding:2px 9px}
+.table-wrap{overflow-x:auto;max-width:100%}table{font-size:14px}th,td{border-color:#ddd}th{background:#f3f3f3}pre,.code-list td{background:#f7f7f7;border-color:#ddd}.code-list{table-layout:auto}.code-list pre code{font-size:14px}.code-list .code-lines{font-size:12px;color:#777}.code-list th{color:#555}blockquote{border-color:#ccc;background:#f8f8f8}.chapter-navigation{border-top:1px solid #ddd;margin-top:48px;padding-top:20px;display:flex;justify-content:space-between;gap:24px;font-size:14px}
+@media(max-width:900px){main,body.quick main{margin:0 auto;padding:28px 24px 60px}.sitebar,.downloads{margin:0;padding-left:24px;padding-right:24px}.sitebar .brand{display:block;margin-right:auto}.contents-panel{position:static;width:auto;max-height:none;padding:14px 24px;border:0;border-bottom:1px solid #ddd}.contents-panel summary{font-size:14px;margin:0;list-style:revert}.contents-panel nav{max-height:45vh;overflow:auto}.contents-panel a{padding:6px 8px}}
+@media(max-width:600px){.sitebar{gap:12px;padding:12px 16px;font-size:14px}.sitebar .brand{width:100%}main,body.quick main{padding:24px 16px 60px}.downloads{padding:10px 16px;gap:12px}.contents-panel{padding:12px 16px}h1{font-size:26px}h2{font-size:22px}.code-list{min-width:620px}pre code{font-size:14px}.table-wrap th:first-child,.table-wrap td:first-child{background:#f5f5f5}.table-wrap th:first-child{background:#eee}}
+@media print{.sitebar,.downloads,.contents-panel,.copy-code{display:none!important}main{margin:0!important;max-width:none}body{font-size:10pt}pre{padding-top:9px}}
+</style></head><body class="full"><header class="sitebar"><a data-language="appendix-d.zh-CN.html" href="appendix-d.zh-CN.html" lang="zh-CN">中文</a></header><aside class="contents-panel"><details open><summary>Agent Reinforcement Learning</summary><nav><a href="quick.en.html">Research overview</a><a href="overview.en.html">Abstract</a><a href="chapter-1.en.html">Chapter 1. Evidence for Learned Target Behavior</a><a href="chapter-2.en.html">Chapter 2. Ask-or-Act Tasks and Evaluation</a><a href="chapter-3.en.html">Chapter 3. SFT Training and Generalization</a><a href="chapter-4.en.html">Chapter 4. SFT-GRPO: Behavioral Change During Continued Training</a><a href="chapter-5.en.html">Chapter 5. GRPO Starting from Instruct</a><a href="chapter-6.en.html">Chapter 6. Generalization Differences and Behavioral Diagnosis</a><a href="chapter-7.en.html">Chapter 7. Visit Rewards and Content Responses in WebShop</a><a href="chapter-8.en.html">Chapter 8. Reward Signals in Group-Relative Training</a><a href="chapter-9.en.html">Chapter 9. Related Work</a><a href="chapter-10.en.html">Chapter 10. Diagnosing Behavior and Training in Agent RL</a><a href="appendix-a.en.html">Appendix A. The Ask-or-Act System and Action Chains</a><a href="appendix-b.en.html">Appendix B. Rewards, Estimators, and Implementation</a><a href="appendix-c.en.html">Appendix C. Supplementary Experiments and Diagnostics</a><a href="appendix-d.en.html" aria-current="page">Appendix D. Public Implementation, Statistics, and Resources</a><a class="subsection" href="#appendix-d">Appendix D. Public Implementation, Statistics, and Resources</a><a href="references.en.html">References / 参考文献</a></nav></details></aside><main><h2 id="appendix-d">Appendix D. Public Implementation, Statistics, and Resources</h2>
+<h3>D.1 Public Implementation and Statistical Rules</h3>
+<p>The experiment code is public. Raw experimental trajectories, training logs, and model checkpoints are not distributed with this report.</p>
+<h4>Task Generation and Environment Replay</h4>
+<p><a href="https://github.com/jackychris/askact-evalrl/tree/f30851b894d9c52aab8a15edabf883ce4088fc78">AskAct-EvalRL</a> publishes task generation, simulated environments, evaluation, trajectory replay, and training interfaces. The report uses commit <code>f30851b894d9c52aab8a15edabf883ce4088fc78</code>.</p>
+<p>Within the public repository, <code>askact/registry.py</code> and the environment modules define tasks, <code>askact/splits.py</code> defines data partitions, <code>askact/evaluator.py</code> computes behavioral fields, and <code>askact/replay.py</code> implements trajectory replay. Training interfaces are in <code>training/</code>, and analysis tools are in <code>tools/</code>.</p>
+<p>The fixed code retains historical explanatory comments. The local-discount explanation of GiGPO in <code>askact/webshop_reward.py</code> should be read with the complete advantage calculation in Section 8.2. The old same-prefix description in <code>research/tools/webshop_intervene.py</code> is corrected by the actual treatment protocol in Section 7.1. The state-anchor comment referring to blocked writes should likewise be read as all actions with <code>blocked_reason</code>, as defined in B.2. The code files remain unchanged.</p>
+<p>With Python 3.12 or later, run the rule-based policy from the repository directory:</p>
+<pre><code class="language-bash">python -m askact.run_suite --agent rule
+</code></pre>
+<p>This command generates rule-policy evaluation results. Readers who run a model themselves can use the public replay implementation to check their own generated trajectories. The following sections document the report&#39;s statistical rules and numerical index.</p>
+<h4>Two Ways to Compute Interaction-Signature Results</h4>
+<p>The interaction-signature check (<code>signature_match</code>) compares the trajectory&#39;s clarification, confirmation, and terminal action against the task requirements. Results can be aggregated directly from evaluation output or recomputed by replaying the trajectories.</p>
+<p><strong>Aggregate per-task results.</strong></p>
+<p>Select the relevant tasks from <code>tasks</code> in the evaluation summary, count records whose <code>signature_match</code> is true, and retain the IDs of the passing tasks. For example, this Python code counts an already selected set of tasks:</p>
+<pre><code class="language-python">passed_task_ids = [
+    row[&quot;task_id&quot;]
+    for row in selected_tasks
+    if row[&quot;signature_match&quot;]
+]
+signature_match_count = len(passed_task_ids)
+</code></pre>
+<p>When aggregating all tasks, compare the count with the summary field <code>metrics.signature_match_count</code>. Retaining task IDs also lets us check whether two models pass the same tasks.</p>
+<p><strong>Recompute after replay.</strong></p>
+<p>Reconstruct each task from the trajectory&#39;s <code>domain</code> and <code>task_id</code>, restore the request template specified by <code>surface_id</code>, and execute the recorded actions in a fresh environment.</p>
+<p><code>observed_signature</code> extracts accepted clarification fields, whether confirmation was requested, and the realized write, abstain, or no-op terminal from the replayed trace. <code>expected_signature</code> constructs the required signature from the task rules. The trajectory passes when the two functions return equal values. (<a href="https://github.com/jackychris/askact-evalrl/blob/f30851b894d9c52aab8a15edabf883ce4088fc78/askact/evaluator.py">GitHub</a>)</p>
+<p>The default <code>python -m askact.replay</code> command checks the nine evaluation fields and the trace hash. Recomputing the signature additionally requires calling the two functions above on the replayed result.</p>
+<h4>Pre-Write Policy Lookup</h4>
+<p>For email tasks requiring a sharing-policy lookup, we scan the recorded actions for the first <code>retrieve_sharing_policy</code> call and the first call to either <code>create_draft</code> or <code>send_email</code>. A write attempt counts toward this position even if the environment blocks it.</p>
+<p>Each trajectory receives 1 or 0 according to the table. The rate divides the number receiving 1 by the number of eligible tasks in the evaluation.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Calls in the trajectory</th>
+<th align="right">Count</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Lookup precedes the first write attempt</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td>Lookup occurs, with no write attempt</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td>First write attempt precedes lookup</td>
+<td align="right">0</td>
+</tr>
+<tr>
+<td>No lookup, regardless of whether a write is attempted</td>
+<td align="right">0</td>
+</tr>
+</tbody></table></div>
+<p>A trajectory with a lookup but no write can receive 1 because the task may require stopping after checking the policy. For example, ten <code>SFT #1</code> trajectories in the two-tool email test end legally without writing, having already queried the sharing policy. Together with the other 50 trajectories that query before writing, they yield 60/60. <code>SFT-GRPO #1</code> yields 0/60. For <code>GRPO #1</code>, 58 trajectories satisfy the rule and two lack the lookup, yielding 58/60.</p>
+<p>Premature action (<code>premature_action</code>) and evidence sufficiency at write time (<code>evidence_sufficient_at_write</code>) use the evaluator&#39;s judgments directly. These fields check whether write attempts satisfy the action conditions specified by the task, while the pre-write lookup statistic checks the order of the tool calls above. With no write attempt, premature action is <code>false</code>, and evidence sufficiency at write time may be <code>null</code>.</p>
+<hr>
+<h4>Differences Between Summaries and Trajectory Replay</h4>
+<p>A state-baseline evaluation archived on August 13, 2026 has inconsistencies between its summary and associated trajectories. Replaying all 440 trajectories with the fixed implementation reproduces their saved evaluation fields and trace hashes. The following task groups nevertheless disagree with the summary.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Test</th>
+<th align="right">Summary: success / signature</th>
+<th align="right">Replay: success / signature</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Two-tool numerical comparison</td>
+<td align="right">17/60 / 7/60</td>
+<td align="right">18/60 / 3/60</td>
+</tr>
+<tr>
+<td>Table lookup</td>
+<td align="right">26/60 / 13/60</td>
+<td align="right">36/60 / 27/60</td>
+</tr>
+<tr>
+<td>Single-tool numerical comparison</td>
+<td align="right">19/60 / 7/60</td>
+<td align="right">16/60 / 4/60</td>
+</tr>
+</tbody></table></div>
+<p>The original-task signature count is 227/260 in both sources, but six task-level match flags differ. Replay agrees with the fields in each trajectory bundle; the table shows differences between their aggregate and the separately saved summary file. The cause remains unresolved. Both readings are shown; trajectory-level interpretation uses replay. This evaluation remains separate from the three seed runs in Section 5.3.</p>
+<h4>Ask-or-Act number index</h4>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Claim or result</th>
+<th>Main location</th>
+<th>Quantity and statistical unit</th>
+<th>Recomputation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Task count</strong></td>
+<td>§2.2; Appendix A</td>
+<td>Original email 260; two-tool and numerical email variants 440; information-source-shift email 440; payments 320; scheduling 320; 1,780 tasks in total</td>
+<td>Enumerate valid tasks in the pinned task registry</td>
+</tr>
+<tr>
+<td><strong>Training tasks, changed people and files, and clarification–confirmation paired tests</strong></td>
+<td>§3.2; §4.1</td>
+<td>In that order, <code>SFT #1</code> success counts are 178/192, 44/48, 20/20; interaction-signature counts are 146/192, 36/48, 20/20. For <code>SFT-GRPO #1</code>, both are 192/192, 48/48, 20/20</td>
+<td>Aggregate per-task results in evaluation-summary <code>tasks[]</code>, or replay trajectories to recompute judgments</td>
+</tr>
+<tr>
+<td><strong>Action order under original clarification–confirmation requirements</strong></td>
+<td>§4.1; §6.1</td>
+<td>Premature action under <code>SFT #1</code>, <code>SFT-GRPO #1</code>, and <code>GRPO #1</code> is 19/20, 0/20, and 20/20 respectively</td>
+<td>Replay the same 10 clarification-only controls and 10 clarification–confirmation composition tasks; count <code>premature_action</code></td>
+</tr>
+<tr>
+<td><strong>Passing returned identifiers in scheduling</strong></td>
+<td>§5.1; §6.1</td>
+<td>In the same model order, actual passing is 30/30, 1/30, 6/30; success is 28/30, 9/30, 30/30. All three query groups on all 30 tasks</td>
+<td>Select the dependency-required branch; check whether the member query&#39;s <code>handle</code> uses an earlier group response&#39;s <code>owner_handle</code>, and count final booking success separately</td>
+</tr>
+<tr>
+<td><strong>Action order in two-tool email tasks</strong></td>
+<td>§4.2</td>
+<td><code>SFT #1</code> → <code>SFT-GRPO #1</code>: success remains 50/60 and signature 30/60; pre-write lookup changes 60/60 → 0/60, premature action 0/60 → 60/60</td>
+<td>Use replay fields for success and premature action; compute signatures by either method above and pre-write lookup from call order</td>
+</tr>
+<tr>
+<td><strong>Whether the passing tasks are the same</strong></td>
+<td>§4.2</td>
+<td>The two models above succeed on the same 50 tasks and pass the signature check on the same 30 tasks</td>
+<td>Separately select tasks with <code>success=true</code> and <code>signature_match=true</code>, then compare ID sets</td>
+</tr>
+<tr>
+<td><strong>Two-tool email performance after direct GRPO</strong></td>
+<td>§5.1</td>
+<td><code>GRPO #1</code>: success 39/60, signature 56/60, pre-write lookup 58/60, premature action 60/60, sufficient evidence at write time 0/60</td>
+<td>Read success, premature action, and evidence sufficiency after replay; separately compute signatures and pre-write lookup</td>
+</tr>
+<tr>
+<td><strong>Tool-source cues and pre-write lookup</strong></td>
+<td>§5.1; §6.2</td>
+<td>Adding a source cue raises eventual tool calls under <code>GRPO #1</code> from 12/60 to 22/60, with pre-write calls at 0/60 in both conditions. <code>SFT #1</code> and <code>GRPO #1–#4</code> together produce 0/600 pre-write calls across the cued and uncued tasks</td>
+<td>Count eventual and pre-write calls separately for each model and task set, each with a denominator of 60 tasks</td>
+</tr>
+<tr>
+<td><strong>Choosing actions from returned content</strong></td>
+<td>§5.4</td>
+<td>Success 60/60, signature 60/60; actions executed on 40/40 action-required tasks, no write on 20/20 stop-required tasks</td>
+<td>Read the required branch from the task definition, check replayed actions and terminal state, and compute the signature</td>
+</tr>
+<tr>
+<td><strong>Two-tool email performance with a premature-action penalty</strong></td>
+<td>§5.2</td>
+<td><code>GRPO #3</code>: success 48/60, signature 24/60, premature action 60/60, pre-write lookup 0/60</td>
+<td>Read success and premature-action fields after replay; separately compute signatures and pre-write lookup</td>
+</tr>
+<tr>
+<td><strong>Performance across task types with higher clipping</strong></td>
+<td>§5.2</td>
+<td><code>GRPO #1</code> → <code>GRPO #4</code>; each pair gives success and signature counts. Original email: 240/260, 230/260 → 240/260, 226/260. Basic payments and scheduling: 464/520, 202/520 → 445/520, 290/520. Numerical payments: 43/60, 51/60 → 41/60, 57/60. Scheduling parameter passing: 60/60, 20/60 → 60/60, 27/60. Two-tool numerical email: 39/60, 56/60 → 29/60, 6/60</td>
+<td>Aggregate evaluation results by task type; the basic payments-and-scheduling entry combines 260 tasks from each domain</td>
+</tr>
+<tr>
+<td><strong>Performance after adding new-tool training tasks</strong></td>
+<td>§4.3</td>
+<td>On original email tasks, <code>SFT-GRPO #1</code> and <code>SFT-GRPO #2</code> both succeed on 260/260, with signature counts of 260/260 and 250/260. On two-tool tests, both have success 50/60, signature 30/60, pre-write lookup 0/60, and premature action 60/60. When one tool returns both file size and threshold, <code>SFT-GRPO #2</code> has success 49/60, signature 29/60, and pre-write lookup 0/60</td>
+<td>Aggregate original-task and two-tool results for both models; the single-tool numerical test includes only <code>SFT-GRPO #2</code></td>
+</tr>
+<tr>
+<td><strong>Four combinations of request wording and query order</strong></td>
+<td>§3.3</td>
+<td>Two-tool success and signature counts: repeated single demonstration 48/60, 20/60; additional query order 10/60, 10/60; four request wordings 11/60, 8/60; both variations 10/60, 4/60</td>
+<td>Separately aggregate success and signature results from <code>tasks[]</code> in the four evaluation summaries</td>
+</tr>
+<tr>
+<td><strong>SFT epochs and task completion</strong></td>
+<td>§3.3; C.1</td>
+<td>For one, two, and three epochs respectively: original-task success 260/260, 260/260, 250/260; clarification-and-confirmation composition 10/10, 10/10, 0/10; two-tool tasks 10/60, 0/60, 10/60</td>
+<td>Select the relevant tasks from each epoch&#39;s evaluation summary and count successes</td>
+</tr>
+<tr>
+<td><strong>Pre-write lookup across random seeds with the same settings</strong></td>
+<td>§5.3; C.1</td>
+<td>In the order of two-tool numerical, single-tool numerical, and table-lookup tasks: seed 1 has 60/60, 60/60, 60/60; seed 2 has 0/60, 0/60, 20/60; seed 3 has 60/60, 60/60, 60/60</td>
+<td>For each trained model, count pre-write lookup separately in the three task types, with 60 tasks each</td>
+</tr>
+<tr>
+<td><strong>Test results with a linear state baseline</strong></td>
+<td>§8.2</td>
+<td>Each pair gives success and signature counts. Two-tool numerical: 10/60, 10/60; single-tool numerical: 15/60, 10/60; table lookup: 24/60, 32/60; rules moved to a new tool: 52/60, 35/60; policy-identifier cue added: 51/60, 43/60. Pre-write lookup is 0/60 on all five task types</td>
+<td>Aggregate success and signature results; count pre-write lookup from recorded call order</td>
+</tr>
+<tr>
+<td><strong>Pre-write lookup with a prompt-group state baseline</strong></td>
+<td>§8.2</td>
+<td>In the order of two-tool numerical, single-tool numerical, and table-lookup tasks: <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">k=2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span></span></span></span> gives 0/60, 0/60, 20/60; <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">k=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span> gives 0/60, 0/60, 34/60</td>
+<td>Count pre-write lookup separately for the three task types under each setting, with 60 tasks each</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h4>Recomputation rules for WebShop output</h4>
+<p><strong>Prompt groups and tied groups.</strong> Read <code>rows</code> from the evaluation file and group records by task goal (<code>goal</code>), with eight trajectories per group. A group is tied when its highest and lowest returns differ by less than <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>10</mn><mrow><mo>−</mo><mn>9</mn></mrow></msup></mrow><annotation encoding="application/x-tex">10^{-9}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">9</span></span></span></span></span></span></span></span></span></span></span></span>. For these evaluations of the external correction, its control, and VPR, excluding groups whose common environment return (<code>env_reward</code>) is 0 or 1 leaves the intermediate tied groups.</p>
+<p><strong>Repeated action sequences.</strong> Compare the <code>actions</code> arrays of all eight trajectories in a group. Count repetition only when the action order and every action string match exactly. The comparison retains arguments and is case-sensitive.</p>
+<p><strong>Required-option matching rate.</strong> Within intermediate tied groups, sum the matched required options (<code>options_selected</code>) and divide by the sum of required options (<code>options_required</code>):</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>Required-option matching rate</mtext><mo>=</mo><mfrac><mtext>Total matched required options</mtext><mtext>Total required options</mtext></mfrac><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">
+\text{Required-option matching rate}
+=\frac{\text{Total matched required options}}{\text{Total required options}}.
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord text"><span class="mord">Required-option matching rate</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.2519em;vertical-align:-0.8804em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3714em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord">Total required options</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord">Total matched required options</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.8804em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord">.</span></span></span></span></span></div>
+<p>For example, the control model in C.2 matches 735 required options out of 2,024 required by the tasks of these trajectories, giving 36.3%.</p>
+<p><strong>Share of trajectories matching no required option.</strong> Again starting from intermediate tied groups, retain trajectories with <code>options_required &gt; 0</code> and compute the share with <code>options_selected = 0</code>:</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>Complete required-option omission rate</mtext><mo>=</mo><mfrac><mtext>Trajectories matching no required option</mtext><mtext>Trajectories requiring at least one option</mtext></mfrac><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">
+\text{Complete required-option omission rate}
+=\frac{\text{Trajectories matching no required option}}{\text{Trajectories requiring at least one option}}.
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord text"><span class="mord">Complete required-option omission rate</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.2519em;vertical-align:-0.8804em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3714em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord">Trajectories requiring at least one option</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord">Trajectories matching no required option</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.8804em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord">.</span></span></span></span></span></div>
+<p>For the control model in C.2, this share is 713/1,352, or 52.7%. This statistic counts trajectories; the preceding statistic counts options.</p>
+<p><strong>Task Matching Across Text-Treatment Conditions.</strong> For each text treatment, match the star-rating reference run and treatment run by <code>goal</code>. Retain pairs only when the task has output under both conditions and the treatment-specific <code>fired</code> condition holds. This field checks whether the specified intervention actually fired.</p>
+<p>Then compare the saved purchase Boolean:</p>
+<pre><code class="language-python">control[&quot;bought_target&quot;] != treatment[&quot;bought_target&quot;]
+</code></pre>
+<p>Each run assigns its own <code>target</code>, and some paired targets differ in §7.2. This comparison checks the Boolean for purchasing each run&#39;s own target. Complete purchased-product identities and prefix consistency are separate record checks.</p>
+<p>Divide the number of pairs for which this comparison is true by the eligible pair count for that treatment to obtain the change rate of this purchase Boolean. Eligibility is determined separately for each treatment, so denominators can differ.</p>
+<h4>Zero Advantage and Zero Policy-Gradient Loss</h4>
+<p>First select the Ask-or-Act <code>group-phi-k0</code> segment of <code>chain-k0-gate.log</code> by launch markers, then deduplicate by <code>training/global_step</code>, retaining the first record for each step. The later WebShop run restarts at step 1 and is not part of this denominator. Count a step when all four fields below are exactly zero:</p>
+<pre><code class="language-text">critic/advantages/mean = 0
+critic/advantages/max  = 0
+critic/advantages/min  = 0
+actor/pg_loss          = 0
+</code></pre>
+<p>These fields indicate the mean, maximum, and minimum reward advantage, together with the policy-gradient loss. Of 230 optimizer steps in Ask-or-Act <code>group-phi-k0</code>, 136 meet the criterion. The longest consecutive interval runs from step 130 through step 164, totaling 35 steps. Mean <code>actor/kl_loss</code> over these 136 steps is 0.0827. The KL regularization term remains present when reward advantage and policy-gradient loss are zero.</p>
+<hr>
+<h4>WebShop and group-relative-credit number index</h4>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Claim or result</th>
+<th>Main location</th>
+<th>Quantity and statistical unit</th>
+<th>Recomputation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Subpage visits before purchase</strong></td>
+<td>§7.2</td>
+<td>Terminal reward only 94/500; added visit reward 498/499; visit reward gated on full-score purchase 495/498. Each valid task contributes one greedy trajectory</td>
+<td>Count pre-purchase visits separately within each model&#39;s valid trajectories, using its own valid-task denominator</td>
+</tr>
+<tr>
+<td><strong>Nonempty returned page content</strong></td>
+<td>§7.2</td>
+<td>Terminal reward only 72/80; added visit reward 490/494</td>
+<td>Select replayable trajectories with a qualifying visit, then count those receiving nonempty model-visible content at least once</td>
+</tr>
+<tr>
+<td><strong>Replacing attributes on the rewarded subpage</strong></td>
+<td>§7.2</td>
+<td>For the model with added visit reward, attribute-conflict treatment and the star-rating reference differ in the purchase Boolean on 0/198 pairs, action arrays on 18/198, and designated targets on 2/198. Treatment modifies the subpage repeatedly in 56/198 trajectories</td>
+<td>Run each condition from the initial page; match by <code>goal</code> and retain valid, fired pairs. Compare <code>bought_target</code>, <code>actions</code>, <code>target</code>, and treatment counts separately</td>
+</tr>
+<tr>
+<td><strong>Replacing product-detail content</strong></td>
+<td>§7.2</td>
+<td>For the model with added visit reward, setting price to three times the budget gives 9/199 pairs with different purchase Booleans; an explicit noncompliance note gives 50/199</td>
+<td>Match each treatment with the star-rating reference and compare saved <code>bought_target</code> values</td>
+</tr>
+<tr>
+<td><strong>Model with visit reward gated on full-score purchase</strong></td>
+<td>§7.2</td>
+<td>Pairs with different purchase Booleans: conflicting subpage attributes 15/197; subpage noncompliance note 3/197; detail-page noncompliance note 8/199</td>
+<td>Pair each content treatment with this model&#39;s star-rating reference run and compare <code>bought_target</code> using the same rule</td>
+</tr>
+<tr>
+<td><strong>Product-ID-format clicks after a visit</strong></td>
+<td>§7.2</td>
+<td>Terminal reward only → visit reward gated on full-score purchase: trajectories with a product-ID-format click after the first visit, 1,166/1,169 → 4/3,970; clicks on a previously unseen ID of that format, 672/1,169 → 2/3,970</td>
+<td>Sample eight trajectories per task at temperature 1.0; among trajectories visiting a subpage, count both click types using the public script&#39;s ID-format rule. Option labels matching that format may also be counted</td>
+</tr>
+<tr>
+<td><strong>Subpage-matched attribute share of purchased products</strong></td>
+<td>§7.2</td>
+<td>Mean score share for all target attributes 39.3996%; mean share for subpage-exclusive target attributes 10.0414%, median 0; 330 of 483 tasks have no subpage-exclusive target attribute</td>
+<td>Use 483 replayable tasks from the terminal-reward-only model and their purchased products; normalize each share by its task&#39;s scoring denominator, then take an unweighted mean</td>
+</tr>
+<tr>
+<td><strong>Matched-attribute location reallocations</strong></td>
+<td><a href="appendix-b.en.html#matched-attribute-reallocation">B.1</a></td>
+<td>Removing duplicate information from titles and placing scored attributes unmatched in the checked texts on the subpage gives 27.2498%; also relocating title-only information gives 29.7412%</td>
+<td>Keep product attributes and scoring rules fixed, and recombine existing score components by information location; these results are arithmetic derivations</td>
+</tr>
+<tr>
+<td><strong>Model without external correction (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>κ</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\kappa=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">κ</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span>)</strong></td>
+<td>§8.1–§8.2</td>
+<td>Of 500 prompt groups, 403 are tied, including 235 with eight identical action sequences. Of 197 intermediate tied groups, 121 have identical action sequences. Within intermediate tied groups, required-option matching is 735/2,024 and the share of trajectories matching no required option is 713/1,352</td>
+<td>Group by task goal into eight trajectories and apply the tie, action-repetition, and option rules above</td>
+</tr>
+<tr>
+<td><strong>Model with external correction (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>κ</mi><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">\kappa=3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">κ</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span></span></span></span>)</strong></td>
+<td>§8.2</td>
+<td>Of 500 prompt groups, 461 are tied, including 299 with eight identical action sequences. There are 236 intermediate tied groups, with required-option matching of 736/2,288 and a share of trajectories matching no required option of 1,024/1,600</td>
+<td>Apply the same grouping and statistical rules as for the control</td>
+</tr>
+<tr>
+<td><strong>Option completion under VPR</strong></td>
+<td>§8.2</td>
+<td>Within intermediate tied groups, required-option matching is 695/2,112 and the share of trajectories matching no required option is 879/1,464</td>
+<td>Matching counts required options; omission counts trajectories requiring at least one option</td>
+</tr>
+<tr>
+<td><strong>Simultaneously zero reward advantage and policy-gradient loss</strong></td>
+<td>§8.1</td>
+<td>Of 230 optimizer steps, 136 meet the criterion. The longest consecutive interval is steps 130–164, totaling 35 steps. Mean KL loss across these 136 steps is 0.0827</td>
+<td>Select the Ask-or-Act run segment, deduplicate by <code>training/global_step</code>, and check whether all four fields above are zero</td>
+</tr>
+<tr>
+<td><strong>50-prompt evaluations of four models</strong></td>
+<td>C.2</td>
+<td>Tied groups: GiGPO seed 1, 40/50; seed 2, 45/50; prompt-group baseline (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">k=2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span></span></span></span>), 42/50; model with visit reward gated on full-score purchase, 39/50</td>
+<td>Group each model&#39;s trajectories by task goal into 50 groups of eight and count tied groups</td>
+</tr>
+<tr>
+<td><strong>Trajectory overlap in the prompt-group baseline</strong></td>
+<td>C.2</td>
+<td>Mean direct anchor-trajectory weight 0.739; mean effective weight including overlap in the overall mean 0.951. In approximately 75% of trajectory–anchor pairs, all seven other trajectories visited the anchor</td>
+<td>Use the C.2 weight formulas with <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mn>7</mn><mo separator="true">,</mo><mi>k</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">N=7,k=2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord">7</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span></span></span></span> and check the logged weight summaries</td>
+</tr>
+<tr>
+<td><strong>Coverage of three external tables</strong></td>
+<td>C.2</td>
+<td>Fine: 55 entries, 33,544 action occurrences, 50/153 prompt groups receiving different table values; intermediate: 20, 33,734, 63/153; coarse: 9, 33,827, 126/153</td>
+<td>Read entries and action counts from JSON for three groupings of the same trajectories; read counts of groups receiving different values from log summaries</td>
+</tr>
+<tr>
+<td><strong>Token Length and Mean Advantage</strong></td>
+<td>§8.2</td>
+<td>Of 230 log records from handwritten state-baseline seed 3, the first 83 have a median length ratio of 2.49 and range 1.90–9.18; token-mean minus sequence-mean advantage is positive 42 times and negative 41 times, with mean approximately −0.00301</td>
+<td>Read trainable lengths, <code>m_seq</code>, and <code>m_tok</code> from <code>chain-phi-seed-20260813.log</code>; compute each length ratio and difference of means. This difference is not a gradient direction</td>
+</tr>
+<tr>
+<td><strong>Probability differences between sampling and training</strong></td>
+<td>C.2</td>
+<td>Steps 1–25 → 51–75: mean Pearson correlation 0.9770 → 0.9600; mean absolute difference 0.00259 → 0.00193; median per-step maximum difference 0.595 → 0.486; median sequence-level <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>χ</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\chi^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0085em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal">χ</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span> 0.0561 → 0.0622. Median sequence-to-token diagnostic ratio across 66 steps is 39.5</td>
+<td>Aggregate logs using the windows and rules in C.2; use only steps with positive token-level values and finite ratios for the ratio diagnostic</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h3>D.2 Training Configuration and Resource Use</h3>
+<h4>Baseline Training Configuration for the Three Routes</h4>
+<p>The table covers the three training routes. <code>SFT #1</code> applies supervised fine-tuning to the initial Instruct model and is evaluated directly afterward. <code>SFT-GRPO #1</code> continues from that model with GRPO; its column lists the configuration of this GRPO stage. <code>GRPO #1</code> applies GRPO directly to the initial Instruct model.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Configuration</th>
+<th><code>SFT #1</code></th>
+<th>GRPO stage of <code>SFT-GRPO #1</code></th>
+<th><code>GRPO #1</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Starting model</td>
+<td>Initial Instruct</td>
+<td>Original model with <code>SFT #1</code> LoRA weights merged</td>
+<td>Initial Instruct</td>
+</tr>
+<tr>
+<td>Training data</td>
+<td>192 complete demonstration trajectories</td>
+<td>192 tasks × 4 request templates, giving 768 inputs</td>
+<td>192 tasks × 4 request templates, giving 768 inputs</td>
+</tr>
+<tr>
+<td>Training epochs</td>
+<td>3</td>
+<td>5</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Actual update steps</td>
+<td>9</td>
+<td>120</td>
+<td>120</td>
+</tr>
+<tr>
+<td>Training inputs per batch</td>
+<td>64 demonstrations</td>
+<td>32 inputs</td>
+<td>32 inputs</td>
+</tr>
+<tr>
+<td>Configured micro-batch per GPU</td>
+<td>4</td>
+<td>4</td>
+<td>4</td>
+</tr>
+<tr>
+<td>LoRA rank / alpha</td>
+<td>32 / 32</td>
+<td>32 / 32</td>
+<td>32 / 32</td>
+</tr>
+<tr>
+<td>LoRA target modules</td>
+<td><code>all-linear</code></td>
+<td>Attention and MLP projections, listed below</td>
+<td>Attention and MLP projections, listed below</td>
+</tr>
+<tr>
+<td>Optimizer</td>
+<td>AdamW</td>
+<td>AdamW</td>
+<td>AdamW</td>
+</tr>
+<tr>
+<td>Learning rate</td>
+<td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>×</mo><msup><mn>10</mn><mrow><mo>−</mo><mn>3</mn></mrow></msup></mrow><annotation encoding="application/x-tex">1\times10^{-3}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">3</span></span></span></span></span></span></span></span></span></span></span></span></td>
+<td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><msup><mn>10</mn><mrow><mo>−</mo><mn>5</mn></mrow></msup></mrow><annotation encoding="application/x-tex">3\times10^{-5}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">5</span></span></span></span></span></span></span></span></span></span></span></span></td>
+<td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><msup><mn>10</mn><mrow><mo>−</mo><mn>5</mn></mrow></msup></mrow><annotation encoding="application/x-tex">3\times10^{-5}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">5</span></span></span></span></span></span></span></span></span></span></span></span></td>
+</tr>
+<tr>
+<td>Learning-rate schedule</td>
+<td>constant</td>
+<td>constant</td>
+<td>constant</td>
+</tr>
+<tr>
+<td>Warmup ratio</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>AdamW betas</td>
+<td>(0.9, 0.999)</td>
+<td>(0.9, 0.999)</td>
+<td>(0.9, 0.999)</td>
+</tr>
+<tr>
+<td>Weight decay</td>
+<td>0.01</td>
+<td>0.01</td>
+<td>0.01</td>
+</tr>
+<tr>
+<td>Gradient-norm clipping</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>Sequence-length limits</td>
+<td>4,096 tokens per complete demonstration</td>
+<td>1,024 input tokens; 3,072 response tokens</td>
+<td>1,024 input tokens; 3,072 response tokens</td>
+</tr>
+<tr>
+<td>Compute precision (<code>engine.dtype</code> / <code>fsdp_config.dtype</code>)</td>
+<td>bfloat16</td>
+<td>bfloat16</td>
+<td>bfloat16</td>
+</tr>
+<tr>
+<td>Attention implementation</td>
+<td>SDPA</td>
+<td>FlashAttention 2</td>
+<td>FlashAttention 2</td>
+</tr>
+<tr>
+<td><code>use_remove_padding</code></td>
+<td>false</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Gradient checkpointing</td>
+<td>true</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Training GPUs</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Checkpoint interval (steps)</td>
+<td>1,000; step 9 saved at training completion</td>
+<td>24</td>
+<td>120</td>
+</tr>
+</tbody></table></div>
+<p>Both GRPO routes target the following modules with LoRA:</p>
+<pre><code class="language-text">q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj
+</code></pre>
+<p><code>SFT #1</code> enables dynamic micro-batching (<code>use_dynamic_bsz=true</code>) with a per-GPU token budget of 8,192 (<code>max_token_len_per_gpu=8192</code>). The micro-batch number in the table is a configuration value; actual batching is also constrained by this token budget.</p>
+<p>The seed settings for <code>SFT #1</code> are <code>trainer.seed=1</code> and <code>engine.seed=42</code>. Both GRPO routes use <code>fsdp_config.seed=42</code> and <code>data_loader_seed=42</code> for the training model.</p>
+<h4>GRPO Sampling, Reward, and Advantage Settings</h4>
+<p>The following settings are shared by <code>SFT-GRPO #1</code> and <code>GRPO #1</code>.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Configuration</th>
+<th>Setting</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Rollouts per input</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Training sampling</td>
+<td><code>do_sample=true</code>, temperature 1.0, top-p 1, top-k −1</td>
+</tr>
+<tr>
+<td>Trajectory reward</td>
+<td>Baseline reward from Chapter 2; reward-adapter name <code>founding</code></td>
+</tr>
+<tr>
+<td>Advantage estimator</td>
+<td>GRPO, normalized by the within-group standard deviation</td>
+</tr>
+<tr>
+<td><code>ppo_mini_batch_size</code></td>
+<td>32</td>
+</tr>
+<tr>
+<td>Training epochs per batch of sampled trajectories</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Policy probability-ratio clipping parameters</td>
+<td>Lower parameter 0.2; upper parameter 0.2</td>
+</tr>
+<tr>
+<td>KL regularization</td>
+<td>Added to the policy loss with coefficient 0.001 and type <code>low_var_kl</code></td>
+</tr>
+<tr>
+<td><code>use_kl_in_reward</code></td>
+<td>false</td>
+</tr>
+<tr>
+<td>Entropy regularization coefficient</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Loss aggregation</td>
+<td><code>token-mean</code>, averaging over valid response tokens</td>
+</tr>
+<tr>
+<td>Rollout engine</td>
+<td>SGLang, asynchronous multi-turn interaction</td>
+</tr>
+</tbody></table></div>
+<p>Changes from the baseline configuration are listed with each experiment. Section 3.3 specifies the supervised data and training epochs, Section 4.3 the added training tasks, Section 5.2 the reward and clipping settings, and Section 5.3 the state baseline and random seeds.</p>
+<h4>Validation and Post-Training Evaluation</h4>
+<p>Both GRPO routes use 48 held-out tasks with changed people and files for validation. Each task uses six request templates, giving 288 inputs. Validation runs once before training and every 12 steps thereafter. Each input produces one trajectory with <code>do_sample=false</code> and temperature 0.</p>
+<p>The task-level evaluations reported in Chapters 3–5 use the first request template. Each model runs once on each task at temperature 0, with a limit of 1,024 tokens per model response. <code>SFT #1</code> undergoes capability evaluation after training.</p>
+<h4>GPU and training time</h4>
+<p>The table lists elapsed times for four training runs, measured from the start to completion of the <code>Training Progress</code> bar in the logs.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Training run</th>
+<th align="right">Optimizer steps</th>
+<th align="right">Elapsed time (h:mm:ss)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ask-or-Act, prompt-group baseline (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">k=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span>)</td>
+<td align="right">230</td>
+<td align="right">9:54:30</td>
+</tr>
+<tr>
+<td>WebShop, GiGPO seed 1</td>
+<td align="right">75</td>
+<td align="right">7:45:11</td>
+</tr>
+<tr>
+<td>WebShop, GiGPO seed 2</td>
+<td align="right">75</td>
+<td align="right">8:06:07</td>
+</tr>
+<tr>
+<td>WebShop, visit reward gated on full-score purchase</td>
+<td align="right">75</td>
+<td align="right">10:10:32</td>
+</tr>
+</tbody></table></div>
+<p>The resource summary records one A800 80GB GPU for training in both environments. It also gives a median Ask-or-Act step time of approximately 150 seconds. Using that value to estimate a 230-step run gives 9 hours 35 minutes; the table&#39;s 9 hours 54 minutes 30 seconds is the elapsed time recorded directly in the log.</p>
+<nav class="chapter-navigation"><a href="appendix-c.en.html">Previous</a><a href="references.en.html">Next</a></nav></main><footer class="downloads"><a download href="downloads/TECHNICAL_REPORT_V2.en.pdf">Download full report PDF · 2.8 MB</a></footer><script>
+const languageLink=document.querySelector('[data-language]');
+const headings=[...document.querySelectorAll('main h1[id],main h2[id],main h3[id]')];
+function syncLanguage(){let id=location.hash.slice(1);const target=document.getElementById(id);if(!target||target.getBoundingClientRect().top<0||target.getBoundingClientRect().top>innerHeight){for(const h of headings){if(h.getBoundingClientRect().top<240)id=h.id;else break;}}languageLink.href=languageLink.dataset.language+(id?'#'+id:'');}
+addEventListener('scroll',syncLanguage,{passive:true});addEventListener('hashchange',syncLanguage);addEventListener('load',syncLanguage);document.fonts.ready.then(syncLanguage);syncLanguage();
+for(const pre of document.querySelectorAll('pre')){const code=pre.querySelector('code');if(!code)continue;const button=document.createElement('button');button.className='copy-code';button.textContent=document.documentElement.lang==='en'?'Copy':'复制';button.setAttribute('aria-label',button.textContent+' code');button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(code.textContent);button.textContent=document.documentElement.lang==='en'?'Copied':'已复制';}catch{button.textContent=document.documentElement.lang==='en'?'Select to copy':'请选中复制';}});pre.append(button);}
+if(innerWidth<=900){document.querySelector('.contents-panel details')?.removeAttribute('open');}
+</script></body></html>

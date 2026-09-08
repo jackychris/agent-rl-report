@@ -1,0 +1,651 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>第 5 章　从 Instruct 开始的 GRPO</title><link rel="stylesheet" href="report.css"><style>
+html{scroll-behavior:smooth;scroll-padding-top:2rem}body{font-family:Arial,"Microsoft YaHei",sans-serif;font-size:16px;line-height:1.85;background:#fff;color:#303030;margin:0}
+main,body.quick main{box-sizing:border-box;max-width:860px;margin:0 0 0 304px;padding:34px 48px 72px}
+.sitebar{margin-left:304px;max-width:860px;box-sizing:border-box;border-bottom:1px solid #ddd;padding:20px 48px 12px;display:flex;gap:22px;align-items:center;flex-wrap:wrap;font:400 14px/1.5 Arial,sans-serif}
+.sitebar{justify-content:flex-end}.sitebar a{color:#164e7a;text-decoration:none}.sitebar .brand{display:none}.sitebar a:hover{text-decoration:underline}
+.downloads{margin-left:304px;max-width:860px;box-sizing:border-box;font:14px/1.8 Arial,sans-serif;padding:22px 48px 36px;color:#666;border-top:1px solid #dce3e9;display:flex;gap:20px;flex-wrap:wrap}.author-credit{font-size:14px;font-weight:400;color:#555;margin:-10px 0 32px}
+.contents-panel{box-sizing:border-box;position:fixed;left:0;top:0;bottom:0;width:304px;overflow:auto;background:#142e49;border-right:1px solid #142e49;padding:28px 18px;font:14px/1.6 Arial,"Microsoft YaHei",sans-serif;color:#fff}
+.contents-panel a{display:block;color:#dbe6f0;text-decoration:none;padding:7px 10px}.contents-panel a:hover{background:#203e5c;color:#fff}.contents-panel a[aria-current=page]{background:#294b6c;color:#fff;border-left:2px solid #c0d7eb;padding-left:8px}
+.contents-panel summary{font-weight:400;cursor:pointer;margin:0 10px 20px;font-size:17px;list-style:none}.contents-panel .subsection{padding-left:22px;font-size:14px}.contents-panel .subsection:hover{padding-left:22px}
+h1,h2,h3,h4,h5,h6,strong,b,th{font-weight:400}h1{font-size:30px;line-height:1.45;color:#222;margin:0 0 26px}h2{font-size:24px;margin:38px 0 18px;color:#222}h3{font-size:20px;margin:30px 0 14px;color:#333}h4,h5{font-size:17px;color:#333}h2,h3,h4{scroll-margin-top:2rem;line-height:1.5}p{overflow-wrap:break-word}a{color:#164e7a;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}a:hover{color:#0b3558}a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid #608cb5;outline-offset:3px}
+.formula,.katex-display{max-width:100%;overflow-x:auto;overflow-y:hidden}pre{position:relative;overflow:auto;white-space:pre;max-width:100%;padding-top:38px}pre code{font-size:14px;white-space:pre}
+.copy-code{position:absolute;right:7px;top:5px;font:14px/1.5 Arial,sans-serif;border:1px solid #ccc;background:#fff;color:#555;border-radius:2px;cursor:pointer;padding:2px 9px}
+.table-wrap{overflow-x:auto;max-width:100%}table{font-size:14px}th,td{border-color:#ddd}th{background:#f3f3f3}pre,.code-list td{background:#f7f7f7;border-color:#ddd}.code-list{table-layout:auto}.code-list pre code{font-size:14px}.code-list .code-lines{font-size:12px;color:#777}.code-list th{color:#555}blockquote{border-color:#ccc;background:#f8f8f8}.chapter-navigation{border-top:1px solid #ddd;margin-top:48px;padding-top:20px;display:flex;justify-content:space-between;gap:24px;font-size:14px}
+@media(max-width:900px){main,body.quick main{margin:0 auto;padding:28px 24px 60px}.sitebar,.downloads{margin:0;padding-left:24px;padding-right:24px}.sitebar .brand{display:block;margin-right:auto}.contents-panel{position:static;width:auto;max-height:none;padding:14px 24px;border:0;border-bottom:1px solid #ddd}.contents-panel summary{font-size:14px;margin:0;list-style:revert}.contents-panel nav{max-height:45vh;overflow:auto}.contents-panel a{padding:6px 8px}}
+@media(max-width:600px){.sitebar{gap:12px;padding:12px 16px;font-size:14px}.sitebar .brand{width:100%}main,body.quick main{padding:24px 16px 60px}.downloads{padding:10px 16px;gap:12px}.contents-panel{padding:12px 16px}h1{font-size:26px}h2{font-size:22px}.code-list{min-width:620px}pre code{font-size:14px}.table-wrap th:first-child,.table-wrap td:first-child{background:#f5f5f5}.table-wrap th:first-child{background:#eee}}
+@media print{.sitebar,.downloads,.contents-panel,.copy-code{display:none!important}main{margin:0!important;max-width:none}body{font-size:10pt}pre{padding-top:9px}}
+</style></head><body class="full"><header class="sitebar"><a data-language="chapter-5.en.html" href="chapter-5.en.html" lang="en">English</a></header><aside class="contents-panel"><details open><summary>智能体强化学习</summary><nav><a href="index.html">研究概览</a><a href="overview.zh-CN.html">摘要</a><a href="chapter-1.zh-CN.html">第 1 章　目标行为学习的证据</a><a href="chapter-2.zh-CN.html">第 2 章　Ask-or-Act 任务与评测</a><a href="chapter-3.zh-CN.html">第 3 章　SFT 的训练与泛化</a><a href="chapter-4.zh-CN.html">第 4 章　SFT-GRPO：继续训练后的行为变化</a><a href="chapter-5.zh-CN.html" aria-current="page">第 5 章　从 Instruct 开始的 GRPO</a><a class="subsection" href="#section-5-1">5.1 从 Instruct 开始训练</a><a class="subsection" href="#section-5-2">5.2 奖励与优化设置</a><a class="subsection" href="#section-5-3">5.3 状态基线与随机种子</a><a class="subsection" href="#section-5-4">5.4 根据返回信息选择行动</a><a href="chapter-6.zh-CN.html">第 6 章　泛化差异与行为诊断</a><a href="chapter-7.zh-CN.html">第 7 章　WebShop 的访问奖励与内容响应</a><a href="chapter-8.zh-CN.html">第 8 章　组相对训练的奖励信号</a><a href="chapter-9.zh-CN.html">第 9 章　相关工作</a><a href="chapter-10.zh-CN.html">第 10 章　智能体强化学习的行为与训练诊断</a><a href="appendix-a.zh-CN.html">附录 A　Ask-or-Act 系统与动作链</a><a href="appendix-b.zh-CN.html">附录 B　奖励、估计器与实现</a><a href="appendix-c.zh-CN.html">附录 C　补充实验与诊断</a><a href="appendix-d.zh-CN.html">附录 D　公开实现、统计规则与资源</a><a href="references.zh-CN.html">References / 参考文献</a></nav></details></aside><main><h1 id="chapter-5">第 5 章　从 Instruct 开始的 GRPO</h1>
+<h2 id="section-5-1">5.1 从 Instruct 开始训练</h2>
+<p>我们从初始 Instruct 模型直接进行 GRPO，检查模型能否通过强化学习掌握任务规则，并将这些能力用于改变后的任务。训练后的模型记为 <code>GRPO #1</code>。与第四章相比，这条路线省去了训练前的 SFT。</p>
+<p>训练使用相同的 192 个原始邮件任务，每个任务采用四种请求模板，共 768 条输入。模型自行生成工具调用，评测器按第二章的基准奖励对轨迹评分。每批包含 32 条输入，每条输入以温度 1.0 采样八条轨迹。我们根据组内奖励计算优势，更新 LoRA 参数，共训练 120 步。</p>
+<p>验证集沿用第四章的 48 个更换人物和文件后的任务。每个任务使用六种请求模板，共 288 条输入。</p>
+<h3>原始任务与留出任务</h3>
+<p>我们在相同的评测任务上比较训练前的 Instruct 和训练后的 <code>GRPO #1</code>。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>评测任务</th>
+<th align="right">任务成功</th>
+<th align="right">交互签名匹配</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>训练任务（192 个）</td>
+<td align="right">156/192 → 176/192</td>
+<td align="right">72/192 → 168/192</td>
+</tr>
+<tr>
+<td>更换人物和文件（48 个）</td>
+<td align="right">41/48 → 44/48</td>
+<td align="right">30/48 → 42/48</td>
+</tr>
+<tr>
+<td>澄清—确认配对测试（20 个）</td>
+<td align="right">18/20 → 20/20</td>
+<td align="right">9/20 → 20/20</td>
+</tr>
+</tbody></table></div>
+<p>直接从 Instruct 开始 GRPO，训练任务多成功了 20 个，交互签名匹配的轨迹增加了 96 条。改善也出现在更换人物和文件后的任务上，20 个澄清—确认配对任务全部成功。不过，这 20 个任务均有过早行动。模型更常完成请求并通过交互签名检查，行动条件仍有错误。</p>
+<h3>付款与日程任务</h3>
+<p>我们用第三章的付款和日程任务，检查邮件 GRPO 训练带来的变化能否用于其他业务。表中比较训练前的 Instruct 和训练后的 <code>GRPO #1</code>。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>评测任务</th>
+<th align="right">任务成功</th>
+<th align="right">交互签名匹配</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>基础付款任务</td>
+<td align="right">226/260 → 236/260</td>
+<td align="right">51/260 → 85/260</td>
+</tr>
+<tr>
+<td>基础日程任务</td>
+<td align="right">214/260 → 228/260</td>
+<td align="right">91/260 → 117/260</td>
+</tr>
+<tr>
+<td>付款数值判断任务</td>
+<td align="right">28/60 → 43/60</td>
+<td align="right">18/60 → 51/60</td>
+</tr>
+<tr>
+<td>日程参数传递任务</td>
+<td align="right">52/60 → 60/60</td>
+<td align="right">10/60 → 20/60</td>
+</tr>
+</tbody></table></div>
+<p>直接 GRPO 后，四组任务的成功数和交互签名匹配的轨迹数都提高了。改善同时出现在基础任务和增加数值判断、参数传递的任务中。</p>
+<p>与第四章的 <code>SFT-GRPO #1</code> 相比，直接 GRPO 在日程参数传递任务上完成了 60/60，高于前者的 37/60。付款数值任务呈现另一种差别，直接 GRPO 的成功数为 43/60，低于前者的 50/60，但交互签名匹配的轨迹为 51/60，高于前者的 27/60。两条路线对新增要求的适应不同，两条路线按任务完成数和交互签名匹配数得到的排序也不总是一致。</p>
+<p>日程新增的 60 个任务分成两支，其中 30 个要求把群组查询返回的负责人标识 <code>owner_handle</code> 传给成员查询。我们在这 30 条轨迹中直接检查参数传递。三个模型都调用了群组查询，但 <code>SFT #1</code>、<code>SFT-GRPO #1</code> 和 <code>GRPO #1</code> 分别在 30/30、1/30 和 6/30 个任务中使用了返回的标识。对应任务成功数为 28/30、9/30 和 30/30。第 6 章的完整案例显示，直接 GRPO 也可以在错误调用被阻止后改问用户，绕过这项参数依赖完成预约。</p>
+<h3>双工具数值判断任务</h3>
+<p>我们用前面的 60 个邮件双工具数值判断任务，检查 <code>GRPO #1</code> 是否会在行动前查询新的信息来源。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>检查项</th>
+<th align="right"><code>GRPO #1</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>任务成功</td>
+<td align="right">39/60</td>
+</tr>
+<tr>
+<td>交互签名匹配</td>
+<td align="right">56/60</td>
+</tr>
+<tr>
+<td>调用过分享策略工具</td>
+<td align="right">58/60</td>
+</tr>
+<tr>
+<td>第一次相关写入前查询分享策略</td>
+<td align="right">58/60</td>
+</tr>
+<tr>
+<td>发生过早行动</td>
+<td align="right">60/60</td>
+</tr>
+<tr>
+<td>写入尝试全部通过行动条件检查</td>
+<td align="right">0/60</td>
+</tr>
+</tbody></table></div>
+<p>模型在 58 个任务中查询了分享策略，而且查询都发生在第一次相关写入之前。另外两个任务没有调用这个工具。不过，全部任务仍发生了过早行动，没有任务的写入尝试全部通过行动条件检查。</p>
+<p>写前查询检查的是分享策略查询与第一次写入的顺序。过早行动检查的是行动所需的条件是否已经满足。先查询分享策略只是其中一项要求，两项检查因此可能得到不同结果。</p>
+<p>下面是一条保存的完整工具调用序列。</p>
+<pre><code class="language-text">retrieve_files({&quot;query&quot;:&quot;报告&quot;})
+→ retrieve_contacts({&quot;query&quot;:&quot;张伟&quot;})
+→ retrieve_sharing_policy({})
+→ create_draft({
+     &quot;file_id&quot;:&quot;report_target_1&quot;,
+     &quot;recipient_id&quot;:&quot;contact_target_1&quot;
+   })
+→ send_email({
+     &quot;file_id&quot;:&quot;report_target_1&quot;,
+     &quot;recipient_id&quot;:&quot;contact_target_1&quot;
+   })
+→ finish({})
+</code></pre>
+<p>这条轨迹先查询分享策略，再尝试创建草稿和发送邮件。创建草稿与任务的发送意图不符，即使已经查询也会被评测器记为动作条件未满足。60 个双工具任务中，有 28 条轨迹的过早行动仅由意图不符触发，其余被检查的条件已经满足。60/60 的过早行动计数包含这些意图错误。</p>
+<p>在原始邮件任务上，<code>SFT-GRPO #1</code> 完成了 260/260，<code>GRPO #1</code> 完成了 240/260，都高于初始 Instruct 的 215/260。共享规则移到另一个工具后，前者没有一次在写入前查询分享策略，后者则在 58/60 个任务中先完成了查询。原始任务成绩更高的模型，在这项查询要求上表现更差。</p>
+<p><code>SFT #1</code> 原本在全部 60 个双工具任务中都满足写前查询条件，这项行为是在继续 GRPO 后丢失的。从 Instruct 直接进行 GRPO，则得到了不同的查询顺序。两条路线的差别因此涉及训练起点与后续强化学习共同产生的变化。</p>
+<p>我们推测，从不同起点训练时，GRPO 强化了不同的做法。从 <code>SFT #1</code> 出发，模型可能逐渐固定为查到文件后就发送；从 Instruct 出发，模型则更常在共享规则缺失时继续寻找信息。原始任务通过文件查询就能取得规则，两种做法都能完成大多数任务。双工具任务改变了信息来源，才显露出它们调整查询顺序的差别。</p>
+<h3>工具来源提示</h3>
+<p>为了检查明确指出信息来源是否有帮助，我们使用另一组邮件任务。分享策略工具直接返回是否允许发送、是否需要确认，模型不必比较文件大小和阈值。我们在文件查询结果中加入 <code>sharing_policy_id</code>，提示模型去查询分享策略，并与不带提示的版本比较。</p>
+<p>这个提示不包含共享规则。模型需要调用 <code>retrieve_sharing_policy</code> 才能取得规则。我们分别统计它是否调用了这个工具，以及调用是否发生在第一次相关写入之前。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>测试条件</th>
+<th align="right">调用过分享策略工具</th>
+<th align="right">写前查询分享策略</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>无来源提示</td>
+<td align="right">12/60</td>
+<td align="right">0/60</td>
+</tr>
+<tr>
+<td>加入 <code>sharing_policy_id</code></td>
+<td align="right">22/60</td>
+<td align="right">0/60</td>
+</tr>
+</tbody></table></div>
+<p>加入提示后，<code>GRPO #1</code> 调用分享策略工具的任务数从 12 个增至 22 个，写前查询仍然为零。下面对比同一任务在两种条件下的工具调用，省略部分参数。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th align="right">步骤</th>
+<th>无来源提示</th>
+<th>带来源提示</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">0</td>
+<td><code>retrieve_files({&quot;query&quot;:&quot;预算&quot;})</code></td>
+<td><code>retrieve_files({&quot;query&quot;:&quot;预算&quot;})</code></td>
+</tr>
+<tr>
+<td align="right">1</td>
+<td><code>retrieve_contacts({&quot;query&quot;:&quot;李娜&quot;})</code></td>
+<td><code>retrieve_contacts({&quot;query&quot;:&quot;李娜&quot;})</code></td>
+</tr>
+<tr>
+<td align="right">2</td>
+<td><code>create_draft(...)</code></td>
+<td><code>create_draft(...)</code></td>
+</tr>
+<tr>
+<td align="right">3</td>
+<td><code>send_email(...)</code></td>
+<td><code>send_email(...)</code></td>
+</tr>
+<tr>
+<td align="right">4</td>
+<td><code>ask_clarification({&quot;field&quot;:&quot;external_allowed&quot;})</code></td>
+<td><code>retrieve_sharing_policy({})</code></td>
+</tr>
+<tr>
+<td align="right">5</td>
+<td><code>ask_clarification({&quot;field&quot;:&quot;confirmation_required&quot;})</code></td>
+<td><code>finish({})</code></td>
+</tr>
+<tr>
+<td align="right">6</td>
+<td><code>abstain(...)</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td align="right">7</td>
+<td><code>finish({})</code></td>
+<td>—</td>
+</tr>
+</tbody></table></div>
+<p>两个版本都在第 2 步尝试创建草稿，第 3 步尝试发送。环境分别因意图不符和缺少共享规则而阻止了调用。没有提示时，模型随后向用户询问共享规则；加入提示后，它改为查询分享策略工具，然后结束任务，没有再次发送。提示改变了后续查询，没有改变最初的发送尝试，也没有让这条任务完成。</p>
+<p>这对智能体流程设计的启示是，来源提示和执行检查各有作用。在这个例子中，提示引导模型找到规则，环境的条件检查阻止了过早发送。要完成请求，模型还需要在取得规则后重新选择行动。</p>
+<h2 id="section-5-2">5.2 奖励与优化设置</h2>
+<p>我们分别改变奖励函数和策略裁剪范围，检查能否改善模型的行动顺序。两项实验都与 <code>GRPO #1</code> 比较，并使用原始任务和泛化任务评测。</p>
+<h3><code>GRPO #3</code>：惩罚过早行动</h3>
+<p>我们保持 <code>GRPO #1</code> 的训练起点和训练设置，在奖励中加入过早行动惩罚，训练得到 <code>GRPO #3</code>。对于同一条轨迹，加入惩罚前后的得分差为</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>R</mi><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">y</mi></mrow></msub><mo stretchy="false">(</mo><mi>τ</mi><mo stretchy="false">)</mo><mo>−</mo><msub><mi>R</mi><mrow><mi mathvariant="normal">b</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">e</mi></mrow></msub><mo stretchy="false">(</mo><mi>τ</mi><mo stretchy="false">)</mo><mo>=</mo><mrow><mo fence="true">{</mo><mtable rowspacing="0.36em" columnalign="left left" columnspacing="1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mo>−</mo><mn>1</mn><mo separator="true">,</mo></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mtext>发生过早行动，且未触发硬门控</mtext><mo separator="true">,</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mn>0</mn><mo separator="true">,</mo></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mtext>其他情况</mtext><mi mathvariant="normal">.</mi></mrow></mstyle></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+R_{\mathrm{penalty}}(\tau)-R_{\mathrm{baseline}}(\tau)
+=
+\begin{cases}
+-1, &amp; \text{发生过早行动，且未触发硬门控},\\
+0, &amp; \text{其他情况}.
+\end{cases}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0361em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0077em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight" style="margin-right:0.01389em;">penalty</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.1132em;">τ</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0077em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">baseline</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.1132em;">τ</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:3em;vertical-align:-1.25em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size4">{</span></span><span class="mord"><span class="mtable"><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.69em;"><span style="top:-3.69em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord">−</span><span class="mord">1</span><span class="mpunct">,</span></span></span><span style="top:-2.25em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord">0</span><span class="mpunct">,</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.19em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:1em;"></span><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.69em;"><span style="top:-3.69em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord text"><span class="mord cjk_fallback">发生过早行动，且未触发硬门控</span></span><span class="mpunct">,</span></span></span><span style="top:-2.25em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord text"><span class="mord cjk_fallback">其他情况</span></span><span class="mord">.</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.19em;"><span></span></span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></div>
+<p>这里沿用第二章的硬门控规则。同一条轨迹即使多次过早行动，也只额外扣 1 分。</p>
+<h4>原始任务结果</h4>
+<p>实验历史汇总报告了以下 250 个原始邮件任务的结果，来源见附录 C。这组计数与前面的 260 题评测分别保留。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>检查项</th>
+<th align="right"><code>GRPO #1</code></th>
+<th align="right"><code>GRPO #3</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>发生过早行动的任务</td>
+<td align="right">213/250</td>
+<td align="right">20/250</td>
+</tr>
+<tr>
+<td>意图不符事件数（<code>wrong_intent</code>）</td>
+<td align="right">200</td>
+<td align="right">0</td>
+</tr>
+<tr>
+<td>必要澄清召回率</td>
+<td align="right">1.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr>
+<td>澄清精确率</td>
+<td align="right">0.750</td>
+<td align="right">0.857</td>
+</tr>
+</tbody></table></div>
+<p>这份汇总中，加入惩罚后发生过早行动的任务减少了 193 个，意图不符事件降为零。必要澄清召回率保持不变，澄清精确率提高，说明模型保留了必要的提问，同时减少了不必要或问错字段的提问。原始任务上的行为随惩罚发生了变化。</p>
+<h4>双工具数值判断任务</h4>
+<p>在前述 60 个双工具数值判断任务上，两个模型的结果如下，复算方式见附录 D。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>检查项</th>
+<th align="right"><code>GRPO #1</code></th>
+<th align="right"><code>GRPO #3</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>任务成功</td>
+<td align="right">39/60</td>
+<td align="right">48/60</td>
+</tr>
+<tr>
+<td>交互签名匹配</td>
+<td align="right">56/60</td>
+<td align="right">24/60</td>
+</tr>
+<tr>
+<td>调用过分享策略工具</td>
+<td align="right">58/60</td>
+<td align="right">60/60</td>
+</tr>
+<tr>
+<td>第一次相关写入前查询分享策略</td>
+<td align="right">58/60</td>
+<td align="right">0/60</td>
+</tr>
+<tr>
+<td>发生过早行动</td>
+<td align="right">60/60</td>
+<td align="right">60/60</td>
+</tr>
+<tr>
+<td>写入尝试全部通过行动条件检查</td>
+<td align="right">0/60</td>
+<td align="right">0/60</td>
+</tr>
+</tbody></table></div>
+<p>加入惩罚后，模型多完成了 9 个任务，但全部 60 条轨迹都先尝试写入、后查询分享策略。下面这条成功轨迹就采用了这种顺序。</p>
+<pre><code class="language-text">retrieve_files({&quot;query&quot;:&quot;报告&quot;})
+→ retrieve_contacts({&quot;query&quot;:&quot;张伟&quot;})
+→ send_email({
+     &quot;file_id&quot;:&quot;report_target_1&quot;,
+     &quot;recipient_id&quot;:&quot;contact_target_1&quot;
+   })
+  被阻止：缺少共享规则，未创建邮件
+→ retrieve_sharing_policy({})
+→ request_confirmation({})
+→ send_email({
+     &quot;file_id&quot;:&quot;report_target_1&quot;,
+     &quot;recipient_id&quot;:&quot;contact_target_1&quot;
+   })
+→ finish({})
+</code></pre>
+<p>第一次发送因缺少共享规则被阻止。模型随后查询分享策略、请求确认，第二次发送成功创建了邮件。</p>
+<p>原始任务中的过早行动明显减少，双工具任务中的写前查询反而从 58/60 降至零。惩罚改善了模型在熟悉任务中的行动顺序；当共享规则需要从另一个工具获取时，这项改善没有延续。</p>
+<h4>付款与日程任务</h4>
+<p>我们用 §5.1 的付款和日程任务检查这项惩罚对跨领域能力的影响。表中箭头表示从 <code>GRPO #1</code> 到加入惩罚的 <code>GRPO #3</code>。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>评测任务</th>
+<th align="right">任务成功</th>
+<th align="right">交互签名匹配</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>基础付款任务</td>
+<td align="right">236/260 → 233/260</td>
+<td align="right">85/260 → 190/260</td>
+</tr>
+<tr>
+<td>基础日程任务</td>
+<td align="right">228/260 → 227/260</td>
+<td align="right">117/260 → 133/260</td>
+</tr>
+<tr>
+<td>付款数值判断任务</td>
+<td align="right">43/60 → 19/60</td>
+<td align="right">51/60 → 1/60</td>
+</tr>
+<tr>
+<td>日程参数传递任务</td>
+<td align="right">60/60 → 56/60</td>
+<td align="right">20/60 → 23/60</td>
+</tr>
+</tbody></table></div>
+<p>加入惩罚后，两类基础任务的完成数变化很小，交互签名匹配的轨迹都增加了，其中基础付款任务从 85/260 增至 190/260。付款数值判断任务则明显退步，成功数从 43/60 降至 19/60，只有一条轨迹通过交互签名检查。日程参数传递任务的变化较小，少完成了四个任务。</p>
+<p>这项惩罚减少了原始邮件任务中的过早行动，也提高了基础付款和日程任务的交互签名匹配数，即澄清、确认与终态的组合更符合要求。需要结合新信息判断如何行动时，邮件中的写前查询和付款数值任务的表现都出现了退步。我们推测，模型学到的调整更依赖训练中熟悉的流程，对新任务中的行动条件适应不足。</p>
+<h3><code>GRPO #4</code>：放宽上裁剪界</h3>
+<p>我们保持 <code>GRPO #1</code> 的奖励和其他训练设置，将概率比的上裁剪界从 1.20 提高到 1.28，训练得到 <code>GRPO #4</code>。这项实验检查放宽更新限制是否有助于模型适应改变后的任务。</p>
+<p>对于生成的 token <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">a_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，当前模型与更新前模型赋予它的概率之比为</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>r</mi><mi>t</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>π</mi><mi>θ</mi></msub><mo stretchy="false">(</mo><msub><mi>a</mi><mi>t</mi></msub><mo>∣</mo><msub><mi>h</mi><mi>t</mi></msub><mo stretchy="false">)</mo></mrow><mrow><msub><mi>π</mi><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">d</mi></mrow></msub><mo stretchy="false">(</mo><msub><mi>a</mi><mi>t</mi></msub><mo>∣</mo><msub><mi>h</mi><mi>t</mi></msub><mo stretchy="false">)</mo></mrow></mfrac><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">
+r_t=
+\frac{\pi_\theta(a_t\mid h_t)}
+{\pi_{\mathrm{old}}(a_t\mid h_t)}.
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.363em;vertical-align:-0.936em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">old</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord">.</span></span></span></span></span></div>
+<p>其中，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>h</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">h_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 是生成这个 token 前的上下文，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mi>θ</mi></msub></mrow><annotation encoding="application/x-tex">\pi_\theta</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">d</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\pi_{\mathrm{old}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">old</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 分别表示当前模型与更新前模型。设该 token 的优势为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">A_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，裁剪目标为</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>L</mi><mi>t</mi></msub><mo>=</mo><mi>min</mi><mo>⁡</mo><mrow><mo fence="true">[</mo><msub><mi>r</mi><mi>t</mi></msub><msub><mi>A</mi><mi>t</mi></msub><mo separator="true">,</mo><mtext>  </mtext><mi mathvariant="normal">clip</mi><mo>⁡</mo><mo stretchy="false">(</mo><msub><mi>r</mi><mi>t</mi></msub><mo separator="true">,</mo><mtext> </mtext><mn>0.80</mn><mo separator="true">,</mo><mtext> </mtext><mi>u</mi><mo stretchy="false">)</mo><msub><mi>A</mi><mi>t</mi></msub><mo fence="true">]</mo></mrow><mo separator="true">,</mo></mrow><annotation encoding="application/x-tex">
+L_t=
+\min\left[
+r_tA_t,\;
+\operatorname{clip}(r_t,\,0.80,\,u)A_t
+\right],
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop">min</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">[</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop"><span class="mord mathrm">clip</span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">0.80</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">u</span><span class="mclose">)</span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;">]</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mpunct">,</span></span></span></span></span></div>
+<p>这里，<code>GRPO #1</code> 使用 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><mn>1.20</mn></mrow><annotation encoding="application/x-tex">u=1.20</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">u</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1.20</span></span></span></span>，<code>GRPO #4</code> 使用 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><mn>1.28</mn></mrow><annotation encoding="application/x-tex">u=1.28</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">u</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1.28</span></span></span></span>，下界均为 0.80。</p>
+<p>例如，当 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mi>t</mi></msub><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">A_t&gt;0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span>、概率比达到 1.25 时，<code>GRPO #1</code> 的目标项已被裁剪为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1.20</mn><msub><mi>A</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">1.20A_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord">1.20</span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，<code>GRPO #4</code> 仍取 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1.25</mn><msub><mi>A</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">1.25A_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord">1.25</span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>。放宽上界后，正优势 token 的概率可以在触发裁剪前继续提高。完整目标函数见附录 B。</p>
+<h4>各类任务的结果</h4>
+<p>我们在相同任务上比较两个模型。表中箭头表示从 <code>GRPO #1</code> 到放宽上裁剪界的 <code>GRPO #4</code>。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>评测任务</th>
+<th align="right">任务成功</th>
+<th align="right">交互签名匹配</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>原始邮件任务</td>
+<td align="right">240/260 → 240/260</td>
+<td align="right">230/260 → 226/260</td>
+</tr>
+<tr>
+<td>邮件双工具数值判断任务</td>
+<td align="right">39/60 → 29/60</td>
+<td align="right">56/60 → 6/60</td>
+</tr>
+<tr>
+<td>基础付款任务</td>
+<td align="right">236/260 → 217/260</td>
+<td align="right">85/260 → 160/260</td>
+</tr>
+<tr>
+<td>付款数值判断任务</td>
+<td align="right">43/60 → 41/60</td>
+<td align="right">51/60 → 57/60</td>
+</tr>
+<tr>
+<td>基础日程任务</td>
+<td align="right">228/260 → 228/260</td>
+<td align="right">117/260 → 130/260</td>
+</tr>
+<tr>
+<td>日程参数传递任务</td>
+<td align="right">60/60 → 60/60</td>
+<td align="right">20/60 → 27/60</td>
+</tr>
+</tbody></table></div>
+<p>放宽上裁剪界后，原始邮件任务的成功数不变，双工具数值判断任务的表现明显下降。成功数从 39/60 降至 29/60，交互签名匹配的轨迹从 56/60 降至 6/60。这项调整保留了原始任务的完成率，却削弱了模型应对邮件中新增信息要求的表现。</p>
+<p>跨领域结果有所不同。付款和日程的四组测试中，交互签名匹配的轨迹都增加了。基础付款任务的成功数下降了 19 个，付款数值判断任务下降了两个，日程任务的成功数均保持不变。模型更常通过交互签名检查，任务完成数没有同步提高。</p>
+<p>同一项裁剪调整提高了跨领域任务的交互签名匹配率，同时损害了邮件双工具任务的表现。它改变了模型在不同任务中的做法，效果取决于具体的任务要求。</p>
+<h4>双工具任务中的失败</h4>
+<p>在下面这条轨迹中，<code>GRPO #4</code> 先调用发送函数，随后向用户询问本应由分享策略工具提供的规则，最终放弃任务。</p>
+<pre><code class="language-text">retrieve_files({&quot;query&quot;:&quot;报告&quot;})
+→ retrieve_contacts({&quot;query&quot;:&quot;张伟&quot;})
+→ send_email({
+     &quot;file_id&quot;:&quot;report_target_1&quot;,
+     &quot;recipient_id&quot;:&quot;contact_target_1&quot;
+   })
+  被阻止：缺少共享规则，未创建邮件
+→ ask_clarification({&quot;field&quot;:&quot;external_allowed&quot;})
+→ ask_clarification({&quot;field&quot;:&quot;confirmation_required&quot;})
+→ abstain({&quot;reason&quot;:&quot;无法确定外部共享和确认要求&quot;})
+→ finish({})
+</code></pre>
+<p>模型在这条轨迹中始终没有查询分享策略。评测器将该轨迹判为过早行动，写入尝试未通过账本中的行动条件检查，任务最终也未完成。前面 <code>GRPO #3</code> 的成功轨迹在发送尝试被阻止后查询了策略；这里没有发生这一步补救。这次失败同时涉及查询时机和信息来源的选择。</p>
+<p>这两项实验都改变了模型的行为。过早行动惩罚明显改善了原始邮件任务中的行动顺序，放宽裁剪则提高了跨领域任务中交互签名的匹配率。邮件双工具任务中的表现没有随之改善，说明训练中的行为调整能否迁移，取决于模型如何应对改变后的信息要求。</p>
+<h2 id="section-5-3">5.3 状态基线与随机种子</h2>
+<p>我们改变优势计算方式，用环境账本在动作前记录的已知事实构造基线，再检查这种训练能否保留写前查询。</p>
+<p>模型从 Instruct 开始训练。训练输入来自原始邮件任务，我们根据同一任务多次采样的成功率调整任务的重复次数，提高成功与失败都能出现的任务所占比例，得到 1,500 条输入。每批使用 32 条输入，每条采样八条轨迹，共训练五轮、230 步。三次训练复用同一份数据，改变数据加载的随机种子。</p>
+<p class="formula-lead">标准 GRPO 从轨迹回报中减去组内平均回报。这次，我们改为减去一个根据动作前账本计算的基线：</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>D</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><mo>=</mo><msub><mi>G</mi><mi>i</mi></msub><mo>−</mo><mn>1.5</mn><msub><mi>m</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">
+D_{it}=G_i-1.5m_{it}.
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">G</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7944em;vertical-align:-0.15em;"></span><span class="mord">1.5</span><span class="mord"><span class="mord mathnormal">m</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">.</span></span></span></span></span></div>
+<p>其中，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>G</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">G_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">G</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 是第 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi></mrow><annotation encoding="application/x-tex">i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal">i</span></span></span></span> 条轨迹的终局回报，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>m</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">m_{it}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">m</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 是第 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi></mrow><annotation encoding="application/x-tex">t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6151em;"></span><span class="mord mathnormal">t</span></span></span></span> 个动作之前，环境账本中已经确定的字段数。例如，查到文件编号后计入 <code>file_id</code>；查到禁止外发的规则后，<code>external_allowed=false</code> 也计为一个字段。它数的是已确定的答案，允许和禁止都计入。系数 1.5 固定不变。</p>
+<p>例如，一条轨迹的终局回报为 9。某个动作前已经确定两项事实，对应的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">D_{it}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 为 6；另一个动作前已经确定四项事实，对应值为 3。同一条轨迹中的不同动作因此可以对应不同的差值。</p>
+<p class="formula-lead">实际训练时，我们将这些差值除以当前批次所有动作对应差值的标准差：</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>A</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><mo>=</mo><mfrac><msub><mi>D</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><mrow><msub><mi>σ</mi><mi>D</mi></msub><mo>+</mo><mi>ϵ</mi></mrow></mfrac><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">
+A_{it}=\frac{D_{it}}{\sigma_D+\epsilon}.
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.1963em;vertical-align:-0.836em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3603em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">D</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">ϵ</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.836em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord">.</span></span></span></span></span></div>
+<p>这里，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">ϵ</span></span></span></span> 是避免分母为零的小常数。同一个动作生成区间内的 token 使用相同的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">A_{it}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>。这种计算不减组内均值，因此即使同一任务的八条轨迹回报相同，优势也不一定为零。</p>
+<h4>不同随机种子的结果</h4>
+<p>我们用双工具数值判断、单工具数值判断和查表任务，检查三个模型是否在第一次相关写入前查询分享策略。每类任务各有 60 个。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>评测任务</th>
+<th align="right">种子 1</th>
+<th align="right">种子 2</th>
+<th align="right">种子 3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>双工具数值判断</td>
+<td align="right">60/60</td>
+<td align="right">0/60</td>
+<td align="right">60/60</td>
+</tr>
+<tr>
+<td>单工具数值判断</td>
+<td align="right">60/60</td>
+<td align="right">0/60</td>
+<td align="right">60/60</td>
+</tr>
+<tr>
+<td>查表判断</td>
+<td align="right">60/60</td>
+<td align="right">20/60</td>
+<td align="right">60/60</td>
+</tr>
+</tbody></table></div>
+<p>种子 1 和种子 3 得到的模型，在三类任务中都完成了写前查询。种子 2 得到的模型在两类数值判断任务中一次也没有做到，在查表任务中只做到了 20 次。同一套训练设置产生了差别很大的查询顺序。</p>
+<p>为检查重新运行模型时的评测波动，我们在每次评测中同时运行同一个标准 GRPO 对照模型。它的写前查询结果如下。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>评测任务</th>
+<th align="right">与种子 1 同次评测</th>
+<th align="right">与种子 2 同次评测</th>
+<th align="right">与种子 3 同次评测</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>双工具数值判断</td>
+<td align="right">33/60</td>
+<td align="right">37/60</td>
+<td align="right">36/60</td>
+</tr>
+<tr>
+<td>单工具数值判断</td>
+<td align="right">22/60</td>
+<td align="right">21/60</td>
+<td align="right">21/60</td>
+</tr>
+<tr>
+<td>查表判断</td>
+<td align="right">53/60</td>
+<td align="right">53/60</td>
+<td align="right">53/60</td>
+</tr>
+</tbody></table></div>
+<p>对照模型在三次评测中的差别最多为四个任务，远小于状态基线模型之间从 60/60 到 0/60 的差别。这支持将主要差异归于训练得到的行为，而非评测时的波动。状态基线训练可以得到完整保留写前查询的模型，但这个结果对训练随机种子敏感。</p>
+<h4>同一任务中的查询顺序</h4>
+<p>下面三条轨迹来自同一个双工具数值判断任务。</p>
+<p><strong>种子 1</strong></p>
+<p>模型先查询分享策略和邮件上下文，再调用发送函数。</p>
+<pre><code class="language-text">retrieve_files({&quot;query&quot;:&quot;报告&quot;})
+→ retrieve_contacts({&quot;query&quot;:&quot;张伟&quot;})
+→ retrieve_sharing_policy({&quot;query&quot;:&quot;报告&quot;})
+→ retrieve_email_context({&quot;query&quot;:&quot;张伟&quot;})
+→ retrieve_outbox({&quot;query&quot;:&quot;报告&quot;})
+→ send_email({
+     &quot;file_id&quot;:&quot;report_target_1&quot;,
+     &quot;recipient_id&quot;:&quot;contact_target_1&quot;
+   })
+→ finish(...)
+</code></pre>
+<p><strong>种子 2</strong></p>
+<p>模型在查到文件和联系人后就尝试发送，但被环境阻止。随后虽查询了分享策略，它仍以无法确定是否允许发送为由放弃任务，邮件没有发出。</p>
+<pre><code class="language-text">retrieve_files({&quot;query&quot;:&quot;报告&quot;})
+→ retrieve_contacts({&quot;query&quot;:&quot;张伟&quot;})
+→ send_email({
+     &quot;file_id&quot;:&quot;report_target_1&quot;,
+     &quot;recipient_id&quot;:&quot;contact_target_1&quot;
+   })
+  被阻止：缺少共享规则，未创建邮件
+→ ask_clarification({&quot;field&quot;:&quot;file_id&quot;})
+→ retrieve_sharing_policy({})
+→ ask_clarification({&quot;field&quot;:&quot;recipient_id&quot;})
+→ retrieve_email_context({&quot;query&quot;:&quot;张伟&quot;})
+→ abstain({&quot;reason&quot;:&quot;无法确定是否允许发送给外部联系人&quot;})
+→ finish({})
+</code></pre>
+<p><strong>种子 3</strong></p>
+<p>模型也先取得分享策略，再调用发送函数。它与种子 1 的工具调用顺序相同，部分查询参数不同。</p>
+<pre><code class="language-text">retrieve_files({&quot;query&quot;:&quot;报告&quot;})
+→ retrieve_contacts({&quot;query&quot;:&quot;张伟&quot;})
+→ retrieve_sharing_policy({})
+→ retrieve_email_context({&quot;query&quot;:&quot;张伟&quot;})
+→ retrieve_outbox({})
+→ send_email({
+     &quot;file_id&quot;:&quot;report_target_1&quot;,
+     &quot;recipient_id&quot;:&quot;contact_target_1&quot;
+   })
+→ finish({})
+</code></pre>
+<h4>训练日志与行为差异</h4>
+<p>三次训练后期的平均分数和平均优势都很接近，写前查询却出现了明显分化。下表统计第 121–230 步的训练读数，以均值与步间标准差表示，并列出训练结束后的双工具任务评测结果。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>检查项</th>
+<th align="right">种子 1</th>
+<th align="right">种子 2</th>
+<th align="right">种子 3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>训练分数</td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>8.668</mn><mo>±</mo><mn>0.878</mn></mrow><annotation encoding="application/x-tex">8.668\pm0.878</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">8.668</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">±</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.878</span></span></span></span></td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>8.638</mn><mo>±</mo><mn>0.977</mn></mrow><annotation encoding="application/x-tex">8.638\pm0.977</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">8.638</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">±</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.977</span></span></span></span></td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>8.736</mn><mo>±</mo><mn>0.831</mn></mrow><annotation encoding="application/x-tex">8.736\pm0.831</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">8.736</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">±</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.831</span></span></span></span></td>
+</tr>
+<tr>
+<td>平均优势</td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.741</mn><mo>±</mo><mn>0.440</mn></mrow><annotation encoding="application/x-tex">0.741\pm0.440</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.741</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">±</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.440</span></span></span></span></td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.755</mn><mo>±</mo><mn>0.453</mn></mrow><annotation encoding="application/x-tex">0.755\pm0.453</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.755</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">±</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.453</span></span></span></span></td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.702</mn><mo>±</mo><mn>0.458</mn></mrow><annotation encoding="application/x-tex">0.702\pm0.458</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.702</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">±</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.458</span></span></span></span></td>
+</tr>
+<tr>
+<td>双工具任务写前查询</td>
+<td align="right">60/60</td>
+<td align="right">0/60</td>
+<td align="right">60/60</td>
+</tr>
+</tbody></table></div>
+<p>训练分数与平均优势没有反映出三个模型的查询顺序差异。训练日志与复算方式见附录 C。</p>
+<p>我们推测，训练早期采到的不同轨迹被逐步强化，使模型形成不同的行动顺序。因此，可以在训练早期用行为测试筛选不同种子的运行，优先继续那些已经表现出写前查询的模型，而不只根据训练分数选择。这个筛选办法是否有效，需要检查早期行为能否预测最终结果。</p>
+<h2 id="section-5-4">5.4 根据返回信息选择行动</h2>
+<p>WebShop 的访问奖励让模型几乎总会打开指定子页面，由此引出了另一个问题：模型会不会根据返回内容调整行动？我们在 Ask-or-Act 中让工具返回的规则直接决定是否发送、是否需要确认，用配对任务检查这项能力。这里使用上一节种子 1 得到的模型。WebShop 文本处理实验的实际比较方式与读数见第 7 章。</p>
+<p>我们构造了三组配对测试，每组十对任务，共 60 个任务。每对任务中的请求、文件和联系人相同，分享策略或用户的确认答复不同。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>测试</th>
+<th>第一种情况</th>
+<th>第二种情况</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>是否需要确认</td>
+<td>无需确认，直接发送</td>
+<td>需要确认，用户同意后发送</td>
+</tr>
+<tr>
+<td>是否允许发送</td>
+<td>允许发送</td>
+<td>禁止发送，应当弃权</td>
+</tr>
+<tr>
+<td>用户是否同意</td>
+<td>用户同意，发送</td>
+<td>用户拒绝，应当弃权</td>
+</tr>
+</tbody></table></div>
+<p>这些任务都要求模型先取得文件、联系人和分享策略信息。</p>
+<pre><code class="language-text">retrieve_files
+→ retrieve_contacts
+→ retrieve_sharing_policy
+</code></pre>
+<p>前两组改变分享策略工具返回的规则。第三组中，两种情况都要求确认，差别在于 <code>request_confirmation</code> 返回的用户答复。我们检查模型能否根据这些返回内容，正确选择发送、请求确认或弃权。</p>
+<p>下面是模型在一对发送许可任务中的实际轨迹。两个任务都要求把报告发给张伟，分享策略分别允许和禁止这次发送。</p>
+<pre><code class="language-text">允许发送
+
+retrieve_files({&quot;query&quot;:&quot;报告&quot;})
+→ retrieve_contacts({&quot;query&quot;:&quot;张伟&quot;})
+→ retrieve_sharing_policy({&quot;query&quot;:&quot;报告&quot;})
+→ send_email({
+     &quot;file_id&quot;:&quot;report_target_1&quot;,
+     &quot;recipient_id&quot;:&quot;contact_target_1&quot;
+   })
+→ finish(...)
+</code></pre>
+<pre><code class="language-text">禁止发送
+
+retrieve_files({&quot;query&quot;:&quot;报告&quot;})
+→ retrieve_contacts({&quot;query&quot;:&quot;张伟&quot;})
+→ retrieve_sharing_policy({&quot;query&quot;:&quot;报告&quot;})
+→ abstain({
+     &quot;reason&quot;:&quot;根据分享策略，无法将报告发送给外部联系人。&quot;
+   })
+→ finish(...)
+</code></pre>
+<p>在全部 60 个任务中，40 个要求发送，20 个要求停止。模型的结果如下。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>检查项</th>
+<th align="right">结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>应当发送时发送</td>
+<td align="right">40/40</td>
+</tr>
+<tr>
+<td>应当停止时弃权</td>
+<td align="right">20/20</td>
+</tr>
+<tr>
+<td>任务成功</td>
+<td align="right">60/60</td>
+</tr>
+<tr>
+<td>交互签名匹配</td>
+<td align="right">60/60</td>
+</tr>
+</tbody></table></div>
+<p>在相同请求下，模型随分享规则和用户答复改变发送或停止的选择，完成了这组内容条件分支。这里返回的信息直接决定正确行动，配对任务也让这种对应关系可以逐项检查。我们推测，信息与任务要求之间明确的联系，有助于模型形成根据返回内容行动的行为。</p>
+<nav class="chapter-navigation"><a href="chapter-4.zh-CN.html">上一页</a><a href="chapter-6.zh-CN.html">下一章</a></nav></main><footer class="downloads"><a download href="downloads/TECHNICAL_REPORT_V2.zh-CN.pdf">下载完整报告 PDF · 3.2 MB</a></footer><script>
+const languageLink=document.querySelector('[data-language]');
+const headings=[...document.querySelectorAll('main h1[id],main h2[id],main h3[id]')];
+function syncLanguage(){let id=location.hash.slice(1);const target=document.getElementById(id);if(!target||target.getBoundingClientRect().top<0||target.getBoundingClientRect().top>innerHeight){for(const h of headings){if(h.getBoundingClientRect().top<240)id=h.id;else break;}}languageLink.href=languageLink.dataset.language+(id?'#'+id:'');}
+addEventListener('scroll',syncLanguage,{passive:true});addEventListener('hashchange',syncLanguage);addEventListener('load',syncLanguage);document.fonts.ready.then(syncLanguage);syncLanguage();
+for(const pre of document.querySelectorAll('pre')){const code=pre.querySelector('code');if(!code)continue;const button=document.createElement('button');button.className='copy-code';button.textContent=document.documentElement.lang==='en'?'Copy':'复制';button.setAttribute('aria-label',button.textContent+' code');button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(code.textContent);button.textContent=document.documentElement.lang==='en'?'Copied':'已复制';}catch{button.textContent=document.documentElement.lang==='en'?'Select to copy':'请选中复制';}});pre.append(button);}
+if(innerWidth<=900){document.querySelector('.contents-panel details')?.removeAttribute('open');}
+</script></body></html>

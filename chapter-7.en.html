@@ -1,0 +1,486 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Chapter 7. Visit Rewards and Content Responses in WebShop</title><link rel="stylesheet" href="report.css"><style>
+html{scroll-behavior:smooth;scroll-padding-top:2rem}body{font-family:Arial,"Microsoft YaHei",sans-serif;font-size:16px;line-height:1.85;background:#fff;color:#303030;margin:0}
+main,body.quick main{box-sizing:border-box;max-width:860px;margin:0 0 0 304px;padding:34px 48px 72px}
+.sitebar{margin-left:304px;max-width:860px;box-sizing:border-box;border-bottom:1px solid #ddd;padding:20px 48px 12px;display:flex;gap:22px;align-items:center;flex-wrap:wrap;font:400 14px/1.5 Arial,sans-serif}
+.sitebar{justify-content:flex-end}.sitebar a{color:#164e7a;text-decoration:none}.sitebar .brand{display:none}.sitebar a:hover{text-decoration:underline}
+.downloads{margin-left:304px;max-width:860px;box-sizing:border-box;font:14px/1.8 Arial,sans-serif;padding:22px 48px 36px;color:#666;border-top:1px solid #dce3e9;display:flex;gap:20px;flex-wrap:wrap}.author-credit{font-size:14px;font-weight:400;color:#555;margin:-10px 0 32px}
+.contents-panel{box-sizing:border-box;position:fixed;left:0;top:0;bottom:0;width:304px;overflow:auto;background:#142e49;border-right:1px solid #142e49;padding:28px 18px;font:14px/1.6 Arial,"Microsoft YaHei",sans-serif;color:#fff}
+.contents-panel a{display:block;color:#dbe6f0;text-decoration:none;padding:7px 10px}.contents-panel a:hover{background:#203e5c;color:#fff}.contents-panel a[aria-current=page]{background:#294b6c;color:#fff;border-left:2px solid #c0d7eb;padding-left:8px}
+.contents-panel summary{font-weight:400;cursor:pointer;margin:0 10px 20px;font-size:17px;list-style:none}.contents-panel .subsection{padding-left:22px;font-size:14px}.contents-panel .subsection:hover{padding-left:22px}
+h1,h2,h3,h4,h5,h6,strong,b,th{font-weight:400}h1{font-size:30px;line-height:1.45;color:#222;margin:0 0 26px}h2{font-size:24px;margin:38px 0 18px;color:#222}h3{font-size:20px;margin:30px 0 14px;color:#333}h4,h5{font-size:17px;color:#333}h2,h3,h4{scroll-margin-top:2rem;line-height:1.5}p{overflow-wrap:break-word}a{color:#164e7a;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}a:hover{color:#0b3558}a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid #608cb5;outline-offset:3px}
+.formula,.katex-display{max-width:100%;overflow-x:auto;overflow-y:hidden}pre{position:relative;overflow:auto;white-space:pre;max-width:100%;padding-top:38px}pre code{font-size:14px;white-space:pre}
+.copy-code{position:absolute;right:7px;top:5px;font:14px/1.5 Arial,sans-serif;border:1px solid #ccc;background:#fff;color:#555;border-radius:2px;cursor:pointer;padding:2px 9px}
+.table-wrap{overflow-x:auto;max-width:100%}table{font-size:14px}th,td{border-color:#ddd}th{background:#f3f3f3}pre,.code-list td{background:#f7f7f7;border-color:#ddd}.code-list{table-layout:auto}.code-list pre code{font-size:14px}.code-list .code-lines{font-size:12px;color:#777}.code-list th{color:#555}blockquote{border-color:#ccc;background:#f8f8f8}.chapter-navigation{border-top:1px solid #ddd;margin-top:48px;padding-top:20px;display:flex;justify-content:space-between;gap:24px;font-size:14px}
+@media(max-width:900px){main,body.quick main{margin:0 auto;padding:28px 24px 60px}.sitebar,.downloads{margin:0;padding-left:24px;padding-right:24px}.sitebar .brand{display:block;margin-right:auto}.contents-panel{position:static;width:auto;max-height:none;padding:14px 24px;border:0;border-bottom:1px solid #ddd}.contents-panel summary{font-size:14px;margin:0;list-style:revert}.contents-panel nav{max-height:45vh;overflow:auto}.contents-panel a{padding:6px 8px}}
+@media(max-width:600px){.sitebar{gap:12px;padding:12px 16px;font-size:14px}.sitebar .brand{width:100%}main,body.quick main{padding:24px 16px 60px}.downloads{padding:10px 16px;gap:12px}.contents-panel{padding:12px 16px}h1{font-size:26px}h2{font-size:22px}.code-list{min-width:620px}pre code{font-size:14px}.table-wrap th:first-child,.table-wrap td:first-child{background:#f5f5f5}.table-wrap th:first-child{background:#eee}}
+@media print{.sitebar,.downloads,.contents-panel,.copy-code{display:none!important}main{margin:0!important;max-width:none}body{font-size:10pt}pre{padding-top:9px}}
+</style></head><body class="full"><header class="sitebar"><a data-language="chapter-7.zh-CN.html" href="chapter-7.zh-CN.html" lang="zh-CN">中文</a></header><aside class="contents-panel"><details open><summary>Agent Reinforcement Learning</summary><nav><a href="quick.en.html">Research overview</a><a href="overview.en.html">Abstract</a><a href="chapter-1.en.html">Chapter 1. Evidence for Learned Target Behavior</a><a href="chapter-2.en.html">Chapter 2. Ask-or-Act Tasks and Evaluation</a><a href="chapter-3.en.html">Chapter 3. SFT Training and Generalization</a><a href="chapter-4.en.html">Chapter 4. SFT-GRPO: Behavioral Change During Continued Training</a><a href="chapter-5.en.html">Chapter 5. GRPO Starting from Instruct</a><a href="chapter-6.en.html">Chapter 6. Generalization Differences and Behavioral Diagnosis</a><a href="chapter-7.en.html" aria-current="page">Chapter 7. Visit Rewards and Content Responses in WebShop</a><a class="subsection" href="#section-7-1">7.1 WebShop Tasks, Rewards, and Text Treatments</a><a class="subsection" href="#section-7-2">7.2 Training Results with Visit Rewards</a><a href="chapter-8.en.html">Chapter 8. Reward Signals in Group-Relative Training</a><a href="chapter-9.en.html">Chapter 9. Related Work</a><a href="chapter-10.en.html">Chapter 10. Diagnosing Behavior and Training in Agent RL</a><a href="appendix-a.en.html">Appendix A. The Ask-or-Act System and Action Chains</a><a href="appendix-b.en.html">Appendix B. Rewards, Estimators, and Implementation</a><a href="appendix-c.en.html">Appendix C. Supplementary Experiments and Diagnostics</a><a href="appendix-d.en.html">Appendix D. Public Implementation, Statistics, and Resources</a><a href="references.en.html">References / 参考文献</a></nav></details></aside><main><h1 id="chapter-7" class="joined-heading">Chapter 7. Visit Rewards and Content Responses in WebShop</h1>
+<h2 id="section-7-1">7.1 WebShop Tasks, Rewards, and Text Treatments</h2>
+<p>In our WebShop experiments, we add a reward for visiting product subpages, aiming to encourage the model to obtain information before buying and use it to choose products that better match the user&#39;s requirements.</p>
+<p>Page-visit frequency measures whether the model learns the retrieval action. The content-treatment experiment changes page text and compares purchase fields and action sequences. We first define the fields, then interpret the results accordingly. We also decompose attribute scores for purchased products to locate matched attributes across pages.</p>
+<h3>Task and terminal score</h3>
+<p>This section compares three GRPO models trained from the initial Qwen3-8B Instruct model to step 75. The first uses only terminal reward. The second adds a 0.08 page-visit reward. The third grants that visit reward only when the final purchase receives full task reward. These are separate training runs used to compare how the reward condition affects retrieval behavior.</p>
+<p><a href="https://arxiv.org/abs/2207.01206">WebShop</a> simulates a shopping website. After receiving the user&#39;s purchase requirements, the model starts from the search page and operates the website through text commands. The system executes each command and returns the page content to the model.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Command</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>search[query]</code></td>
+<td>Search for products using a model-generated query</td>
+</tr>
+<tr>
+<td><code>click[B0XXXXXXXX]</code></td>
+<td>Open the corresponding product&#39;s detail page</td>
+</tr>
+<tr>
+<td><code>click[option value]</code></td>
+<td>Select a variant such as color or size</td>
+</tr>
+<tr>
+<td><code>click[description]</code>, <code>click[features]</code>, <code>click[reviews]</code>, <code>click[attributes]</code></td>
+<td>Open a product subpage for additional information</td>
+</tr>
+<tr>
+<td><code>click[back to search]</code>, <code>click[&lt; prev]</code>, <code>click[next &gt;]</code></td>
+<td>Go back or change page</td>
+</tr>
+<tr>
+<td><code>click[buy now]</code></td>
+<td>Purchase the current product and end the task</td>
+</tr>
+</tbody></table></div>
+<p>The model generates the query in <code>search[...]</code> and selects the target of <code>click[...]</code> from the clickable items shown on the page. In this experiment, each task allows at most 15 actions and ends after a purchase or when the action budget is exhausted.</p>
+<p class="formula-lead">WebShop computes the terminal score from the purchased product and selected options.</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>Terminal score</mtext><mo>=</mo><mfrac><mrow><mtext>Matched attributes</mtext><mo>+</mo><mtext>Correct options</mtext><mo>+</mo><mtext>Price score</mtext></mrow><mrow><mtext>Required attributes</mtext><mo>+</mo><mtext>Required options</mtext><mo>+</mo><mn>1</mn></mrow></mfrac><mo>×</mo><mtext>Type-match coefficient</mtext><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">
+\text{Terminal score}
+=
+\frac{
+\text{Matched attributes}+\text{Correct options}+\text{Price score}
+}{
+\text{Required attributes}+\text{Required options}+1
+}
+\times\text{Type-match coefficient}.
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord text"><span class="mord">Terminal score</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.2519em;vertical-align:-0.8804em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3714em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord">Required attributes</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord text"><span class="mord">Required options</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">1</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord">Matched attributes</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord text"><span class="mord">Correct options</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord text"><span class="mord">Price score</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.8804em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord text"><span class="mord">Type-match coefficient</span></span><span class="mord">.</span></span></span></span></span></div>
+<p>The price score is 1 when the price does not exceed the user&#39;s limit and 0 otherwise. The type-match coefficient takes values <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo separator="true">,</mo><mn>0.1</mn><mo separator="true">,</mo><mn>0.5</mn><mo separator="true">,</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">0, 0.1, 0.5, 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">0.1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">0.5</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1</span></span></span></span> according to title, category, and query matching. The exact rules appear under “WebShop Type-Match Coefficient” in Appendix B.1.</p>
+<p>For example, the user requires two product attributes, one option, and a price limit, giving four requirements. If the purchased product matches one attribute, the option and price are correct, and its type fully matches, the score is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mi mathvariant="normal">/</mi><mn>4</mn></mrow><annotation encoding="application/x-tex">3/4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">3/4</span></span></span></span>.</p>
+<h3>Visit reward</h3>
+<p>We reward visits to four product subpages: <code>description</code>, <code>features</code>, <code>reviews</code>, and <code>attributes</code>. Opening any one of these subpages before buying the product satisfies the visit condition. Repeated visits or visits to multiple subpages count only once.</p>
+<p>The visit and purchase must concern the same product. For example, reading product A&#39;s description and then buying product B does not earn the reward. The model must visit B&#39;s subpage before buying B. Without a completed purchase, there is no visit reward.</p>
+<p>Let <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi></mrow><annotation encoding="application/x-tex">p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">p</span></span></span></span> denote the visit-condition measure, calculated from purchases satisfying the condition above.</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>p</mi><mo>=</mo><mfrac><mtext>Purchases satisfying the visit condition</mtext><mtext>Purchases</mtext></mfrac><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">
+p=\frac{\text{Purchases satisfying the visit condition}}{\text{Purchases}}.
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">p</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.0574em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3714em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord">Purchases</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord">Purchases satisfying the visit condition</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord">.</span></span></span></span></span></div>
+<p>If no purchase occurs, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">p=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">p</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span>. WebShop usually ends after the first valid purchase, so <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi></mrow><annotation encoding="application/x-tex">p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">p</span></span></span></span> normally takes one of two values: 1 if the model visited that product&#39;s subpage before buying it, and 0 otherwise. Page openings are counted separately to check for repeated visits.</p>
+<p>We compare two reward schemes. The first gives a bonus whenever the visit condition is met. Let <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi></mrow><annotation encoding="application/x-tex">G</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">G</span></span></span></span> denote the terminal score and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi></mrow><annotation encoding="application/x-tex">\lambda</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">λ</span></span></span></span> the visit-reward coefficient. The training reward is</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>R</mi><mo>=</mo><mi>G</mi><mo>+</mo><mi>λ</mi><mi>p</mi><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">
+R=G+\lambda p.
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">G</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">λ</span><span class="mord mathnormal">p</span><span class="mord">.</span></span></span></span></span></div>
+<p>The second adds a score threshold <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi></mrow><annotation encoding="application/x-tex">g</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span></span></span></span> and gives the visit bonus only when the terminal score reaches that threshold.</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>R</mi><mo>=</mo><mrow><mo fence="true">{</mo><mtable rowspacing="0.36em" columnalign="left left" columnspacing="1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>G</mi><mo>+</mo><mi>λ</mi><mi>p</mi><mo separator="true">,</mo></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>G</mi><mo>≥</mo><mi>g</mi><mo separator="true">,</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>G</mi><mo separator="true">,</mo></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>G</mi><mo>&lt;</mo><mi>g</mi><mi mathvariant="normal">.</mi></mrow></mstyle></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+R=
+\begin{cases}
+G+\lambda p, &amp; G\ge g,\\
+G, &amp; G&lt;g.
+\end{cases}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:3em;vertical-align:-1.25em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size4">{</span></span><span class="mord"><span class="mtable"><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.69em;"><span style="top:-3.69em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord mathnormal">G</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">λ</span><span class="mord mathnormal">p</span><span class="mpunct">,</span></span></span><span style="top:-2.25em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord mathnormal">G</span><span class="mpunct">,</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.19em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:1em;"></span><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.69em;"><span style="top:-3.69em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord mathnormal">G</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≥</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mpunct">,</span></span></span><span style="top:-2.25em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord mathnormal">G</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord">.</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.19em;"><span></span></span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></div>
+<p>When <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">g=1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span>, the model must make a full-score purchase to receive the visit bonus.</p>
+<p>The default visit bonus is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.08</mn></mrow><annotation encoding="application/x-tex">0.08</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.08</span></span></span></span>. For tasks with scoring denominator at most 12, a non-full-score purchase plus the bonus remains below a full-score purchase without a visit: <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>11</mn><mi mathvariant="normal">/</mi><mn>12</mn><mo>+</mo><mn>0.08</mn><mo>≈</mo><mn>0.997</mn><mo>&lt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">11/12+0.08\approx0.997&lt;1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">11/12</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.08</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6835em;vertical-align:-0.0391em;"></span><span class="mord">0.997</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span>. Rankings between partial scores can still change, for example <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.025</mn><mo>+</mo><mn>0.08</mn><mo>&gt;</mo><mn>0.100</mn></mrow><annotation encoding="application/x-tex">0.025+0.08&gt;0.100</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.025</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6835em;vertical-align:-0.0391em;"></span><span class="mord">0.08</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.100</span></span></span></span>.</p>
+<p>The following are actual trajectories from two models completing the same purchase task. One reads the product description and features before buying; the other buys directly.</p>
+<p>Visit subpages before buying:</p>
+<pre><code class="language-text">search[noise cancelling cosycost usb microphone under 70]
+→ click[B0972Q1T8T]
+→ click[description]
+→ click[&lt; prev]
+→ click[features]
+→ click[&lt; prev]
+→ click[buy now]
+</code></pre>
+<p>Buy directly:</p>
+<pre><code class="language-text">search[noise cancelling cosycost usb microphone under 70]
+→ click[B0972Q1T8T]
+→ click[buy now]
+</code></pre>
+<p>Both trajectories buy the same product and receive a terminal score of 1. With the visit bonus, the first receives <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1.08</mn></mrow><annotation encoding="application/x-tex">1.08</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1.08</span></span></span></span> and the second still receives <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn></mrow><annotation encoding="application/x-tex">1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span>. Opening two subpages earns the first trajectory only one bonus of <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.08</mn></mrow><annotation encoding="application/x-tex">0.08</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.08</span></span></span></span>.</p>
+<h3>Evaluation methods</h3>
+<p>Task evaluation runs each model once per task and saves terminal scores and page-visit information. Trajectory replay re-executes saved actions to check whether visits return nonempty content. The content-treatment experiment runs separate text conditions for the same task and saves action sequences and purchase fields. Product-score decomposition examines the products actually purchased to locate matched attributes in titles and subpages.</p>
+<h3>Content-treatment experiment</h3>
+<p>The script starts a separate run from the initial page for each task and condition. It does not save an intermediate state and branch into two continuations. Every qualifying observation is processed, so a trajectory may receive treated content more than once.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Condition</th>
+<th>Treatment</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Reference, <code>null</code></td>
+<td>Replace <code>Rating: N.A.</code> with <code>Rating: 4.3</code>; otherwise replace the first <code>Rating:</code> with <code>Rating: 4.3 —</code>, retaining the original rating that follows</td>
+</tr>
+<tr>
+<td><code>price</code></td>
+<td>Set the detail-page price to three times the user&#39;s budget</td>
+</tr>
+<tr>
+<td><code>note</code></td>
+<td>Append a product-mismatch statement to detail pages</td>
+</tr>
+<tr>
+<td><code>desc</code></td>
+<td>Append information conflicting with the request to subpages</td>
+</tr>
+<tr>
+<td><code>note_sub</code></td>
+<td>Append a product-mismatch statement to subpages</td>
+</tr>
+</tbody></table></div>
+<p>The script selects <code>null</code> as a reference because it treats star ratings as outside the task requirements; this condition still changes model-visible text. A comparison with a subpage condition can therefore differ at an earlier detail page. For each pair, we compare action sequences, target products, and treatment counts to check whether the runs already differed before the treatment.</p>
+<p>The <code>desc</code> condition fills the templates <code>This product is NOT {attributes}.</code> and <code>It is not available in {options}.</code> with the task&#39;s attributes and options. If both are absent, it falls back to an over-budget or generic mismatch statement. In contrast, <code>note</code> and <code>note_sub</code> always append <code>NOTE: This item does NOT match your request.</code>; only their placement differs. Subpage treatment is triggered when the preceding click is <code>description</code>, <code>features</code>, or <code>reviews</code>, excluding <code>attributes</code>.</p>
+<p>The script assigns each run&#39;s <code>target</code> from its first call of the form <code>click[b0…]</code>. Subsequent page treatments do not check again that the current product is this target. The saved <code>bought_target</code> field is true when the environment reports termination and the last such product click in the action sequence points to that run&#39;s target. This Boolean indicates only whether this condition holds; the full identity of the final purchased product is absent from this Boolean field.</p>
+<p>We pair runs by task ID, retaining tasks with evaluation outputs under both conditions and <code>fired=true</code> in both runs. This field means that page text changed at least once. We calculate</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>Purchase-field change rate</mtext><mo>=</mo><mfrac><mtext>Pairs with different bought_target values</mtext><mtext>Pairs with text treatment triggered in both runs</mtext></mfrac><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">
+\text{Purchase-field change rate}
+=\frac{\text{Pairs with different bought\_target values}}
+{\text{Pairs with text treatment triggered in both runs}}.
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord text"><span class="mord">Purchase-field change rate</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.2749em;vertical-align:-0.8804em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3944em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord">Pairs with text treatment triggered in both runs</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.7em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord">Pairs with different bought_target values</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.8804em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord">.</span></span></span></span></span></div>
+<p>Eligibility depends on whether each run reaches a treated page. Section 7.2 separately compares purchase Booleans, target products, and action sequences across the paired runs.</p>
+<h3>Attribute-score decomposition of purchased products</h3>
+<p>For the product actually purchased in each replayable trajectory, we check whether requested attributes occur in its title, Description, or BulletPoints. The <code>att_subpage_only</code> field counts requested attributes absent from the title but present in Description or BulletPoints. These are attributes already matched by this purchased product.</p>
+<p class="formula-lead">For each purchase trajectory included in the decomposition, we compute</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>Subpage-matched attribute share</mtext><mo>=</mo><mfrac><mtext>Requested attributes matched in Description or BulletPoints but not the title</mtext><mrow><mtext>Required attributes</mtext><mo>+</mo><mtext>Required options</mtext><mo>+</mo><mn>1</mn></mrow></mfrac><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">
+\text{Subpage-matched attribute share}
+=\frac{\text{Requested attributes matched in Description or BulletPoints but not the title}}
+{\text{Required attributes}+\text{Required options}+1}.
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord text"><span class="mord">Subpage-matched attribute share</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.2519em;vertical-align:-0.8804em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3714em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord">Required attributes</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord text"><span class="mord">Required options</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">1</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord">Requested attributes matched in Description or BulletPoints but not the title</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.8804em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord">.</span></span></span></span></span></div>
+<p>For example, two attributes, one option, and a price limit give four scoring components. If one requested attribute of the purchased product matches only in those subpage texts, the share is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi mathvariant="normal">/</mi><mn>4</mn></mrow><annotation encoding="application/x-tex">1/4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1/4</span></span></span></span>. The calculation omits the product-type coefficient and describes a share of scoring components.</p>
+<p>We retain tasks with a score decomposition whose replayed score matches the saved terminal score, then calculate the mean, median, and zero count. This quantity describes the attribute-score composition of the products actually purchased and varies with those products and the replayable task set. Benefits from switching products, rejecting unsuitable products, or changing options after reading are forms of information value outside this decomposition.</p>
+<hr>
+<h2 id="section-7-2">7.2 Training Results with Visit Rewards</h2>
+<h3>Page visits and returned content</h3>
+<p>We compare three training schemes: terminal reward alone, an added visit reward, and a visit reward given only for full-score purchases. Each model runs once on the same 500 tasks, yielding 500, 499, and 498 trajectories, respectively, that can be parsed and produce an environment outcome. The table uses each model&#39;s valid task count as its denominator.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Training reward</th>
+<th align="right">Visited the rewarded page before purchase</th>
+<th align="right">Task success</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Terminal reward only</td>
+<td align="right">94/500 (18.8%)</td>
+<td align="right">214/500 (42.8%)</td>
+</tr>
+<tr>
+<td>Added visit reward</td>
+<td align="right">498/499 (99.8%)</td>
+<td align="right">221/499 (44.3%)</td>
+</tr>
+<tr>
+<td>Visit reward only for full-score purchases</td>
+<td align="right">495/498 (99.4%)</td>
+<td align="right">205/498 (41.2%)</td>
+</tr>
+</tbody></table></div>
+<p>Adding the visit reward raises page visitation from 18.8% to 99.8% and task success from 42.8% to 44.3%. Restricting the bonus to full-score purchases still produces 99.4% visitation, with task success at 41.2%. Both reward schemes make the model visit a subpage before almost every purchase, while task success changes much less.</p>
+<p>The following three categories partition failed tasks in order. Tasks without a rewarded-subpage visit are counted first. Among the visiting tasks, those with incomplete required-option matches form the second category; the third contains the remaining failures. These categories describe failed trajectories without treating non-visitation itself as their cause.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Training reward</th>
+<th align="right">Failed without a visit</th>
+<th align="right">Visited; required options incomplete</th>
+<th align="right">Visited; options complete but still failed</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Terminal reward only</td>
+<td align="right">228/500 (45.6%)</td>
+<td align="right">39/500 (7.8%)</td>
+<td align="right">19/500 (3.8%)</td>
+</tr>
+<tr>
+<td>Added visit reward</td>
+<td align="right">1/499 (0.2%)</td>
+<td align="right">186/499 (37.3%)</td>
+<td align="right">91/499 (18.2%)</td>
+</tr>
+<tr>
+<td>Visit reward only for full-score purchases</td>
+<td align="right">2/498 (0.4%)</td>
+<td align="right">204/498 (41.0%)</td>
+<td align="right">87/498 (17.5%)</td>
+</tr>
+</tbody></table></div>
+<p>With the visit reward, failed tasks without a subpage visit fall from 228 to one, while visited tasks with incomplete required-option matches rise from 39 to 186. Every task assigned to the option-failure category in these three sets has an environment score decomposition supporting that label. Because visitation is checked first, the change from 39 to 186 also depends on the changed visit rate. It exposes option requirements that remain unresolved after the rewarded visit.</p>
+<p>We replay these trajectories using the method in Section 7.1 to check whether the visited subpages return content.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Model</th>
+<th align="right">Trajectories</th>
+<th align="right">Fully replayable</th>
+<th align="right">Meet the visit condition after replay</th>
+<th align="right">Of these, return nonempty content</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Initial Instruct</td>
+<td align="right">500</td>
+<td align="right">475</td>
+<td align="right">33</td>
+<td align="right">28/33 (84.8%)</td>
+</tr>
+<tr>
+<td>Trained with terminal reward only</td>
+<td align="right">500</td>
+<td align="right">483</td>
+<td align="right">80</td>
+<td align="right">72/80 (90.0%)</td>
+</tr>
+<tr>
+<td>Trained with an added visit reward</td>
+<td align="right">499</td>
+<td align="right">495</td>
+<td align="right">494</td>
+<td align="right">490/494 (99.2%)</td>
+</tr>
+</tbody></table></div>
+<p>The model trained with an added visit reward has 494 replayable trajectories that meet the visit condition. Of these, 490 obtain nonempty product text at least once. These visits therefore usually do return content.</p>
+<h3>Attribute-score shares of purchased products</h3>
+<p>For the terminal-reward-only model, 483 tasks can be fully replayed with scores recomputed. Under the definition in §7.1, required attributes account for a mean 39.4% of scoring components. Requested attributes matched only in subpage text of the purchased product account for a mean 10.0%, with median zero and 330/483 zero-valued tasks.</p>
+<p>The table compares attribute-score shares across seven models, using each model&#39;s purchased products. Recomputable tasks are selected from fully replayed trajectories: the recomputed score must agree with the original, and the score decomposition must be available. For initial Instruct, 395 of the 475 fully replayed trajectories meet these conditions.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Model</th>
+<th align="right">Recomputable tasks / valid trajectories</th>
+<th align="right">Mean subpage-matched attribute share</th>
+<th align="right">Zero-valued tasks</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Initial Instruct</td>
+<td align="right">395/500</td>
+<td align="right">9.4%</td>
+<td align="right">276/395</td>
+</tr>
+<tr>
+<td>Terminal reward only</td>
+<td align="right">483/500</td>
+<td align="right">10.0%</td>
+<td align="right">330/483</td>
+</tr>
+<tr>
+<td>Visit reward</td>
+<td align="right">495/499</td>
+<td align="right">11.8%</td>
+<td align="right">308/495</td>
+</tr>
+<tr>
+<td>Full-score-gated visit reward</td>
+<td align="right">473/498</td>
+<td align="right">11.9%</td>
+<td align="right">296/473</td>
+</tr>
+<tr>
+<td>GiGPO seed 1</td>
+<td align="right">495/500</td>
+<td align="right">10.4%</td>
+<td align="right">332/495</td>
+</tr>
+<tr>
+<td>GiGPO seed 2</td>
+<td align="right">493/500</td>
+<td align="right">12.0%</td>
+<td align="right">308/493</td>
+</tr>
+<tr>
+<td>Prompt-group state baseline</td>
+<td align="right">489/500</td>
+<td align="right">11.4%</td>
+<td align="right">316/489</td>
+</tr>
+</tbody></table></div>
+<p>All seven medians are zero. Many of these purchased products have no requested attribute matched in subpage text beyond the title. Reading may also lead the model to reject the product or change an option; those benefits lie outside this decomposition.</p>
+<h3>Purchase Results in Text-Treatment Experiments</h3>
+<p>Following the actual protocol in §7.1, we pair each treatment with the star-rating reference condition. The table counts pairs with different saved <code>bought_target</code> values.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Treatment</th>
+<th align="right">Visit-reward model</th>
+<th align="right">Full-score-gated model</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Append conflicting attributes to subpages</td>
+<td align="right">0/198</td>
+<td align="right">15/197</td>
+</tr>
+<tr>
+<td>Append a mismatch statement to subpages</td>
+<td align="right">0/198</td>
+<td align="right">3/197</td>
+</tr>
+<tr>
+<td>Append a mismatch statement to detail pages</td>
+<td align="right">50/199</td>
+<td align="right">8/199</td>
+</tr>
+<tr>
+<td>Set detail-page price to three times the budget</td>
+<td align="right">9/199</td>
+<td align="right">Not reported in this comparison</td>
+</tr>
+</tbody></table></div>
+<p>Modifying the star-rating text defines the reference condition. There is no comparison against unchanged pages, so this experiment does not estimate the effect of the rating modification itself.</p>
+<p>Pair-level checks between attribute-conflict and reference runs also reveal differences in action sequences, target products, and treatment counts.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Difference between attribute-conflict and reference runs</th>
+<th align="right">Visit-reward model</th>
+<th align="right">Full-score-gated model</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Different action sequences</td>
+<td align="right">18/198</td>
+<td align="right">73/197</td>
+</tr>
+<tr>
+<td>Different script-assigned <code>target</code> values</td>
+<td align="right">2/198</td>
+<td align="right">2/197</td>
+</tr>
+<tr>
+<td>Treatment runs with repeated subpage modifications</td>
+<td align="right">56/198</td>
+<td align="right">186/197</td>
+</tr>
+</tbody></table></div>
+<p>The 0/198 result means that the Boolean for purchasing each run&#39;s own designated target is unchanged in every pair; the field does not encode the full identity of the final purchased product. Nonzero counts in other conditions indicate changes in this field. Prefix differences, repeated treatments, and trigger-conditioned selection all enter the comparison, so the results concern the complete text-treatment protocol. The causal effect of a single subpage observation change remains unisolated.</p>
+<p>One action-level example remains useful. Both the reference and attribute-conflict runs for the hair-extension task execute:</p>
+<pre><code class="language-text">search[long clip-in hair extension natural looking under 40]
+→ click[B08H5DCD65]
+→ click[natural black #1B]
+→ click[features]
+→ click[&lt; prev]
+→ click[buy now]
+</code></pre>
+<p>The action chains match, but the reference run has already modified the detail-page rating, while the attribute-conflict run appends subpage text. This example shows a repeated purchase procedure under two text treatments, not two continuations branched from identical observation histories.</p>
+<h3>Actions after a page visit</h3>
+<p>We examine whether the model continues comparing other products after visiting a subpage, to understand the role of retrieval in the purchase process. After training, we evaluate the model trained with terminal reward only and the model trained with the full-score gate, sampling eight <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>1.0</mn></mrow><annotation encoding="application/x-tex">T=1.0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1.0</span></span></span></span> rollouts per task. The 500 tasks yield 4,000 and 3,987 valid trajectories, respectively.</p>
+<p>We count clicks whose targets match the product-ID format to check whether the model clicks a product after visiting a subpage. The script identifies a sequence of ten lowercase letters or digits inside <code>click[...]</code> as a product ID, so it may also count option values with the same format. The table separately records whether such a click occurs and whether it targets a previously unseen ID. Both rates use trajectories that visited a rewarded subpage as their denominator.</p>
+<p>The environment also directly records how many products the model examines. We use this record to count trajectories that examine exactly two products.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Statistic</th>
+<th align="right">Terminal reward only</th>
+<th align="right">Visit reward only for full-score purchases</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Visited a rewarded subpage</td>
+<td align="right">1,169/4,000 (29.2%)</td>
+<td align="right">3,970/3,987 (99.6%)</td>
+</tr>
+<tr>
+<td>Click matching the product-ID format after the first visit</td>
+<td align="right">1,166/1,169 (99.7%)</td>
+<td align="right">4/3,970 (0.10%)</td>
+</tr>
+<tr>
+<td>Click on previously unseen text matching the product-ID format after the first visit</td>
+<td align="right">672/1,169 (57.5%)</td>
+<td align="right">2/3,970 (0.05%)</td>
+</tr>
+<tr>
+<td>Environment records exactly two products examined</td>
+<td align="right">729/4,000 (18.2%)</td>
+<td align="right">2/3,987 (0.05%)</td>
+</tr>
+<tr>
+<td>Mean actions per trajectory</td>
+<td align="right">5.58</td>
+<td align="right">7.75</td>
+</tr>
+<tr>
+<td>Mean terminal score, excluding the visit bonus</td>
+<td align="right">0.711</td>
+<td align="right">0.712</td>
+</tr>
+</tbody></table></div>
+<p>The model trained with the full-score gate visits subpages on 99.6% of trajectories. Among these visiting trajectories, only four contain a click matching the product-ID format after the first visit, and two of those click a previously unseen ID. The model rarely clicks other products after opening a subpage.</p>
+<p>Mean actions per trajectory rise from 5.58 to 7.75, an increase of 2.17, close to the two actions needed to open a subpage and return to the product details. The two models have mean terminal scores of 0.711 and 0.712. The additional actions are not accompanied by an appreciable score increase.</p>
+<p>The model trained with the full-score gate commonly follows this action sequence.</p>
+<pre><code class="language-text">open product details
+→ view rewarded subpage
+→ return to product detail
+→ buy the same product
+</code></pre>
+<p>Subpage visits occur mainly in the final steps before purchase, with little further browsing of other products afterward.</p>
+<h3>Subpage visits by commercial models</h3>
+<p>We also ran seven commercial API models directly on the first 200 WebShop test tasks, without training them on a visit reward. Each task received one run with a 15-step budget and temperature 0. Some calls did not produce valid results; the table retains each model&#39;s actual number of evaluated tasks.</p>
+<p>We count completed-purchase trajectories containing a subpage click followed by a purchase click. The script recognizes description, features, reviews, and attributes pages and resets the subpage-visit flags for the previous product when a new product is entered. The denominator counts trajectories in which the environment confirms a completed purchase. The numerator additionally requires at least one purchase click preceded by a qualifying subpage visit in the action sequence. This describes page visitation within the purchase process, not whether the returned content changes the purchase.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Model</th>
+<th align="right">Valid evaluated tasks</th>
+<th align="right">Completed-purchase trajectories with a prior subpage visit</th>
+<th align="right">Full-score tasks</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Claude-Haiku-4.5</td>
+<td align="right">200</td>
+<td align="right">43/165 (26.1%)</td>
+<td align="right">55/200</td>
+</tr>
+<tr>
+<td>DeepSeek-v4-pro</td>
+<td align="right">197</td>
+<td align="right">42/169 (24.9%)</td>
+<td align="right">61/197</td>
+</tr>
+<tr>
+<td>DeepSeek-v4-flash</td>
+<td align="right">200</td>
+<td align="right">32/157 (20.4%)</td>
+<td align="right">54/200</td>
+</tr>
+<tr>
+<td>Gemini-3.6-flash</td>
+<td align="right">185</td>
+<td align="right">34/167 (20.4%)</td>
+<td align="right">82/185</td>
+</tr>
+<tr>
+<td>Qwen3-max</td>
+<td align="right">189</td>
+<td align="right">31/154 (20.1%)</td>
+<td align="right">53/189</td>
+</tr>
+<tr>
+<td>GPT-5.1</td>
+<td align="right">197</td>
+<td align="right">10/187 (5.3%)</td>
+<td align="right">56/197</td>
+</tr>
+<tr>
+<td>Qwen3.7-plus</td>
+<td align="right">200</td>
+<td align="right">4/48 (8.3%)</td>
+<td align="right">16/200</td>
+</tr>
+</tbody></table></div>
+<p>For the first six models, the visitation proportion ranges from 5.3% to 26.1%. Qwen3.7-plus exhausts the 15-step budget on 158/200 tasks, and only 48 trajectories complete a purchase. Its 4/48 describes the minority of tasks reaching purchase and needs to be read alongside its low completion count.</p>
+<p>Without this project&#39;s visit-reward training, these models also often buy directly. Low page visitation is therefore not confined to our terminal-reward model.</p>
+<h3>Evidence on Visitation and Content Use</h3>
+<p>The visit reward makes pre-purchase subpage visits nearly universal, and replay confirms that they usually return nonempty content. Task success changes much less than visitation, while the full-score-gated model usually visits near the end of its purchase procedure.</p>
+<p>The text-treatment experiment compares purchase-field responses across conditions. It does not establish the stronger claim that the model learned retrieval without learning to use information. The attribute decomposition describes matches in purchased products, leaving the benefit of reading before product selection unmeasured.</p>
+<hr>
+<nav class="chapter-navigation"><a href="chapter-6.en.html">Previous</a><a href="chapter-8.en.html">Next</a></nav></main><footer class="downloads"><a download href="downloads/TECHNICAL_REPORT_V2.en.pdf">Download full report PDF · 2.8 MB</a></footer><script>
+const languageLink=document.querySelector('[data-language]');
+const headings=[...document.querySelectorAll('main h1[id],main h2[id],main h3[id]')];
+function syncLanguage(){let id=location.hash.slice(1);const target=document.getElementById(id);if(!target||target.getBoundingClientRect().top<0||target.getBoundingClientRect().top>innerHeight){for(const h of headings){if(h.getBoundingClientRect().top<240)id=h.id;else break;}}languageLink.href=languageLink.dataset.language+(id?'#'+id:'');}
+addEventListener('scroll',syncLanguage,{passive:true});addEventListener('hashchange',syncLanguage);addEventListener('load',syncLanguage);document.fonts.ready.then(syncLanguage);syncLanguage();
+for(const pre of document.querySelectorAll('pre')){const code=pre.querySelector('code');if(!code)continue;const button=document.createElement('button');button.className='copy-code';button.textContent=document.documentElement.lang==='en'?'Copy':'复制';button.setAttribute('aria-label',button.textContent+' code');button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(code.textContent);button.textContent=document.documentElement.lang==='en'?'Copied':'已复制';}catch{button.textContent=document.documentElement.lang==='en'?'Select to copy':'请选中复制';}});pre.append(button);}
+if(innerWidth<=900){document.querySelector('.contents-panel details')?.removeAttribute('open');}
+</script></body></html>

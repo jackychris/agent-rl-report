@@ -1,0 +1,464 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>第 6 章　泛化差异与行为诊断</title><link rel="stylesheet" href="report.css"><style>
+html{scroll-behavior:smooth;scroll-padding-top:2rem}body{font-family:Arial,"Microsoft YaHei",sans-serif;font-size:16px;line-height:1.85;background:#fff;color:#303030;margin:0}
+main,body.quick main{box-sizing:border-box;max-width:860px;margin:0 0 0 304px;padding:34px 48px 72px}
+.sitebar{margin-left:304px;max-width:860px;box-sizing:border-box;border-bottom:1px solid #ddd;padding:20px 48px 12px;display:flex;gap:22px;align-items:center;flex-wrap:wrap;font:400 14px/1.5 Arial,sans-serif}
+.sitebar{justify-content:flex-end}.sitebar a{color:#164e7a;text-decoration:none}.sitebar .brand{display:none}.sitebar a:hover{text-decoration:underline}
+.downloads{margin-left:304px;max-width:860px;box-sizing:border-box;font:14px/1.8 Arial,sans-serif;padding:22px 48px 36px;color:#666;border-top:1px solid #dce3e9;display:flex;gap:20px;flex-wrap:wrap}.author-credit{font-size:14px;font-weight:400;color:#555;margin:-10px 0 32px}
+.contents-panel{box-sizing:border-box;position:fixed;left:0;top:0;bottom:0;width:304px;overflow:auto;background:#142e49;border-right:1px solid #142e49;padding:28px 18px;font:14px/1.6 Arial,"Microsoft YaHei",sans-serif;color:#fff}
+.contents-panel a{display:block;color:#dbe6f0;text-decoration:none;padding:7px 10px}.contents-panel a:hover{background:#203e5c;color:#fff}.contents-panel a[aria-current=page]{background:#294b6c;color:#fff;border-left:2px solid #c0d7eb;padding-left:8px}
+.contents-panel summary{font-weight:400;cursor:pointer;margin:0 10px 20px;font-size:17px;list-style:none}.contents-panel .subsection{padding-left:22px;font-size:14px}.contents-panel .subsection:hover{padding-left:22px}
+h1,h2,h3,h4,h5,h6,strong,b,th{font-weight:400}h1{font-size:30px;line-height:1.45;color:#222;margin:0 0 26px}h2{font-size:24px;margin:38px 0 18px;color:#222}h3{font-size:20px;margin:30px 0 14px;color:#333}h4,h5{font-size:17px;color:#333}h2,h3,h4{scroll-margin-top:2rem;line-height:1.5}p{overflow-wrap:break-word}a{color:#164e7a;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}a:hover{color:#0b3558}a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid #608cb5;outline-offset:3px}
+.formula,.katex-display{max-width:100%;overflow-x:auto;overflow-y:hidden}pre{position:relative;overflow:auto;white-space:pre;max-width:100%;padding-top:38px}pre code{font-size:14px;white-space:pre}
+.copy-code{position:absolute;right:7px;top:5px;font:14px/1.5 Arial,sans-serif;border:1px solid #ccc;background:#fff;color:#555;border-radius:2px;cursor:pointer;padding:2px 9px}
+.table-wrap{overflow-x:auto;max-width:100%}table{font-size:14px}th,td{border-color:#ddd}th{background:#f3f3f3}pre,.code-list td{background:#f7f7f7;border-color:#ddd}.code-list{table-layout:auto}.code-list pre code{font-size:14px}.code-list .code-lines{font-size:12px;color:#777}.code-list th{color:#555}blockquote{border-color:#ccc;background:#f8f8f8}.chapter-navigation{border-top:1px solid #ddd;margin-top:48px;padding-top:20px;display:flex;justify-content:space-between;gap:24px;font-size:14px}
+@media(max-width:900px){main,body.quick main{margin:0 auto;padding:28px 24px 60px}.sitebar,.downloads{margin:0;padding-left:24px;padding-right:24px}.sitebar .brand{display:block;margin-right:auto}.contents-panel{position:static;width:auto;max-height:none;padding:14px 24px;border:0;border-bottom:1px solid #ddd}.contents-panel summary{font-size:14px;margin:0;list-style:revert}.contents-panel nav{max-height:45vh;overflow:auto}.contents-panel a{padding:6px 8px}}
+@media(max-width:600px){.sitebar{gap:12px;padding:12px 16px;font-size:14px}.sitebar .brand{width:100%}main,body.quick main{padding:24px 16px 60px}.downloads{padding:10px 16px;gap:12px}.contents-panel{padding:12px 16px}h1{font-size:26px}h2{font-size:22px}.code-list{min-width:620px}pre code{font-size:14px}.table-wrap th:first-child,.table-wrap td:first-child{background:#f5f5f5}.table-wrap th:first-child{background:#eee}}
+@media print{.sitebar,.downloads,.contents-panel,.copy-code{display:none!important}main{margin:0!important;max-width:none}body{font-size:10pt}pre{padding-top:9px}}
+</style></head><body class="full"><header class="sitebar"><a data-language="chapter-6.en.html" href="chapter-6.en.html" lang="en">English</a></header><aside class="contents-panel"><details open><summary>智能体强化学习</summary><nav><a href="index.html">研究概览</a><a href="overview.zh-CN.html">摘要</a><a href="chapter-1.zh-CN.html">第 1 章　目标行为学习的证据</a><a href="chapter-2.zh-CN.html">第 2 章　Ask-or-Act 任务与评测</a><a href="chapter-3.zh-CN.html">第 3 章　SFT 的训练与泛化</a><a href="chapter-4.zh-CN.html">第 4 章　SFT-GRPO：继续训练后的行为变化</a><a href="chapter-5.zh-CN.html">第 5 章　从 Instruct 开始的 GRPO</a><a href="chapter-6.zh-CN.html" aria-current="page">第 6 章　泛化差异与行为诊断</a><a class="subsection" href="#section-6-1">6.1 三条训练路线的行为比较</a><a class="subsection" href="#section-6-2">6.2 查询与规则判断中的泛化差异</a><a class="subsection" href="#section-6-3">6.3 课程生成与评测结果</a><a href="chapter-7.zh-CN.html">第 7 章　WebShop 的访问奖励与内容响应</a><a href="chapter-8.zh-CN.html">第 8 章　组相对训练的奖励信号</a><a href="chapter-9.zh-CN.html">第 9 章　相关工作</a><a href="chapter-10.zh-CN.html">第 10 章　智能体强化学习的行为与训练诊断</a><a href="appendix-a.zh-CN.html">附录 A　Ask-or-Act 系统与动作链</a><a href="appendix-b.zh-CN.html">附录 B　奖励、估计器与实现</a><a href="appendix-c.zh-CN.html">附录 C　补充实验与诊断</a><a href="appendix-d.zh-CN.html">附录 D　公开实现、统计规则与资源</a><a href="references.zh-CN.html">References / 参考文献</a></nav></details></aside><main><h1 id="chapter-6">第 6 章　泛化差异与行为诊断</h1>
+<h2 id="section-6-1">6.1 三条训练路线的行为比较</h2>
+<p>第三至第五章分别报告 SFT、SFT 后继续 GRPO，以及直接 GRPO 的结果。这里并排比较三条路线的代表模型，检查同一批任务的完成情况和具体行动要求。其他数据配置、奖励改动与种子实验仍保留在各自章节。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>测试任务与检查内容</th>
+<th align="right"><code>SFT #1</code></th>
+<th align="right"><code>SFT-GRPO #1</code></th>
+<th align="right"><code>GRPO #1</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>更换人物和文件，任务成功</td>
+<td align="right">44/48</td>
+<td align="right">48/48</td>
+<td align="right">44/48</td>
+</tr>
+<tr>
+<td>更换人物和文件，交互签名匹配</td>
+<td align="right">36/48</td>
+<td align="right">48/48</td>
+<td align="right">42/48</td>
+</tr>
+<tr>
+<td>澄清—确认配对测试，任务成功</td>
+<td align="right">20/20</td>
+<td align="right">20/20</td>
+<td align="right">20/20</td>
+</tr>
+<tr>
+<td>澄清—确认配对测试，发生过早行动</td>
+<td align="right">19/20</td>
+<td align="right">0/20</td>
+<td align="right">20/20</td>
+</tr>
+<tr>
+<td>邮件双工具数值任务，任务成功</td>
+<td align="right">50/60</td>
+<td align="right">50/60</td>
+<td align="right">39/60</td>
+</tr>
+<tr>
+<td>邮件双工具数值任务，满足写前查询条件</td>
+<td align="right">60/60</td>
+<td align="right">0/60</td>
+<td align="right">58/60</td>
+</tr>
+<tr>
+<td>邮件双工具数值任务，发生过早行动</td>
+<td align="right">0/60</td>
+<td align="right">60/60</td>
+<td align="right">60/60</td>
+</tr>
+<tr>
+<td>日程返回编号传递分支，任务成功</td>
+<td align="right">28/30</td>
+<td align="right">9/30</td>
+<td align="right">30/30</td>
+</tr>
+<tr>
+<td>日程返回编号传递分支，实际传递返回编号</td>
+<td align="right">30/30</td>
+<td align="right">1/30</td>
+<td align="right">6/30</td>
+</tr>
+<tr>
+<td>基础日程任务，任务成功</td>
+<td align="right">23/260</td>
+<td align="right">235/260</td>
+<td align="right">228/260</td>
+</tr>
+<tr>
+<td>基础日程任务，交互签名匹配</td>
+<td align="right">6/260</td>
+<td align="right">53/260</td>
+<td align="right">117/260</td>
+</tr>
+</tbody></table></div>
+<p>实体替换和基础日程结果来自评测汇总文件；澄清—确认配对测试、邮件双工具数值任务和日程返回编号传递检查的结果来自保存轨迹的重放。复算规则见附录 D。交互签名检查有效澄清字段、确认出现和终态的组合，不检查普通查询的顺序或返回编号传递。写前查询条件也包括已经查询、随后没有写入的轨迹；<code>SFT #1</code> 的 60/60 中有 10 条属于这种情况。</p>
+<p><code>SFT #1</code> 在双工具任务上保留了查询顺序，在基础日程上却只完成 23/260。继续 GRPO 后，基础日程恢复到 235/260，双工具写前查询降为零。直接 GRPO 的双工具写前查询为 58/60，但全部任务仍有过早行动，其中 28 个仅由动作与任务意图不符触发。</p>
+<p>第三章增加示范变化和训练轮数的 SFT 也恢复了基础付款和日程的完成率，但双工具写前查询同样降为零。恢复基础任务表现，并没有使不同训练路线获得相同的泛化行为。下面的成对轨迹进一步说明这些差别发生在哪里。</p>
+<h3 id="case-timing">同次训练在两类任务上的顺序变化</h3>
+<p>继续 GRPO 后，<code>SFT-GRPO #1</code> 在原始训练任务上从 178/192 提高到 192/192。仅凭这项改善，还不知道新的执行流程适用于哪些变化。我们把同任务的训练前后轨迹放在一起，检查两类查询与行动要求。</p>
+<p>第一类任务要求把最新版报告发送给张伟。联系人查询返回两个同名联系人，文件还要求发送前确认。下面保留了同一个任务的全部调用顺序；查询括号里的内容是实际参数，发送的两个编号在两次尝试中相同。</p>
+<pre><code class="language-text">SFT #1
+retrieve_outbox()
+→ retrieve_contacts(query=&quot;张伟&quot;)
+  返回两个同名联系人
+→ retrieve_files(query=&quot;报告&quot;)
+  返回最新版 report_target_1，confirmation_required=1
+→ request_confirmation() → accepted=true
+→ send_email(file_id=&quot;report_target_1&quot;, recipient_id=&quot;contact_target_1&quot;)
+  被阻止：recipient_id 尚未确认
+→ retrieve_email_context(query=&quot;张伟&quot;) → contexts=[]
+→ ask_clarification(field=&quot;recipient_id&quot;) → contact_target_1
+→ send_email(file_id=&quot;report_target_1&quot;, recipient_id=&quot;contact_target_1&quot;)
+  成功创建邮件
+→ finish()
+</code></pre>
+<pre><code class="language-text">SFT-GRPO #1
+retrieve_outbox()
+→ retrieve_contacts(query=&quot;张伟&quot;)
+  返回两个同名联系人
+→ retrieve_email_context(query=&quot;张伟&quot;) → contexts=[]
+→ ask_clarification(field=&quot;recipient_id&quot;) → contact_target_1
+→ retrieve_files(query=&quot;报告&quot;)
+  返回最新版 report_target_1，confirmation_required=1
+→ request_confirmation() → accepted=true
+→ send_email(file_id=&quot;report_target_1&quot;, recipient_id=&quot;contact_target_1&quot;)
+  成功创建邮件
+→ finish()
+</code></pre>
+<p>两个模型都完成了任务。训练前的模型先尝试发送，遭到阻止后才问清收件人。继续 GRPO 后，收件人澄清移到了首次发送前，并先于确认；确认仍在发送前完成。整组 20 个澄清—确认配对任务的成功数保持 20/20，过早行动从 19/20 降到 0/20。这里的过早行动包括被环境阻止的调用。</p>
+<p>第二类任务仍然发送报告，但文件查询只给出大小，分享策略工具另外返回阈值。同一个代表任务中，文件大小为 4 MB，审批阈值为 10 MB，禁止共享上限为 25 MB。</p>
+<pre><code class="language-text">共同开头
+retrieve_outbox()
+→ retrieve_contacts(query=&quot;张伟&quot;) → contact_target_1
+→ retrieve_files(query=&quot;报告&quot;)
+  返回 report_target_1、size_mb=4，共享规则为空
+
+SFT #1 接着执行
+retrieve_sharing_policy() → approval_threshold=10, hard_limit=25
+→ request_confirmation() → accepted=true
+→ send_email(file_id=&quot;report_target_1&quot;, recipient_id=&quot;contact_target_1&quot;)
+  成功创建邮件
+→ finish()
+
+SFT-GRPO #1 接着执行
+send_email(file_id=&quot;report_target_1&quot;, recipient_id=&quot;contact_target_1&quot;)
+  被阻止：缺少 external_allowed 和 confirmation_required
+→ retrieve_sharing_policy() → approval_threshold=10, hard_limit=25
+→ request_confirmation() → accepted=true
+→ send_email(file_id=&quot;report_target_1&quot;, recipient_id=&quot;contact_target_1&quot;)
+  成功创建邮件
+→ finish()
+</code></pre>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>行为字段</th>
+<th align="right"><code>SFT #1</code></th>
+<th align="right"><code>SFT-GRPO #1</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>task_success</code></td>
+<td align="right"><code>true</code></td>
+<td align="right"><code>true</code></td>
+</tr>
+<tr>
+<td><code>signature_match</code></td>
+<td align="right"><code>false</code></td>
+<td align="right"><code>false</code></td>
+</tr>
+<tr>
+<td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>B</mi><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi></mrow></msub></mrow><annotation encoding="application/x-tex">B_{\mathrm{pre}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0502em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">pre</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span></td>
+<td align="right"><code>true</code></td>
+<td align="right"><code>false</code></td>
+</tr>
+<tr>
+<td><code>premature_action</code></td>
+<td align="right"><code>false</code></td>
+<td align="right"><code>true</code></td>
+</tr>
+<tr>
+<td><code>evidence_sufficient_at_write</code></td>
+<td align="right"><code>true</code></td>
+<td align="right"><code>false</code></td>
+</tr>
+</tbody></table></div>
+<p>取得文件大小和两个阈值后，执行器按规则将“允许发送、无需确认”写入账本，再据此检查发送条件。模型看到的策略返回仍只有两个阈值，需要自行结合文件大小判断。</p>
+<p>这次变化朝相反方向发生。训练后的模型先尝试发送，遭到阻止后才查询新工具。两个模型还都提出了一次该大小条件下不必要的确认。查询顺序改变了，多余确认仍然存在。</p>
+<p>60 个双工具任务中，两模型成功的都是同一批 50 个任务，签名匹配的也是同一批 30 个任务。写前查询从 60/60 降到 0/60，过早行动从 0/60 增至 60/60。原始组合要求上的改善和新信息来源上的退化，发生在同一次继续训练中。</p>
+<p>我们推测，继续训练强化了原始任务中有效的行动流程；新工具未出现在这段训练中，模型在文件查询后更容易直接行动。采样偏好、奖励选择和其他优化过程对这一变化各起了什么作用，仍是待解释的问题。</p>
+<h3 id="case-binding">预约成功与返回编号传递</h3>
+<p>日程任务要求“把季度复盘的日程安排给星环项目组”。群组查询返回 <code>owner_handle=&quot;role-1-owner&quot;</code>，成员查询用 <code>handle</code> 参数接收它，返回负责人 <code>member_target_1</code>。日程查询返回最新版 <code>retro_target_1</code>。最终检查负责人和日程是否组成正确预约。</p>
+<p><code>SFT #1</code> 在同一个任务上经过如下操作。它有几次未命中的查询，后来实际使用了群组返回的编号。</p>
+<pre><code class="language-text">retrieve_bookings() → bookings=[]
+→ retrieve_groups(query=&quot;星环&quot;) → groups=[]
+→ retrieve_groups(query=&quot;星环项目组&quot;)
+  → group_id=&quot;group_1&quot;, owner_handle=&quot;role-1-owner&quot;
+→ retrieve_members(query=&quot;张三&quot;) → members=[]
+→ retrieve_members(handle=&quot;role-1-owner&quot;)
+  → member_id=&quot;member_target_1&quot;, member_name=&quot;邬川&quot;
+→ retrieve_agendas(query=&quot;复盘&quot;) → agendas=[]
+→ retrieve_agendas(query=&quot;季度复盘&quot;)
+  → 最新版 agenda_id=&quot;retro_target_1&quot;
+→ ask_clarification(field=&quot;agenda_id&quot;) → retro_target_1
+→ book_session(agenda_id=&quot;retro_target_1&quot;, member_id=&quot;member_target_1&quot;)
+  → created_id=1
+→ finish()
+</code></pre>
+<p><code>GRPO #1</code> 也完成了预约，但它没有调用成员查询。</p>
+<pre><code class="language-text">retrieve_groups(query=&quot;星环项目组&quot;)
+  → group_id=&quot;group_1&quot;, owner_handle=&quot;role-1-owner&quot;
+→ retrieve_agendas(query=&quot;季度复盘&quot;)
+  → 最新版 agenda_id=&quot;retro_target_1&quot;
+→ book_session(agenda_id=&quot;retro_target_1&quot;, member_id=&quot;group_1&quot;)
+  → 被阻止：缺少已解析的负责人
+→ ask_clarification(field=&quot;member_id&quot;) → member_target_1
+→ book_session(agenda_id=&quot;retro_target_1&quot;, member_id=&quot;member_target_1&quot;)
+  → created_id=1
+→ finish()
+</code></pre>
+<p>两条轨迹最终都只有一条已确认预约，负责人是 <code>member_target_1</code>，日程是 <code>retro_target_1</code>。第二条把群组编号误用为成员编号，调用被阻止后，模拟用户提供了正确成员编号。环境允许这次询问并接受后续预约，评测器同时把询问记为多余、把此前的预约尝试记为过早行动。第一条询问日程编号也被记为多余。</p>
+<p>参数传递可以直接从轨迹判定。先读取 <code>retrieve_groups</code> 可见返回中的 <code>owner_handle</code>，再检查后续 <code>retrieve_members</code> 是否把同一个值填入 <code>handle</code>。这个判定在第一条为真，第二条为假。这里检查的是模型可见返回与后续实参的对应关系，内部事实账本只用于说明环境状态。</p>
+<p>在真正要求这种参数传递的 30 个任务上，<code>SFT #1</code>、<code>SFT-GRPO #1</code>、<code>GRPO #1</code> 的传递计数为 30/30、1/30、6/30，成功数为 28/30、9/30、30/30。三者都在全部 30 个任务中查询过群组。差别发生在返回值的后续使用。</p>
+<p>对于预约服务，成功数衡量完成情况，被阻止的尝试、后续重试，以及模型发起的澄清或确认请求反映完成过程中的代价。</p>
+<h2 id="section-6-2">6.2 查询与规则判断中的泛化差异</h2>
+<p>双工具任务要求模型找到分享策略工具，并结合文件大小和阈值判断如何行动。为分解工具发现与数值判断的影响，我们将它与前述规则移位任务比较。两组任务都要额外调用 <code>retrieve_sharing_policy</code>，规则移位任务直接返回是否允许发送、是否需要确认，不需要比较数值。</p>
+<p>我们在两组各 60 个任务中，统计通过交互签名检查的轨迹数。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>模型</th>
+<th align="right">规则移位任务</th>
+<th align="right">双工具数值任务</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Instruct</td>
+<td align="right">21/60</td>
+<td align="right">18/60</td>
+</tr>
+<tr>
+<td><code>SFT #1</code></td>
+<td align="right">60/60</td>
+<td align="right">30/60</td>
+</tr>
+<tr>
+<td><code>GRPO #1</code></td>
+<td align="right">17/60</td>
+<td align="right">56/60</td>
+</tr>
+<tr>
+<td><code>GRPO #2</code>，放宽裁剪并加入熵正则</td>
+<td align="right">58/60</td>
+<td align="right">10/60</td>
+</tr>
+<tr>
+<td><code>GRPO #3</code>，加入过早行动惩罚</td>
+<td align="right">12/60</td>
+<td align="right">24/60</td>
+</tr>
+<tr>
+<td><code>GRPO #4</code>，放宽裁剪</td>
+<td align="right">41/60</td>
+<td align="right">6/60</td>
+</tr>
+</tbody></table></div>
+<p>去掉数值比较后，交互签名匹配数没有一致提高。<code>GRPO #1</code> 从双工具任务的 56 条降至规则移位任务的 17 条，<code>GRPO #2</code> 则从 10 条增至 58 条。这些数字描述澄清、确认与终态的组合，查询工具是否出现以及何时出现还要直接读取轨迹。</p>
+<p>我们推测，文件大小和阈值等线索可能触发不同的决策流程，不同训练配置对这些线索的响应也不同。为检查差异是否涉及查询，我们直接统计分享策略调用及其与写入的顺序。</p>
+<p>我们检查上述五个训练模型在规则移位任务中是否先查询、后尝试写入。同时，沿用 §5.1 的来源提示测试，在文件查询结果中加入 <code>sharing_policy_id=&quot;standing&quot;</code>，检查这个策略编号提示是否改变查询时机。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>模型</th>
+<th align="right">规则移位任务写前查询</th>
+<th align="right">加入来源提示后写前查询</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>SFT #1</code></td>
+<td align="right">0/60</td>
+<td align="right">0/60</td>
+</tr>
+<tr>
+<td><code>GRPO #1</code></td>
+<td align="right">0/60</td>
+<td align="right">0/60</td>
+</tr>
+<tr>
+<td><code>GRPO #2</code></td>
+<td align="right">0/60</td>
+<td align="right">0/60</td>
+</tr>
+<tr>
+<td><code>GRPO #3</code></td>
+<td align="right">0/60</td>
+<td align="right">0/60</td>
+</tr>
+<tr>
+<td><code>GRPO #4</code></td>
+<td align="right">0/60</td>
+<td align="right">0/60</td>
+</tr>
+</tbody></table></div>
+<p>五个模型在两组任务上共运行 600 次，没有一次在写入前查询分享策略。<code>SFT #1</code> 的 60 条规则移位轨迹都通过交互签名检查，写前查询却全部缺失。</p>
+<p>来源提示也没有改变这个顺序。§5.1 中，<code>GRPO #1</code> 调用分享策略工具的任务数从 12/60 增至 22/60，但这些调用都发生在首次写入尝试之后。提示增加了调用工具的任务数，没有让模型先查询再行动。</p>
+<p>第四章把需要调用分享策略工具的任务加入训练，两组数值测试中的写前查询仍然为零。结合来源提示实验，我们推测，部分模型虽然会调用新工具，却把它用于首次发送尝试后的补救。第四章的代表轨迹中，环境先阻止了缺少证据的发送，模型才查询策略并重新发送。这里需要学会的是根据信息是否齐全决定何时行动。</p>
+<p>状态基线训练的三个种子中，两个保留了正确查询顺序。各次训练在原始任务上的完成情况和新信息来源下的查询顺序，呈现出不同的变化。</p>
+<h3>商用模型的查询与规则判断</h3>
+<p>为检查必要查询能否在这些任务中完成，我们还用 DeepSeek-v4-flash 评测规则移位、来源提示和内容条件分支，每组 60 题。它在三组任务中都调用了分享策略工具。凡是尝试写入的任务，也都先完成了这次查询。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>任务</th>
+<th align="right">任务成功</th>
+<th align="right">调用分享策略工具</th>
+<th align="right">尝试写入的任务中，先查询再写入</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>规则移位</td>
+<td align="right">60/60</td>
+<td align="right">60/60</td>
+<td align="right">40/40</td>
+</tr>
+<tr>
+<td>增加来源提示</td>
+<td align="right">60/60</td>
+<td align="right">60/60</td>
+<td align="right">40/40</td>
+</tr>
+<tr>
+<td>内容条件分支</td>
+<td align="right">59/60</td>
+<td align="right">60/60</td>
+<td align="right">41/41</td>
+</tr>
+<tr>
+<td>双工具数值判断</td>
+<td align="right">43/60</td>
+<td align="right">60/60</td>
+<td align="right">44/44</td>
+</tr>
+<tr>
+<td>查表判断</td>
+<td align="right">59/60</td>
+<td align="right">60/60</td>
+<td align="right">41/41</td>
+</tr>
+</tbody></table></div>
+<p>最后一列只统计尝试过发送邮件或创建草稿的任务，也计入被环境阻止的尝试。其余任务查询后没有尝试写入，不进入这一列的分母。这个结果给出了能完成工具发现和写前查询的模型对照。</p>
+<p>数值任务还有另一处困难。DeepSeek-v4-flash 在全部 60 题中都先查询策略，再写入或结束，但仍有 28 条轨迹没有通过交互签名检查，任务完成数为 43/60。查询到信息之后，模型仍需要据此选择正确分支。为分解这一步，我们设计了查表任务，由工具直接返回可查的对应关系，替代文件大小与阈值的比较。查表任务完成了 59/60，交互签名匹配为 60/60。这组对比提示，取得信息之后如何应用规则，也是失败来源之一。</p>
+<p>另外四个商用模型各接受了两组 12 题的小样本检查。下表仍只统计尝试写入的任务。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>模型</th>
+<th align="right">规则移位：先查询再写入</th>
+<th align="right">内容条件分支：先查询再写入</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>DeepSeek-v4-pro</td>
+<td align="right">8/8</td>
+<td align="right">8/8</td>
+</tr>
+<tr>
+<td>Gemini-3.6-flash</td>
+<td align="right">8/8</td>
+<td align="right">8/8</td>
+</tr>
+<tr>
+<td>GPT-5.1</td>
+<td align="right">7/8</td>
+<td align="right">8/8</td>
+</tr>
+<tr>
+<td>GLM-5.2</td>
+<td align="right">8/8</td>
+<td align="right">8/8</td>
+</tr>
+</tbody></table></div>
+<p>这些运行每组都有 12/12 次分享策略调用。除 GPT-5.1 的规则移位任务完成 11/12 外，其余均完成 12/12。写前查询的正结果出现在多个模型上，而此前五个微调模型在规则移位和来源提示任务上的写前查询均为零。</p>
+<h2 id="section-6-3">6.3 课程生成与评测结果</h2>
+<p>前面的实验改变了奖励、优化设置和示范数据。我们还比较了两种选择训练题目的方式：提高已有任务的训练频次，或者让 LLM 生成新任务。这里要检查的是，新课程带来的改善出现在哪些任务和行为上。</p>
+<h3>重加权课程与合成课程</h3>
+<p>两条训练都从初始 Qwen3-8B Instruct 开始。重加权课程使用原来的 192 个邮件训练任务，根据每题八次采样的成功率调整重复次数。61 个任务有成功也有失败，每种请求模板重复四次；其余 131 个任务每种模板保留一次。四种模板合计得到 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>61</mn><mo>×</mo><mn>4</mn><mo>×</mo><mn>4</mn><mo>+</mo><mn>131</mn><mo>×</mo><mn>4</mn><mo>=</mo><mn>1</mn><mo separator="true">,</mo><mn>500</mn></mrow><annotation encoding="application/x-tex">61\times4\times4+131\times4=1,500</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">61</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">4</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">4</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">131</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">4</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">500</span></span></span></span> 行训练输入。任务规则和评分方法沿用原来的定义。</p>
+<p>合成课程由 DeepSeek-v4-flash 根据执行分支提出邮件任务变体，同时写下必要动作、禁止动作和终局要求。变体通过已有环境中的参数实现，例如增加候选联系人、改变分享规则或加入检索故障。模型随后为任务生成解法，代码按照随题生成的规则检查解法，保留解法通过检查的任务。最终使用 10 条合成任务数据，每条重复 92 次，再混入 580 条从原始训练输入中抽取的记录，共 1,500 行。每条合成训练输入的提示只包含系统消息和任务请求；任务构造参数、评分规则及生成解法保存在训练元数据中。GRPO 为这些任务重新采样动作，完成训练的这版课程按随题规则评分。</p>
+<p>两条课程都进行五轮 GRPO 训练，共 230 步。每批 32 条输入，每个输入采样八条轨迹，温度为 1.0。完整设置列于附录 C.1.5。这里同时改变了训练题目和合成题的评分规则，比较对象是两套课程方案。</p>
+<h3>固定合成任务的评分规则</h3>
+<p>合成任务最初由 LLM 直接判断解法是否正确。我们把已经判为通过的 46 条轨迹再次交给同一个 DeepSeek-v4-flash 判定，两次复查分别只有 13/46 和 12/46 仍被判为通过。改用 DeepSeek-v4-pro 判定时，通过数为 35/46。这些数字统计的是原先通过的轨迹再次获得通过的比例。</p>
+<p>完成训练的合成课程采用了随题生成、由代码执行的评分规则。例如，一条禁止分享的合成任务要求先查询联系人和文件、澄清文件身份，然后结束；发送邮件、创建草稿和请求确认被列为禁止动作。评分检查这些要求是否满足，并检查实际终局属于发送、草稿还是未写入。</p>
+<p>合成题的得分为各项检查结果的加权平均。每项检查取 0 或 1；动作顺序、终局类型和是否出现被阻止的动作各占权重 2，其余检查各占权重 1。顺序检查只比较非澄清动作，澄清另按是否出现计分，终局只比较发送、草稿或未写入的类型。筛选解法时要求所有检查通过，训练时直接使用加权得分。固定规则让同一条轨迹得到相同评分，规则是否完整表达任务要求则取决于出题内容。早期的重复判定实验与这条完成训练的课程使用不同的评分方式。</p>
+<h3>原始任务与合成任务的评测</h3>
+<p>我们用原始邮件套件中的 68 个固定任务，以及另外生成的 13 条任务记录评测两条课程。前者使用原来的确定性评测器，后者执行各题随附的评分规则。这 13 条记录来自五个母题，其中四个也用于生成那 10 条合成训练记录。按母题、变体编号、构造参数和评分规则联合核对，训练与评测之间没有完全相同的记录，但仍共享母题。</p>
+<p>10 条合成任务数据中，有 6 条由这 68 题中的两个任务变异而来。因此，这 68 题用作固定参照集，其任务来源与合成课程有部分重叠。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>评测集合</th>
+<th align="right">重加权课程</th>
+<th align="right">合成课程</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>原始套件的 68 个固定任务</td>
+<td align="right">64/68</td>
+<td align="right">63/68</td>
+</tr>
+<tr>
+<td>另行生成的 13 条任务记录</td>
+<td align="right">0/13</td>
+<td align="right">6/13</td>
+</tr>
+</tbody></table></div>
+<p>合成课程在生成题上的通过数较高，在原始固定任务上少成功一题。两组题目及其评分规则都不同，这组结果反映了课程效果对评测内容的依赖。</p>
+<h3>新任务中的动作顺序</h3>
+<p>合成课程在规则移位任务上成功 40/60，高于重加权课程的 15/60；加入来源提示后为 34/60，高于 10/60。两组数值任务的成功数也较高，但交互签名匹配的轨迹更少。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>任务</th>
+<th align="right">重加权课程成功</th>
+<th align="right">合成课程成功</th>
+<th align="right">重加权课程签名匹配</th>
+<th align="right">合成课程签名匹配</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>规则移位</td>
+<td align="right">15/60</td>
+<td align="right">40/60</td>
+<td align="right">12/60</td>
+<td align="right">40/60</td>
+</tr>
+<tr>
+<td>增加来源提示</td>
+<td align="right">10/60</td>
+<td align="right">34/60</td>
+<td align="right">10/60</td>
+<td align="right">40/60</td>
+</tr>
+<tr>
+<td>双工具数值判断</td>
+<td align="right">28/60</td>
+<td align="right">30/60</td>
+<td align="right">38/60</td>
+<td align="right">3/60</td>
+</tr>
+<tr>
+<td>数值集中在策略工具中返回</td>
+<td align="right">19/60</td>
+<td align="right">22/60</td>
+<td align="right">27/60</td>
+<td align="right">6/60</td>
+</tr>
+</tbody></table></div>
+<p>在这四组任务中，合成课程模型每组 60/60 个任务都出现了过早行动，写入尝试全部通过行动条件检查的任务均为 0/60。条件分支任务也出现了相同问题。下面是一条实际轨迹中的工具调用顺序，省略了参数。</p>
+<pre><code class="language-text">查询联系人 → 查询文件 → 发送邮件 → 查询分享策略
+→ 再次发送邮件 → 请求确认 → 再次发送邮件 → 结束
+</code></pre>
+<p>模型调用了分享策略工具，却在此之前已经尝试发送。合成课程改善了部分任务的终局结果，但这种改善没有带来先取得必要信息再行动的顺序。我们推测，新增任务训练出了更多可用的执行和补救流程，模型仍可能先执行熟悉动作，再根据反馈调整。附录 C.1.5 保留了付款、日程及其他邮件变体的完整比较。</p>
+<hr>
+
+<nav class="chapter-navigation"><a href="chapter-5.zh-CN.html">上一页</a><a href="chapter-7.zh-CN.html">下一章</a></nav></main><footer class="downloads"><a download href="downloads/TECHNICAL_REPORT_V2.zh-CN.pdf">下载完整报告 PDF · 3.2 MB</a></footer><script>
+const languageLink=document.querySelector('[data-language]');
+const headings=[...document.querySelectorAll('main h1[id],main h2[id],main h3[id]')];
+function syncLanguage(){let id=location.hash.slice(1);const target=document.getElementById(id);if(!target||target.getBoundingClientRect().top<0||target.getBoundingClientRect().top>innerHeight){for(const h of headings){if(h.getBoundingClientRect().top<240)id=h.id;else break;}}languageLink.href=languageLink.dataset.language+(id?'#'+id:'');}
+addEventListener('scroll',syncLanguage,{passive:true});addEventListener('hashchange',syncLanguage);addEventListener('load',syncLanguage);document.fonts.ready.then(syncLanguage);syncLanguage();
+for(const pre of document.querySelectorAll('pre')){const code=pre.querySelector('code');if(!code)continue;const button=document.createElement('button');button.className='copy-code';button.textContent=document.documentElement.lang==='en'?'Copy':'复制';button.setAttribute('aria-label',button.textContent+' code');button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(code.textContent);button.textContent=document.documentElement.lang==='en'?'Copied':'已复制';}catch{button.textContent=document.documentElement.lang==='en'?'Select to copy':'请选中复制';}});pre.append(button);}
+if(innerWidth<=900){document.querySelector('.contents-panel details')?.removeAttribute('open');}
+</script></body></html>

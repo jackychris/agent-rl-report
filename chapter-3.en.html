@@ -1,0 +1,353 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Chapter 3. SFT Training and Generalization</title><link rel="stylesheet" href="report.css"><style>
+html{scroll-behavior:smooth;scroll-padding-top:2rem}body{font-family:Arial,"Microsoft YaHei",sans-serif;font-size:16px;line-height:1.85;background:#fff;color:#303030;margin:0}
+main,body.quick main{box-sizing:border-box;max-width:860px;margin:0 0 0 304px;padding:34px 48px 72px}
+.sitebar{margin-left:304px;max-width:860px;box-sizing:border-box;border-bottom:1px solid #ddd;padding:20px 48px 12px;display:flex;gap:22px;align-items:center;flex-wrap:wrap;font:400 14px/1.5 Arial,sans-serif}
+.sitebar{justify-content:flex-end}.sitebar a{color:#164e7a;text-decoration:none}.sitebar .brand{display:none}.sitebar a:hover{text-decoration:underline}
+.downloads{margin-left:304px;max-width:860px;box-sizing:border-box;font:14px/1.8 Arial,sans-serif;padding:22px 48px 36px;color:#666;border-top:1px solid #dce3e9;display:flex;gap:20px;flex-wrap:wrap}.author-credit{font-size:14px;font-weight:400;color:#555;margin:-10px 0 32px}
+.contents-panel{box-sizing:border-box;position:fixed;left:0;top:0;bottom:0;width:304px;overflow:auto;background:#142e49;border-right:1px solid #142e49;padding:28px 18px;font:14px/1.6 Arial,"Microsoft YaHei",sans-serif;color:#fff}
+.contents-panel a{display:block;color:#dbe6f0;text-decoration:none;padding:7px 10px}.contents-panel a:hover{background:#203e5c;color:#fff}.contents-panel a[aria-current=page]{background:#294b6c;color:#fff;border-left:2px solid #c0d7eb;padding-left:8px}
+.contents-panel summary{font-weight:400;cursor:pointer;margin:0 10px 20px;font-size:17px;list-style:none}.contents-panel .subsection{padding-left:22px;font-size:14px}.contents-panel .subsection:hover{padding-left:22px}
+h1,h2,h3,h4,h5,h6,strong,b,th{font-weight:400}h1{font-size:30px;line-height:1.45;color:#222;margin:0 0 26px}h2{font-size:24px;margin:38px 0 18px;color:#222}h3{font-size:20px;margin:30px 0 14px;color:#333}h4,h5{font-size:17px;color:#333}h2,h3,h4{scroll-margin-top:2rem;line-height:1.5}p{overflow-wrap:break-word}a{color:#164e7a;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}a:hover{color:#0b3558}a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid #608cb5;outline-offset:3px}
+.formula,.katex-display{max-width:100%;overflow-x:auto;overflow-y:hidden}pre{position:relative;overflow:auto;white-space:pre;max-width:100%;padding-top:38px}pre code{font-size:14px;white-space:pre}
+.copy-code{position:absolute;right:7px;top:5px;font:14px/1.5 Arial,sans-serif;border:1px solid #ccc;background:#fff;color:#555;border-radius:2px;cursor:pointer;padding:2px 9px}
+.table-wrap{overflow-x:auto;max-width:100%}table{font-size:14px}th,td{border-color:#ddd}th{background:#f3f3f3}pre,.code-list td{background:#f7f7f7;border-color:#ddd}.code-list{table-layout:auto}.code-list pre code{font-size:14px}.code-list .code-lines{font-size:12px;color:#777}.code-list th{color:#555}blockquote{border-color:#ccc;background:#f8f8f8}.chapter-navigation{border-top:1px solid #ddd;margin-top:48px;padding-top:20px;display:flex;justify-content:space-between;gap:24px;font-size:14px}
+@media(max-width:900px){main,body.quick main{margin:0 auto;padding:28px 24px 60px}.sitebar,.downloads{margin:0;padding-left:24px;padding-right:24px}.sitebar .brand{display:block;margin-right:auto}.contents-panel{position:static;width:auto;max-height:none;padding:14px 24px;border:0;border-bottom:1px solid #ddd}.contents-panel summary{font-size:14px;margin:0;list-style:revert}.contents-panel nav{max-height:45vh;overflow:auto}.contents-panel a{padding:6px 8px}}
+@media(max-width:600px){.sitebar{gap:12px;padding:12px 16px;font-size:14px}.sitebar .brand{width:100%}main,body.quick main{padding:24px 16px 60px}.downloads{padding:10px 16px;gap:12px}.contents-panel{padding:12px 16px}h1{font-size:26px}h2{font-size:22px}.code-list{min-width:620px}pre code{font-size:14px}.table-wrap th:first-child,.table-wrap td:first-child{background:#f5f5f5}.table-wrap th:first-child{background:#eee}}
+@media print{.sitebar,.downloads,.contents-panel,.copy-code{display:none!important}main{margin:0!important;max-width:none}body{font-size:10pt}pre{padding-top:9px}}
+</style></head><body class="full"><header class="sitebar"><a data-language="chapter-3.zh-CN.html" href="chapter-3.zh-CN.html" lang="zh-CN">中文</a></header><aside class="contents-panel"><details open><summary>Agent Reinforcement Learning</summary><nav><a href="quick.en.html">Research overview</a><a href="overview.en.html">Abstract</a><a href="chapter-1.en.html">Chapter 1. Evidence for Learned Target Behavior</a><a href="chapter-2.en.html">Chapter 2. Ask-or-Act Tasks and Evaluation</a><a href="chapter-3.en.html" aria-current="page">Chapter 3. SFT Training and Generalization</a><a class="subsection" href="#section-3-1">3.1 Training and Holdout Tasks for SFT #1</a><a class="subsection" href="#section-3-2">3.2 Task Performance of SFT #1</a><a class="subsection" href="#section-3-3">3.3 Supervised-Demonstration Construction</a><a href="chapter-4.en.html">Chapter 4. SFT-GRPO: Behavioral Change During Continued Training</a><a href="chapter-5.en.html">Chapter 5. GRPO Starting from Instruct</a><a href="chapter-6.en.html">Chapter 6. Generalization Differences and Behavioral Diagnosis</a><a href="chapter-7.en.html">Chapter 7. Visit Rewards and Content Responses in WebShop</a><a href="chapter-8.en.html">Chapter 8. Reward Signals in Group-Relative Training</a><a href="chapter-9.en.html">Chapter 9. Related Work</a><a href="chapter-10.en.html">Chapter 10. Diagnosing Behavior and Training in Agent RL</a><a href="appendix-a.en.html">Appendix A. The Ask-or-Act System and Action Chains</a><a href="appendix-b.en.html">Appendix B. Rewards, Estimators, and Implementation</a><a href="appendix-c.en.html">Appendix C. Supplementary Experiments and Diagnostics</a><a href="appendix-d.en.html">Appendix D. Public Implementation, Statistics, and Resources</a><a href="references.en.html">References / 参考文献</a></nav></details></aside><main><h1 id="chapter-3">Chapter 3. SFT Training and Generalization</h1>
+<h2 id="section-3-1">3.1 Training and Holdout Tasks for <code>SFT #1</code></h2>
+<p>We first perform nine SFT updates on 192 demonstration trajectories constructed from the task rules, training the model on the basic Ask-or-Act procedure. The resulting <code>SFT #1</code> also serves as the starting point for <code>SFT-GRPO #1</code>.</p>
+<p>The training data separately demonstrate how to clarify the recipient and how to request confirmation before sending. We use two task sets to test whether these capabilities transfer: one changes only the people and files; the other pairs clarification-only tasks with tasks requiring clarification followed by confirmation. The chains below show the two training examples, the entity-change example, and the composition example.</p>
+<pre><code class="language-text">Training task 1: recipient clarification (张伟 / 报告)
+retrieve_outbox()
+→ retrieve_contacts(query=&quot;张伟&quot;)
+→ retrieve_files(query=&quot;报告&quot;)
+→ ask_clarification(field=&quot;recipient_id&quot;)
+→ send_email(file_id=&quot;report_target_1&quot;, recipient_id=&quot;contact_target_1&quot;)
+→ finish()
+</code></pre>
+<pre><code class="language-text">Training task 2: confirmation before sending (张伟 / 报告)
+retrieve_outbox()
+→ retrieve_contacts(query=&quot;张伟&quot;)
+→ retrieve_files(query=&quot;报告&quot;)
+→ request_confirmation()
+→ send_email(file_id=&quot;report_target_1&quot;, recipient_id=&quot;contact_target_1&quot;)
+→ finish()
+</code></pre>
+<pre><code class="language-text">Changed people and files: the same clarification relation (吴敏 / 数据表)
+retrieve_outbox()
+→ retrieve_contacts(query=&quot;吴敏&quot;)
+→ retrieve_files(query=&quot;数据表&quot;)
+→ ask_clarification(field=&quot;recipient_id&quot;)
+→ send_email(file_id=&quot;dataset_target_9&quot;, recipient_id=&quot;contact_target_9&quot;)
+→ finish()
+</code></pre>
+<pre><code class="language-text">Clarification–confirmation composition: clarify the recipient, then confirm whether to send (张伟 / 报告)
+retrieve_outbox()
+→ retrieve_contacts(query=&quot;张伟&quot;)
+→ retrieve_email_context(query=&quot;张伟&quot;)
+→ ask_clarification(field=&quot;recipient_id&quot;)
+→ retrieve_files(query=&quot;报告&quot;)
+→ request_confirmation()
+→ send_email(file_id=&quot;report_target_1&quot;, recipient_id=&quot;contact_target_1&quot;)
+→ finish()
+</code></pre>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Partition</th>
+<th>Relations and task entities</th>
+<th align="right">Tasks</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Training tasks</strong></td>
+<td>Two branches for 12 base relations, with the first 8 entity sets in each branch</td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>12</mn><mo>×</mo><mn>2</mn><mo>×</mo><mn>8</mn><mo>=</mo><mn>192</mn></mrow><annotation encoding="application/x-tex">12\times2\times8=192</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">12</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">8</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">192</span></span></span></span></td>
+</tr>
+<tr>
+<td><strong>Changed people and files</strong></td>
+<td>The same relations and branches, with entity sets 9 and 10</td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>12</mn><mo>×</mo><mn>2</mn><mo>×</mo><mn>2</mn><mo>=</mo><mn>48</mn></mrow><annotation encoding="application/x-tex">12\times2\times2=48</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">12</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">48</span></span></span></span></td>
+</tr>
+<tr>
+<td><strong>Clarification–confirmation paired test</strong></td>
+<td>10 clarification-only controls and 10 tasks requiring clarification followed by confirmation</td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10</mn><mo>+</mo><mn>10</mn><mo>=</mo><mn>20</mn></mrow><annotation encoding="application/x-tex">10+10=20</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">10</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">10</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">20</span></span></span></span></td>
+</tr>
+</tbody></table></div>
+<p>Evaluation in this section uses the first request template in Appendix A.1 throughout. Section 3.3 compares training results after adding different request versions and legal query orders.</p>
+<h2 id="section-3-2">3.2 Task Performance of <code>SFT #1</code></h2>
+<p>We run the initial Instruct model and <code>SFT #1</code> once on each task. The results are shown below.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Tasks</th>
+<th align="right">Tasks completed</th>
+<th align="right">Interaction signature match</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Training tasks (192)</td>
+<td align="right">156/192 → 178/192</td>
+<td align="right">72/192 → 146/192</td>
+</tr>
+<tr>
+<td>Changed people and files (48)</td>
+<td align="right">41/48 → 44/48</td>
+<td align="right">30/48 → 36/48</td>
+</tr>
+<tr>
+<td>Clarification–confirmation paired test (20)</td>
+<td align="right">18/20 → 20/20</td>
+<td align="right">9/20 → 20/20</td>
+</tr>
+</tbody></table></div>
+<p>The model already completes most tasks before training, but often fails the signature check on clarification fields, confirmation, and terminal effect. After SFT, the number of training trajectories matching the interaction signature rises from 72/192 to 146/192. The same count rises from 9/20 to 20/20 on the clarification–confirmation paired test. Changes on the tasks with changed people and files are smaller: task completion rises from 41/48 to 44/48, while signature matches rise from 30/48 to 36/48.</p>
+<p>We also use 60 two-tool tasks containing a relation absent from the training set to test whether the model can obtain and combine information returned by two tools before writing. The file lookup <code>retrieve_files</code> returns file size <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>s</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">s_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>, while the sharing-policy lookup <code>retrieve_sharing_policy</code> returns approval threshold <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\alpha_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0037em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> and hard sharing limit <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>η</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\eta_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">η</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>. The model must compare the file size with both thresholds and act according to the following rule:</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>Required action</mtext><mo>=</mo><mrow><mo fence="true">{</mo><mtable rowspacing="0.36em" columnalign="left left" columnspacing="1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mtext>Send directly</mtext><mo separator="true">,</mo></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><msub><mi>s</mi><mi>i</mi></msub><mo>&lt;</mo><msub><mi>α</mi><mi>i</mi></msub><mo separator="true">,</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mtext>Request confirmation and follow the user’s reply</mtext><mo separator="true">,</mo></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><msub><mi>α</mi><mi>i</mi></msub><mo>&lt;</mo><msub><mi>s</mi><mi>i</mi></msub><mo>&lt;</mo><msub><mi>η</mi><mi>i</mi></msub><mo separator="true">,</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mtext>Do not send</mtext><mo separator="true">,</mo></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><msub><mi>s</mi><mi>i</mi></msub><mo>&gt;</mo><msub><mi>η</mi><mi>i</mi></msub><mi mathvariant="normal">.</mi></mrow></mstyle></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+\text{Required action}=
+\begin{cases}
+\text{Send directly}, &amp; s_i&lt;\alpha_i,\\
+\text{Request confirmation and follow the user&#x27;s reply}, &amp; \alpha_i&lt;s_i&lt;\eta_i,\\
+\text{Do not send}, &amp; s_i&gt;\eta_i.
+\end{cases}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord text"><span class="mord">Required action</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:4.32em;vertical-align:-1.91em;"></span><span class="minner"><span class="mopen"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.35em;"><span style="top:-2.2em;"><span class="pstrut" style="height:3.15em;"></span><span class="delimsizinginner delim-size4"><span>⎩</span></span></span><span style="top:-2.192em;"><span class="pstrut" style="height:3.15em;"></span><span style="height:0.316em;width:0.8889em;"><svg xmlns="http://www.w3.org/2000/svg" width="0.8889em" height="0.316em" style="width:0.8889em" viewBox="0 0 888.89 316" preserveAspectRatio="xMinYMin"><path d="M384 0 H504 V316 H384z M384 0 H504 V316 H384z"/></svg></span></span><span style="top:-3.15em;"><span class="pstrut" style="height:3.15em;"></span><span class="delimsizinginner delim-size4"><span>⎨</span></span></span><span style="top:-4.292em;"><span class="pstrut" style="height:3.15em;"></span><span style="height:0.316em;width:0.8889em;"><svg xmlns="http://www.w3.org/2000/svg" width="0.8889em" height="0.316em" style="width:0.8889em" viewBox="0 0 888.89 316" preserveAspectRatio="xMinYMin"><path d="M384 0 H504 V316 H384z M384 0 H504 V316 H384z"/></svg></span></span><span style="top:-4.6em;"><span class="pstrut" style="height:3.15em;"></span><span class="delimsizinginner delim-size4"><span>⎧</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.85em;"><span></span></span></span></span></span></span><span class="mord"><span class="mtable"><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.41em;"><span style="top:-4.41em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord text"><span class="mord">Send directly</span></span><span class="mpunct">,</span></span></span><span style="top:-2.97em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord text"><span class="mord">Request confirmation and follow the user’s reply</span></span><span class="mpunct">,</span></span></span><span style="top:-1.53em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord text"><span class="mord">Do not send</span></span><span class="mpunct">,</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.91em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:1em;"></span><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.41em;"><span style="top:-4.41em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0037em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span></span></span><span style="top:-2.97em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0037em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">η</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span></span></span><span style="top:-1.53em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">η</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">.</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.91em;"><span></span></span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></div>
+<p>No file size in this task set equals either threshold.</p>
+<p>Results before and after training on the same two-tool tasks are:</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Check</th>
+<th align="right">Instruct</th>
+<th align="right"><code>SFT #1</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tasks completed</td>
+<td align="right">39/60</td>
+<td align="right">50/60</td>
+</tr>
+<tr>
+<td>Interaction signature match</td>
+<td align="right">18/60</td>
+<td align="right">30/60</td>
+</tr>
+<tr>
+<td>Pre-write lookup condition satisfied</td>
+<td align="right">10/60</td>
+<td align="right">60/60</td>
+</tr>
+<tr>
+<td>Tasks with a premature action</td>
+<td align="right">48/60</td>
+<td align="right">0/60</td>
+</tr>
+</tbody></table></div>
+<p>After SFT, the model completes 11 more tasks, and the number of tasks with a premature action falls from 48 to zero. It queries the sharing policy before writing on 50 tasks and queries without writing on the other 10. All satisfy the pre-write lookup condition.</p>
+<p>These two-tool tasks were not used in SFT, yet query order improves. This shows that demonstrations from the original tasks help the model apply the requirement to query before acting to a new information source.</p>
+<h3>Payment and Scheduling Tasks</h3>
+<p>We use the payment and scheduling tasks from Chapter 2 to examine cross-domain performance after email SFT. Arrows show the change from the initial Instruct model to <code>SFT #1</code>.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Test tasks</th>
+<th align="right">Tasks completed</th>
+<th align="right">Interaction signature match</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Payments, basic rules preserved</td>
+<td align="right">226/260 → 207/260</td>
+<td align="right">51/260 → 48/260</td>
+</tr>
+<tr>
+<td>Scheduling, basic rules preserved</td>
+<td align="right">214/260 → 23/260</td>
+<td align="right">91/260 → 6/260</td>
+</tr>
+<tr>
+<td>Payments, numerical comparison added</td>
+<td align="right">28/60 → 50/60</td>
+<td align="right">18/60 → 0/60</td>
+</tr>
+<tr>
+<td>Scheduling, argument passing added</td>
+<td align="right">52/60 → 29/60</td>
+<td align="right">10/60 → 0/60</td>
+</tr>
+</tbody></table></div>
+<p>With the basic rules preserved, performance on both payment and scheduling tasks declines after SFT. Scheduling success falls from 214/260 to 23/260. Email training improves the preceding email results but damages some of the model&#39;s existing cross-domain capabilities.</p>
+<p>With new requirements added, numerical payment success rises from 28/60 to 50/60, but no trajectory matches the interaction signature. Both task success and interaction-signature matches decline on argument-passing scheduling tasks.</p>
+<h2 id="section-3-3">3.3 Supervised-Demonstration Construction</h2>
+<p>This experiment tests how changing request templates and demonstration order affects SFT performance on original and transfer tasks. The same task can be phrased as “Send the latest report to Zhang Wei” or “Zhang Wei still has not received the latest report; please send it.” The latter adds a non-delivery cue while environment facts and scoring rules stay fixed. Contact and file lookups are independent, so querying the contact first or the file first both satisfy the task rules. We combine request templates and query orders in four supervised datasets constructed from the same 192 tasks. In each training run, each task is seen about eight times over about 24 updates. After training, we evaluate 320 tasks: 260 original tasks covering 13 capabilities and 60 tasks that require combining information returned by two tools.</p>
+<p>For comparison, Instruct completes 215/260 original tasks and 39/60 two-tool tasks; <code>SFT #1</code> completes 242/260 and 50/60, respectively.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Supervised data</th>
+<th align="right">Request versions</th>
+<th align="right">Legal query orders</th>
+<th align="right">Original tasks completed</th>
+<th align="right">Original-task interaction matches</th>
+<th align="right">Two-tool tasks completed</th>
+<th align="right">Two-tool interaction matches</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Repeat one demonstration</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">237/260</td>
+<td align="right">240/260</td>
+<td align="right">48/60</td>
+<td align="right">20/60</td>
+</tr>
+<tr>
+<td>Add the other query order</td>
+<td align="right">1</td>
+<td align="right">Up to 2</td>
+<td align="right">260/260</td>
+<td align="right">260/260</td>
+<td align="right">10/60</td>
+<td align="right">10/60</td>
+</tr>
+<tr>
+<td>Add four request versions</td>
+<td align="right">4</td>
+<td align="right">1</td>
+<td align="right">260/260</td>
+<td align="right">260/260</td>
+<td align="right">11/60</td>
+<td align="right">8/60</td>
+</tr>
+<tr>
+<td>Add both kinds of variation</td>
+<td align="right">4</td>
+<td align="right">Up to 2</td>
+<td align="right">260/260</td>
+<td align="right">260/260</td>
+<td align="right">10/60</td>
+<td align="right">4/60</td>
+</tr>
+</tbody></table></div>
+<p>When a single demonstration is repeated, the model completes 237/260 original tasks and 48/60 two-tool tasks. After adding different request versions or legal query orders, all three training runs complete all 260 original tasks; they complete 10/60, 11/60, and 10/60 two-tool tasks, respectively. With these demonstration changes, the models complete more original tasks and fewer two-tool tasks.</p>
+<p>We use the supervised dataset labeled “Add both kinds of variation” in the table and train for one, two, and three epochs to test whether additional training passes improve performance on the two-tool tasks.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Training epochs</th>
+<th align="right">Original tasks completed</th>
+<th align="right">Two-tool tasks completed</th>
+<th align="right">Two-tool tasks with pre-write lookup</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>One</td>
+<td align="right">260/260</td>
+<td align="right">10/60</td>
+<td align="right">0/60</td>
+</tr>
+<tr>
+<td>Two</td>
+<td align="right">260/260</td>
+<td align="right">0/60</td>
+<td align="right">0/60</td>
+</tr>
+<tr>
+<td>Three</td>
+<td align="right">250/260</td>
+<td align="right">10/60</td>
+<td align="right">0/60</td>
+</tr>
+</tbody></table></div>
+<p>Additional training passes do not improve the completion rate on the two-tool tasks, and pre-write lookup remains at zero. The third epoch also introduces ten additional errors on the original tasks.</p>
+<p>Task-completion counts come from evaluation summaries; pre-write lookup counts come from the experiment notes written at the time. Appendix C lists the sources.</p>
+<h3>Selecting Generated Trajectories</h3>
+<p>Another SFT dataset consists of correct trajectories generated by the model itself. The experiment notes report eight runs per original task and 1,458 retained trajectories that both complete the task and follow the required action order. The evaluation summary in those notes states that, after training on these trajectories, the model still completes the original tasks. The filtered dataset contains procedures from the original tasks; the new relations required by the tests are absent from it. This result is retained as a historical summary in Appendix C.1.</p>
+<p>We also combine these 1,458 original-task trajectories with the original rule-generated demonstrations and run SFT again. Both sources contain query and write actions, but neither demonstrates the new order required by the transformed tasks. The trained model produces both actions but still attempts a write before querying on the transformed tasks.</p>
+<p>Alongside filtering the model&#39;s own trajectories, we asked GPT-5.1 to rewrite complete action sequences for the 192 training tasks evaluated with <code>GRPO #1</code>. Its input included the original trajectory and actual tool returns, without a rule-constructed demonstration answer. The rewritten sequence was executed in the deterministic environment and checked for suitability as supervision. The numbers below come from the historical experiment summary.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Selection rule</th>
+<th align="right">Rewrites passing</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Task completion only</td>
+<td align="right">143/192</td>
+</tr>
+<tr>
+<td>Task completion and execution requirements</td>
+<td align="right">26/192</td>
+</tr>
+</tbody></table></div>
+<p>Strict selection also requires correct confirmation and no policy violation, premature action, unnecessary question, or unintended side effect. Of the 143 rewrites that complete the task, only 26 also pass these checks. Across all 192 rewritten trajectories, the experiment notes record 145 cases of incorrect or unnecessary confirmation and 38 cases of premature action; error categories may overlap.</p>
+<p>This result informs demonstration selection. Filtering only for task completion admits trajectories with confirmation and action-order errors. If those orders are part of the behavior being taught, the selection criteria need the corresponding behavioral checks.</p>
+<h3>Cross-Domain Performance After More Training</h3>
+<p>The payment and scheduling tests use the model trained for two epochs on this section’s dataset combining request-wording and query-order variation. Arrows show the change from the initial Instruct model to that SFT model.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Test tasks</th>
+<th align="right">Tasks completed</th>
+<th align="right">Interaction signature match</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Payments, basic rules preserved</td>
+<td align="right">226/260 → 247/260</td>
+<td align="right">51/260 → 22/260</td>
+</tr>
+<tr>
+<td>Scheduling, basic rules preserved</td>
+<td align="right">214/260 → 260/260</td>
+<td align="right">91/260 → 30/260</td>
+</tr>
+<tr>
+<td>Payments, numerical comparison added</td>
+<td align="right">28/60 → 3/60</td>
+<td align="right">18/60 → 3/60</td>
+</tr>
+<tr>
+<td>Scheduling, argument passing added</td>
+<td align="right">52/60 → 30/60</td>
+<td align="right">10/60 → 0/60</td>
+</tr>
+</tbody></table></div>
+<p>With the basic rules preserved, the model completes more payment and scheduling tasks, including every scheduling task. However, fewer trajectories match the interaction signature in either domain.</p>
+<p>With numerical comparison added, the model completes only 3/60 payment tasks. With argument passing added, it completes 30/60 scheduling tasks. Both results are below the initial Instruct model. Compared with the earlier <code>SFT #1</code>, this training recovers completion rates on basic cross-domain tasks, while performance under the added requirements remains poor.</p>
+<h3>Generalization After SFT</h3>
+<p><code>SFT #1</code> improves performance on both the original tasks and the two-tool tasks. With further demonstration variation and training, performance on the original tasks improves, but the gains on the two-tool tasks do not persist.</p>
+<p>All three models trained with different request versions or legal query orders complete every original task, but only 10 or 11 two-tool tasks, below Instruct&#39;s 39. Longer training does not restore pre-write lookup either.</p>
+<p>Across domains, email SFT does not consistently improve capability. <code>SFT #1</code> lowers completion rates on basic payment and scheduling tasks. Using more varied demonstrations and training for two epochs recovers basic-task completion, but fewer trajectories match the interaction signature than with the initial Instruct model. Performance also remains poor when numerical comparison or argument passing is added.</p>
+<p>The numerical payment tasks are an unusual exception for <code>SFT #1</code>. Basic-payment success falls from 226/260 to 207/260, while success on tasks with added numerical comparison rises from 28/60 to 50/60. Inspecting the trajectories shows that the model attempts to submit a payment before querying the policy on all 60 numerical tasks. It completes more tasks where payment is allowed, while failing all ten tasks where the amount exceeds the hard limit prohibiting payment. The success increase mainly comes from more reliable execution of the payment procedure; the required policy lookup still occurs after the payment attempt.</p>
+<p>To separate the effects of an unfamiliar business domain and numerical comparison, we place the same kind of comparison in the familiar email domain, with file size and the sharing threshold returned by separate tools. Both task sets require combining information from two queries, but <code>SFT #1</code> follows markedly different action orders.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Test</th>
+<th align="right">Instruct task success</th>
+<th align="right"><code>SFT #1</code> task success</th>
+<th align="right">Instruct premature action</th>
+<th align="right"><code>SFT #1</code> premature action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Numerical payment tasks</td>
+<td align="right">28/60</td>
+<td align="right">50/60</td>
+<td align="right">35/60</td>
+<td align="right">60/60</td>
+</tr>
+<tr>
+<td>Email two-tool tasks</td>
+<td align="right">39/60</td>
+<td align="right">50/60</td>
+<td align="right">48/60</td>
+<td align="right">0/60</td>
+</tr>
+</tbody></table></div>
+<p>Back in the email domain, the same model queries the sharing policy before writing on 50 tasks and queries without writing on the other ten. All tasks satisfy the pre-write lookup condition. Here, improved task success accompanies improved query order. With further demonstration variation and training, performance on the original email tasks continues to improve, but this gain does not persist.</p>
+<p>One possible explanation is that further training increases reliance on demonstrated procedures. In the original email tasks, the file lookup already supplies the sharing rules, so the demonstrated order completes the task. If the model follows the same procedure after the rules move behind another tool, it attempts a write before obtaining them. This explanation locates the generalization difference in adaptation to changed information sources. Later sections examine tool discovery, call timing, and the effect of returned content separately.</p>
+<p>These results show two levels of generalization differences. Limited SFT improves query order within the email domain while premature action persists across domains. With expanded training, even adaptation to a new information source within email deteriorates. Later sections vary the information source, query cues, and returned content to further separate these behavioral changes.</p>
+<nav class="chapter-navigation"><a href="chapter-2.en.html">Previous</a><a href="chapter-4.en.html">Next</a></nav></main><footer class="downloads"><a download href="downloads/TECHNICAL_REPORT_V2.en.pdf">Download full report PDF · 2.8 MB</a></footer><script>
+const languageLink=document.querySelector('[data-language]');
+const headings=[...document.querySelectorAll('main h1[id],main h2[id],main h3[id]')];
+function syncLanguage(){let id=location.hash.slice(1);const target=document.getElementById(id);if(!target||target.getBoundingClientRect().top<0||target.getBoundingClientRect().top>innerHeight){for(const h of headings){if(h.getBoundingClientRect().top<240)id=h.id;else break;}}languageLink.href=languageLink.dataset.language+(id?'#'+id:'');}
+addEventListener('scroll',syncLanguage,{passive:true});addEventListener('hashchange',syncLanguage);addEventListener('load',syncLanguage);document.fonts.ready.then(syncLanguage);syncLanguage();
+for(const pre of document.querySelectorAll('pre')){const code=pre.querySelector('code');if(!code)continue;const button=document.createElement('button');button.className='copy-code';button.textContent=document.documentElement.lang==='en'?'Copy':'复制';button.setAttribute('aria-label',button.textContent+' code');button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(code.textContent);button.textContent=document.documentElement.lang==='en'?'Copied':'已复制';}catch{button.textContent=document.documentElement.lang==='en'?'Select to copy':'请选中复制';}});pre.append(button);}
+if(innerWidth<=900){document.querySelector('.contents-panel details')?.removeAttribute('open');}
+</script></body></html>

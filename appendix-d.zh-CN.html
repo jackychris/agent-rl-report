@@ -1,0 +1,603 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>附录 D　公开实现、统计规则与资源</title><link rel="stylesheet" href="report.css"><style>
+html{scroll-behavior:smooth;scroll-padding-top:2rem}body{font-family:Arial,"Microsoft YaHei",sans-serif;font-size:16px;line-height:1.85;background:#fff;color:#303030;margin:0}
+main,body.quick main{box-sizing:border-box;max-width:860px;margin:0 0 0 304px;padding:34px 48px 72px}
+.sitebar{margin-left:304px;max-width:860px;box-sizing:border-box;border-bottom:1px solid #ddd;padding:20px 48px 12px;display:flex;gap:22px;align-items:center;flex-wrap:wrap;font:400 14px/1.5 Arial,sans-serif}
+.sitebar{justify-content:flex-end}.sitebar a{color:#164e7a;text-decoration:none}.sitebar .brand{display:none}.sitebar a:hover{text-decoration:underline}
+.downloads{margin-left:304px;max-width:860px;box-sizing:border-box;font:14px/1.8 Arial,sans-serif;padding:22px 48px 36px;color:#666;border-top:1px solid #dce3e9;display:flex;gap:20px;flex-wrap:wrap}.author-credit{font-size:14px;font-weight:400;color:#555;margin:-10px 0 32px}
+.contents-panel{box-sizing:border-box;position:fixed;left:0;top:0;bottom:0;width:304px;overflow:auto;background:#142e49;border-right:1px solid #142e49;padding:28px 18px;font:14px/1.6 Arial,"Microsoft YaHei",sans-serif;color:#fff}
+.contents-panel a{display:block;color:#dbe6f0;text-decoration:none;padding:7px 10px}.contents-panel a:hover{background:#203e5c;color:#fff}.contents-panel a[aria-current=page]{background:#294b6c;color:#fff;border-left:2px solid #c0d7eb;padding-left:8px}
+.contents-panel summary{font-weight:400;cursor:pointer;margin:0 10px 20px;font-size:17px;list-style:none}.contents-panel .subsection{padding-left:22px;font-size:14px}.contents-panel .subsection:hover{padding-left:22px}
+h1,h2,h3,h4,h5,h6,strong,b,th{font-weight:400}h1{font-size:30px;line-height:1.45;color:#222;margin:0 0 26px}h2{font-size:24px;margin:38px 0 18px;color:#222}h3{font-size:20px;margin:30px 0 14px;color:#333}h4,h5{font-size:17px;color:#333}h2,h3,h4{scroll-margin-top:2rem;line-height:1.5}p{overflow-wrap:break-word}a{color:#164e7a;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}a:hover{color:#0b3558}a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid #608cb5;outline-offset:3px}
+.formula,.katex-display{max-width:100%;overflow-x:auto;overflow-y:hidden}pre{position:relative;overflow:auto;white-space:pre;max-width:100%;padding-top:38px}pre code{font-size:14px;white-space:pre}
+.copy-code{position:absolute;right:7px;top:5px;font:14px/1.5 Arial,sans-serif;border:1px solid #ccc;background:#fff;color:#555;border-radius:2px;cursor:pointer;padding:2px 9px}
+.table-wrap{overflow-x:auto;max-width:100%}table{font-size:14px}th,td{border-color:#ddd}th{background:#f3f3f3}pre,.code-list td{background:#f7f7f7;border-color:#ddd}.code-list{table-layout:auto}.code-list pre code{font-size:14px}.code-list .code-lines{font-size:12px;color:#777}.code-list th{color:#555}blockquote{border-color:#ccc;background:#f8f8f8}.chapter-navigation{border-top:1px solid #ddd;margin-top:48px;padding-top:20px;display:flex;justify-content:space-between;gap:24px;font-size:14px}
+@media(max-width:900px){main,body.quick main{margin:0 auto;padding:28px 24px 60px}.sitebar,.downloads{margin:0;padding-left:24px;padding-right:24px}.sitebar .brand{display:block;margin-right:auto}.contents-panel{position:static;width:auto;max-height:none;padding:14px 24px;border:0;border-bottom:1px solid #ddd}.contents-panel summary{font-size:14px;margin:0;list-style:revert}.contents-panel nav{max-height:45vh;overflow:auto}.contents-panel a{padding:6px 8px}}
+@media(max-width:600px){.sitebar{gap:12px;padding:12px 16px;font-size:14px}.sitebar .brand{width:100%}main,body.quick main{padding:24px 16px 60px}.downloads{padding:10px 16px;gap:12px}.contents-panel{padding:12px 16px}h1{font-size:26px}h2{font-size:22px}.code-list{min-width:620px}pre code{font-size:14px}.table-wrap th:first-child,.table-wrap td:first-child{background:#f5f5f5}.table-wrap th:first-child{background:#eee}}
+@media print{.sitebar,.downloads,.contents-panel,.copy-code{display:none!important}main{margin:0!important;max-width:none}body{font-size:10pt}pre{padding-top:9px}}
+</style></head><body class="full"><header class="sitebar"><a data-language="appendix-d.en.html" href="appendix-d.en.html" lang="en">English</a></header><aside class="contents-panel"><details open><summary>智能体强化学习</summary><nav><a href="index.html">研究概览</a><a href="overview.zh-CN.html">摘要</a><a href="chapter-1.zh-CN.html">第 1 章　目标行为学习的证据</a><a href="chapter-2.zh-CN.html">第 2 章　Ask-or-Act 任务与评测</a><a href="chapter-3.zh-CN.html">第 3 章　SFT 的训练与泛化</a><a href="chapter-4.zh-CN.html">第 4 章　SFT-GRPO：继续训练后的行为变化</a><a href="chapter-5.zh-CN.html">第 5 章　从 Instruct 开始的 GRPO</a><a href="chapter-6.zh-CN.html">第 6 章　泛化差异与行为诊断</a><a href="chapter-7.zh-CN.html">第 7 章　WebShop 的访问奖励与内容响应</a><a href="chapter-8.zh-CN.html">第 8 章　组相对训练的奖励信号</a><a href="chapter-9.zh-CN.html">第 9 章　相关工作</a><a href="chapter-10.zh-CN.html">第 10 章　智能体强化学习的行为与训练诊断</a><a href="appendix-a.zh-CN.html">附录 A　Ask-or-Act 系统与动作链</a><a href="appendix-b.zh-CN.html">附录 B　奖励、估计器与实现</a><a href="appendix-c.zh-CN.html">附录 C　补充实验与诊断</a><a href="appendix-d.zh-CN.html" aria-current="page">附录 D　公开实现、统计规则与资源</a><a class="subsection" href="#appendix-d">附录 D　公开实现、统计规则与资源</a><a href="references.zh-CN.html">References / 参考文献</a></nav></details></aside><main><h2 id="appendix-d">附录 D　公开实现、统计规则与资源</h2>
+<h3>D.1 公开实现与统计规则</h3>
+<p>实验代码已公开。原始实验轨迹、训练日志与模型检查点未随本报告发布。</p>
+<h4>任务生成与环境重放</h4>
+<p><a href="https://github.com/jackychris/askact-evalrl/tree/f30851b894d9c52aab8a15edabf883ce4088fc78">AskAct-EvalRL</a> 公开了任务生成、模拟环境、评测器、轨迹重放和训练接口。本报告对应提交为 <code>f30851b894d9c52aab8a15edabf883ce4088fc78</code>。</p>
+<p>在公开仓库中，<code>askact/registry.py</code> 和各环境模块定义任务，<code>askact/splits.py</code> 定义数据划分，<code>askact/evaluator.py</code> 计算行为字段，<code>askact/replay.py</code> 实现轨迹重放。<code>training/</code> 保存训练接口，<code>tools/</code> 保存分析工具。</p>
+<p>固定代码保留了当时的解释性注释。<code>askact/webshop_reward.py</code> 中只按局部折扣解释 GiGPO 的文字，应结合 §8.2 的完整优势计算阅读；<code>research/tools/webshop_intervene.py</code> 中“相同前缀”的旧说明，已由 §7.1 的实际处理协议更正。状态锚点注释中的“被阻止的写入”也应按 B.2 改为所有带 <code>blocked_reason</code> 的动作。代码文件保持原样。</p>
+<p>使用 Python 3.12 或更高版本，在仓库目录中可以运行规则策略：</p>
+<pre><code class="language-bash">python -m askact.run_suite --agent rule
+</code></pre>
+<p>这个命令生成规则策略的评测结果。读者自行运行模型后，可以用公开的重放程序检查自己生成的轨迹。以下给出本报告采用的统计规则和数值索引。</p>
+<h4>交互签名的两种统计方式</h4>
+<p>交互签名（<code>signature_match</code>）比较轨迹中的澄清、确认和最终行动是否符合任务要求。可以直接汇总评测结果，也可以重放轨迹后重新判定。</p>
+<p><strong>汇总逐任务结果。</strong></p>
+<p>从评测汇总文件的 <code>tasks</code> 中选出待统计的任务，将 <code>signature_match</code> 为真的记录计数，同时保留通过任务的编号。例如，下面的 Python 代码统计已经筛选好的任务：</p>
+<pre><code class="language-python">passed_task_ids = [
+    row[&quot;task_id&quot;]
+    for row in selected_tasks
+    if row[&quot;signature_match&quot;]
+]
+signature_match_count = len(passed_task_ids)
+</code></pre>
+<p>统计全部任务时，所得计数可与汇总字段 <code>metrics.signature_match_count</code> 核对。保留任务编号还能检查两个模型是否通过了同一批任务。</p>
+<p><strong>重放轨迹后重新判定。</strong></p>
+<p>根据每条轨迹的 <code>domain</code> 和 <code>task_id</code> 重建任务，按 <code>surface_id</code> 恢复请求模板，再在新环境中执行记录的动作。</p>
+<p><code>observed_signature</code> 从重放结果中提取有效澄清字段、是否请求确认，以及实际完成写入、弃权或未行动的终态。<code>expected_signature</code> 根据任务规则生成应有的签名。两个函数的返回值相等时，该轨迹通过签名检查。(<a href="https://github.com/jackychris/askact-evalrl/blob/f30851b894d9c52aab8a15edabf883ce4088fc78/askact/evaluator.py">GitHub</a>)</p>
+<p>默认的 <code>python -m askact.replay</code> 命令核对九个评测字段和轨迹哈希。重新判定签名时，还需在重放结果上调用上述两个函数。</p>
+<h4>写前策略查询</h4>
+<p>在需要查询分享策略的邮件任务中，我们沿记录的动作顺序找到第一次 <code>retrieve_sharing_policy</code> 调用，以及第一次 <code>create_draft</code> 或 <code>send_email</code> 调用。写入尝试即使被环境阻止，也计入这里的写入位置。</p>
+<p>每条轨迹按下表记为 1 或 0，再将得分为 1 的轨迹数除以这组评测的有效任务数。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>轨迹中的调用情况</th>
+<th align="right">计数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查询早于第一次写入尝试</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td>有查询，没有写入尝试</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td>第一次写入尝试早于查询</td>
+<td align="right">0</td>
+</tr>
+<tr>
+<td>没有查询，无论是否尝试写入</td>
+<td align="right">0</td>
+</tr>
+</tbody></table></div>
+<p>查询后没有写入的轨迹仍可计为 1，因为任务可能要求模型确认规则后停止。例如，<code>SFT #1</code> 在双工具邮件测试中有 10 条合法结束的轨迹，没有写入，但已经查询了分享策略。它们与其余 50 条先查询后写入的轨迹一起，得到 60/60。<code>SFT-GRPO #1</code> 得到 0/60；<code>GRPO #1</code> 有 58 条满足上述规则，另外两条缺少查询，得到 58/60。</p>
+<p>过早行动（<code>premature_action</code>）和写入时证据充分（<code>evidence_sufficient_at_write</code>）直接使用评测器的判定。这两个字段检查写入尝试是否满足任务规定的行动条件，写前查询只检查上述工具调用的顺序。没有写入尝试时，过早行动为 <code>false</code>，写入时证据充分可以为 <code>null</code>。</p>
+<hr>
+<h4>汇总与逐轨迹重放的差异</h4>
+<p>2026 年 8 月 13 日归档的一组状态基线评测，汇总与对应轨迹不一致。固定实现重放该次评测的 440 条轨迹后，行为字段和轨迹哈希均与数据包一致，但以下三类任务的成功数和交互签名匹配数与汇总不同。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>测试任务</th>
+<th align="right">汇总：成功 / 签名</th>
+<th align="right">重放：成功 / 签名</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>双工具数值判断</td>
+<td align="right">17/60 / 7/60</td>
+<td align="right">18/60 / 3/60</td>
+</tr>
+<tr>
+<td>查表判断</td>
+<td align="right">26/60 / 13/60</td>
+<td align="right">36/60 / 27/60</td>
+</tr>
+<tr>
+<td>单工具数值判断</td>
+<td align="right">19/60 / 7/60</td>
+<td align="right">16/60 / 4/60</td>
+</tr>
+</tbody></table></div>
+<p>原始任务的签名总数同为 227/260，但有 6 个任务的匹配标记不同。重放一致性核对的是每条轨迹数据包内的字段；上表差异出现在这些逐条结果的聚合值与另存的汇总文件之间，原因尚未查明。这里同时列出两种读数，逐轨迹解释采用重放结果。该次评测单独保留，不与第 5.3 节三次种子运行合并。</p>
+<h4>Ask-or-Act 数字索引</h4>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>主张或结果</th>
+<th>正文位置</th>
+<th>数值与统计单位</th>
+<th>计算方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>任务总数</strong></td>
+<td>§2.2；附录 A</td>
+<td>原始邮件 260；双工具与数值变体邮件 440；信息来源变化邮件 440；付款 320；日程 320；合计 1,780 个任务</td>
+<td>枚举固定版本任务注册表中的有效任务</td>
+</tr>
+<tr>
+<td><strong>训练任务、更换人物和文件、澄清—确认配对测试</strong></td>
+<td>§3.2、§4.1</td>
+<td>按这三类任务依次统计。<code>SFT #1</code> 成功数为 178/192、44/48、20/20，交互签名通过数为 146/192、36/48、20/20。<code>SFT-GRPO #1</code> 两项均为 192/192、48/48、20/20</td>
+<td>汇总评测文件 <code>tasks[]</code> 中的逐任务结果；也可重放轨迹重新判定</td>
+</tr>
+<tr>
+<td><strong>原始澄清—确认要求的行动顺序</strong></td>
+<td>§4.1、§6.1</td>
+<td><code>SFT #1</code>、<code>SFT-GRPO #1</code>、<code>GRPO #1</code> 的过早行动分别为 19/20、0/20、20/20</td>
+<td>同一组 10 个仅需澄清的对照任务和 10 个澄清—确认组合任务，重放后统计 <code>premature_action</code></td>
+</tr>
+<tr>
+<td><strong>日程返回编号传递</strong></td>
+<td>§5.1、§6.1</td>
+<td>按上述三模型顺序，实际传递 30/30、1/30、6/30；任务成功 28/30、9/30、30/30；三个模型均在全部 30 个任务中查询群组</td>
+<td>只选要求传递的分支，检查成员查询的 <code>handle</code> 是否使用此前群组返回的 <code>owner_handle</code>，另统计最终预约成功</td>
+</tr>
+<tr>
+<td><strong>双工具邮件任务中的行动顺序</strong></td>
+<td>§4.2</td>
+<td><code>SFT #1</code> → <code>SFT-GRPO #1</code>：成功数均为 50/60，交互签名通过数均为 30/60；写前查询 60/60 → 0/60，过早行动 0/60 → 60/60</td>
+<td>成功和过早行动使用重放评测字段；交互签名按前述两种方式计算；写前查询按调用顺序统计</td>
+</tr>
+<tr>
+<td><strong>通过任务是否相同</strong></td>
+<td>§4.2</td>
+<td>上述两个模型成功的是同一批 50 个任务，交互签名通过的是同一批 30 个任务</td>
+<td>分别筛选 <code>success=true</code> 和 <code>signature_match=true</code> 的任务，再比较编号集合</td>
+</tr>
+<tr>
+<td><strong>直接 GRPO 后的双工具邮件表现</strong></td>
+<td>§5.1</td>
+<td><code>GRPO #1</code> 成功 39/60，交互签名通过 56/60，写前查询 58/60，过早行动 60/60，写入时证据充分 0/60</td>
+<td>重放后读取成功、过早行动和证据充分字段；另行计算交互签名与写前查询</td>
+</tr>
+<tr>
+<td><strong>工具来源提示与写前查询</strong></td>
+<td>§5.1、§6.2</td>
+<td><code>GRPO #1</code> 加入来源提示后，最终调用新工具的任务数从 12/60 增至 22/60，写前调用均为 0/60。<code>SFT #1</code> 和 <code>GRPO #1–#4</code> 在有、无提示两组任务中的写前调用合计为 0/600</td>
+<td>每个模型在每组任务上分别统计最终调用和写前调用，各以 60 个任务为分母</td>
+</tr>
+<tr>
+<td><strong>根据返回内容选择行动</strong></td>
+<td>§5.4</td>
+<td>成功 60/60，交互签名通过 60/60；40/40 个要求行动的任务执行动作，20/20 个要求停止的任务没有写入</td>
+<td>从任务定义读取应走的分支，重放后检查实际动作和终态，并计算交互签名</td>
+</tr>
+<tr>
+<td><strong>惩罚过早行动后的双工具邮件表现</strong></td>
+<td>§5.2</td>
+<td><code>GRPO #3</code> 成功 48/60，交互签名通过 24/60，过早行动 60/60，写前查询 0/60</td>
+<td>重放后读取成功和过早行动字段，另行计算交互签名与写前查询</td>
+</tr>
+<tr>
+<td><strong>放宽裁剪后的各类任务表现</strong></td>
+<td>§5.2</td>
+<td><code>GRPO #1</code> → <code>GRPO #4</code>，每对数字为成功数、交互签名通过数。原始邮件：240/260、230/260 → 240/260、226/260。基础付款与日程：464/520、202/520 → 445/520、290/520。付款数值判断：43/60、51/60 → 41/60、57/60。日程参数传递：60/60、20/60 → 60/60、27/60。邮件双工具数值判断：39/60、56/60 → 29/60、6/60</td>
+<td>按任务类别汇总评测结果；基础付款与日程一项合并了各 260 个任务</td>
+</tr>
+<tr>
+<td><strong>增加新工具训练任务后的表现</strong></td>
+<td>§4.3</td>
+<td>原始邮件任务中，<code>SFT-GRPO #1</code> 与 <code>SFT-GRPO #2</code> 均成功 260/260，交互签名通过数分别为 260/260、250/260。双工具测试中，两者均成功 50/60、签名通过 30/60、写前查询 0/60、过早行动 60/60。文件大小与阈值由同一工具返回时，<code>SFT-GRPO #2</code> 成功 49/60、签名通过 29/60、写前查询 0/60</td>
+<td>汇总两模型的原始任务与双工具测试结果；数值由同一工具返回的测试仅统计 <code>SFT-GRPO #2</code></td>
+</tr>
+<tr>
+<td><strong>请求说法与查询顺序的四种组合</strong></td>
+<td>§3.3</td>
+<td>双工具任务的成功数、交互签名通过数：重复单一示范 48/60、20/60；加入另一种查询顺序 10/60、10/60；加入四种请求说法 11/60、8/60；同时加入两类变化 10/60、4/60</td>
+<td>分别汇总四份评测文件 <code>tasks[]</code> 中的成功和签名结果</td>
+</tr>
+<tr>
+<td><strong>SFT 训练轮数与任务完成情况</strong></td>
+<td>§3.3；C.1</td>
+<td>按一轮、两轮、三轮依次统计。原始任务成功数为 260/260、260/260、250/260；澄清与确认组合任务为 10/10、10/10、0/10；双工具任务为 10/60、0/60、10/60</td>
+<td>从各轮评测汇总中筛选对应任务，统计成功数</td>
+</tr>
+<tr>
+<td><strong>相同设置、不同随机种子的写前查询</strong></td>
+<td>§5.3；C.1</td>
+<td>按双工具数值判断、单工具数值判断、查表判断依次统计。种子 1 为 60/60、60/60、60/60；种子 2 为 0/60、0/60、20/60；种子 3 为 60/60、60/60、60/60</td>
+<td>对每次训练得到的模型，分别统计三类任务中的写前查询，每类 60 个任务</td>
+</tr>
+<tr>
+<td><strong>线性状态基线的测试结果</strong></td>
+<td>§8.2</td>
+<td>每对数字为成功数、交互签名通过数。双工具数值判断：10/60、10/60；单工具数值判断：15/60、10/60；查表判断：24/60、32/60；规则移到新工具：52/60、35/60；同时增加策略编号提示：51/60、43/60。五类任务的写前查询均为 0/60</td>
+<td>汇总成功和交互签名结果，按记录的调用顺序统计写前查询</td>
+</tr>
+<tr>
+<td><strong>提示组状态基线的写前查询</strong></td>
+<td>§8.2</td>
+<td>按双工具数值判断、单工具数值判断、查表判断依次统计。<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">k=2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span></span></span></span> 为 0/60、0/60、20/60；<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">k=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span> 为 0/60、0/60、34/60</td>
+<td>分别统计两种设置下三类任务的写前查询，每类 60 个任务</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h4>WebShop 输出的复算规则</h4>
+<p><strong>提示组与同分组。</strong> 读取评测文件中的 <code>rows</code>，按任务目标 <code>goal</code> 分组，每组应有八条轨迹。八条轨迹的最高回报与最低回报相差小于 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>10</mn><mrow><mo>−</mo><mn>9</mn></mrow></msup></mrow><annotation encoding="application/x-tex">10^{-9}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">9</span></span></span></span></span></span></span></span></span></span></span></span> 时，记为同分组。在组外修正及其对照、VPR 的这些评测中，再排除共同环境回报 <code>env_reward</code> 为 0 或 1 的组，得到中间同分组。</p>
+<p><strong>动作序列重复。</strong> 比较同一组八条轨迹的 <code>actions</code> 数组。只有动作顺序和每个动作字符串都完全一致，才记为动作序列重复。比较保留参数，并区分大小写。</p>
+<p><strong>必要选项匹配率。</strong> 在中间同分组中，将每条轨迹匹配的必要选项数 <code>options_selected</code> 相加，再除以任务要求的选项数 <code>options_required</code> 之和：</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>必要选项匹配率</mtext><mo>=</mo><mfrac><mtext>匹配的必要选项总数</mtext><mtext>任务要求的选项总数</mtext></mfrac><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">
+\text{必要选项匹配率}
+=\frac{\text{匹配的必要选项总数}}{\text{任务要求的选项总数}}.
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord cjk_fallback">必要选项匹配率</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.0463em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3603em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord cjk_fallback">任务要求的选项总数</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord cjk_fallback">匹配的必要选项总数</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord">.</span></span></span></span></span></div>
+<p>例如，C.2 中对照模型匹配了 735 个必要选项，这些轨迹的任务共要求 2,024 个选项，匹配率为 36.3%。</p>
+<p><strong>未匹配任何必要选项的轨迹比例。</strong> 同样从中间同分组出发，只保留 <code>options_required &gt; 0</code> 的轨迹，再统计其中 <code>options_selected = 0</code> 的比例：</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>全部必要选项遗漏率</mtext><mo>=</mo><mfrac><mtext>未匹配任何必要选项的轨迹数</mtext><mtext>要求至少一个选项的轨迹数</mtext></mfrac><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">
+\text{全部必要选项遗漏率}
+=\frac{\text{未匹配任何必要选项的轨迹数}}{\text{要求至少一个选项的轨迹数}}.
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord cjk_fallback">全部必要选项遗漏率</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.0463em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3603em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord cjk_fallback">要求至少一个选项的轨迹数</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord cjk_fallback">未匹配任何必要选项的轨迹数</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord">.</span></span></span></span></span></div>
+<p>C.2 中对照模型的这一比例为 713/1,352，即 52.7%。这里统计的是轨迹数，上一个指标统计的是选项数。</p>
+<p><strong>文本处理条件的任务配对。</strong> 对每种文本处理，按 <code>goal</code> 将星级文本参照运行与处理运行配对。只保留该任务在两个条件下都有输出、且满足该项干预 <code>fired</code> 条件的样本对。<code>fired</code> 用于检查指定的干预是否实际触发。</p>
+<p>随后比较保存的购买布尔字段：</p>
+<pre><code class="language-python">control[&quot;bought_target&quot;] != treatment[&quot;bought_target&quot;]
+</code></pre>
+<p><code>target</code> 由各次运行自行指定，§7.2 中有目标不同的配对。这里比较的是两次运行是否买回各自目标的布尔字段；完整购买商品标识和前缀一致性属于另外的记录检查。</p>
+<p>将结果为真的样本对数除以该项干预的有效配对总数，就得到这个购买布尔字段的变化率。不同处理分别筛选有效配对，因此分母可以不同。</p>
+<h4>零优势与零策略梯度损失</h4>
+<p>先按启动标记选出 <code>chain-k0-gate.log</code> 中的 Ask-or-Act <code>group-phi-k0</code> 运行，再按 <code>training/global_step</code> 去重，每步保留首条记录。日志后面的 WebShop 运行重新从第 1 步开始，不属于这里的分母。以下四个字段同时严格等于 0 时，将该步计入统计：</p>
+<pre><code class="language-text">critic/advantages/mean = 0
+critic/advantages/max  = 0
+critic/advantages/min  = 0
+actor/pg_loss          = 0
+</code></pre>
+<p>这四个字段分别表示奖励优势的均值、最大值、最小值，以及策略梯度损失。230 个优化器步骤中，有 136 步同时满足条件。最长连续区间从第 130 步到第 164 步，共 35 步。这 136 步的 <code>actor/kl_loss</code> 均值为 0.0827。奖励优势和策略梯度损失为零时，KL 正则项仍然存在。</p>
+<hr>
+<h4>WebShop 与组相对信用数字索引</h4>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>主张或结果</th>
+<th>正文位置</th>
+<th>数值与统计单位</th>
+<th>计算方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>购买前访问子页面</strong></td>
+<td>§7.2</td>
+<td>仅终局奖励 94/500；增加访问奖励 498/499；满分购买才给予访问奖励 495/498。每个有效任务对应一条贪心生成的轨迹</td>
+<td>分别在三个模型的有效轨迹中统计购买前访问，分母使用各自的有效任务数</td>
+</tr>
+<tr>
+<td><strong>页面返回非空内容</strong></td>
+<td>§7.2</td>
+<td>仅终局奖励 72/80；增加访问奖励 490/494</td>
+<td>筛选能够重放且符合访问条件的轨迹，统计其中至少获得一次非空、模型可见内容的轨迹</td>
+</tr>
+<tr>
+<td><strong>替换受奖子页面的属性信息</strong></td>
+<td>§7.2</td>
+<td>增加访问奖励的模型中，属性冲突处理与星级文本参照的购买布尔字段在 0/198 对中不同；动作数组不同为 18/198，指定目标不同为 2/198，56/198 条处理轨迹重复修改子页面</td>
+<td>两条件分别从初始页面运行，按 <code>goal</code> 配对并筛选有效、触发处理的记录；分别比较 <code>bought_target</code>、<code>actions</code>、<code>target</code> 和处理次数</td>
+</tr>
+<tr>
+<td><strong>替换商品详情页的内容</strong></td>
+<td>§7.2</td>
+<td>增加访问奖励的模型中，将价格改为预算的三倍时，购买布尔字段不同为 9/199；明确说明商品不符合要求时为 50/199</td>
+<td>两种处理分别与星级文本参照配对，比较保存的 <code>bought_target</code></td>
+</tr>
+<tr>
+<td><strong>满分购买才给予访问奖励的模型</strong></td>
+<td>§7.2</td>
+<td>购买布尔字段不同的配对数：子页面属性冲突 15/197；子页面中商品不符合要求的说明 3/197；详情页中同类说明 8/199</td>
+<td>每种内容处理分别与该模型的星级文本参照运行配对，按相同规则比较 <code>bought_target</code></td>
+</tr>
+<tr>
+<td><strong>访问后的商品编号格式点击</strong></td>
+<td>§7.2</td>
+<td>仅终局奖励 → 满分购买才给予访问奖励：首次访问后出现商品编号格式点击的轨迹为 1,166/1,169 → 4/3,970；点击此前未出现的同类编号为 672/1,169 → 2/3,970</td>
+<td>每个任务以温度 1.0 采样八条轨迹；在访问过子页面的轨迹中，按公开脚本的编号格式分别统计两类点击。格式相同的规格选项也可能被计入</td>
+</tr>
+<tr>
+<td><strong>已购商品的子页面匹配属性份额</strong></td>
+<td>§7.2</td>
+<td>全部目标属性对应的分数比例平均为 39.3996%；子页面独有目标属性对应的比例平均为 10.0414%，中位数为 0；483 个任务中有 330 个没有子页面独有目标属性</td>
+<td>使用仅终局奖励模型的 483 个可重放任务及其实际购买商品，先按各任务的评分分母计算比例，再取非加权平均</td>
+</tr>
+<tr>
+<td><strong>匹配属性的位置重分配</strong></td>
+<td><a href="appendix-b.zh-CN.html#matched-attribute-reallocation">B.1</a></td>
+<td>移除标题中的重复信息，并把已计分但未在所查文本中匹配到的属性放入子页面，得到 27.2498%；再把仅标题提供的信息移入子页面，得到 29.7412%</td>
+<td>保持商品属性和评分规则不变，按信息位置重新相加已有评分分量；结果为算术推导</td>
+</tr>
+<tr>
+<td><strong>不加入组外修正的模型（<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>κ</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\kappa=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">κ</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span>）</strong></td>
+<td>§8.1–§8.2</td>
+<td>500 个提示组中有 403 个同分组，其中 235 个的八条动作序列完全相同。197 个中间同分组中，有 121 个动作序列完全相同。中间同分组的必要选项匹配率为 735/2,024，未匹配任何必要选项的轨迹比例为 713/1,352</td>
+<td>按任务目标分成每组八条轨迹，使用前述同分、动作重复及选项统计规则</td>
+</tr>
+<tr>
+<td><strong>加入组外修正的模型（<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>κ</mi><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">\kappa=3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">κ</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span></span></span></span>）</strong></td>
+<td>§8.2</td>
+<td>500 个提示组中有 461 个同分组，其中 299 个的八条动作序列完全相同。中间同分组有 236 个，必要选项匹配率为 736/2,288，未匹配任何必要选项的轨迹比例为 1,024/1,600</td>
+<td>使用与对照模型相同的分组和统计规则</td>
+</tr>
+<tr>
+<td><strong>VPR 的选项完成情况</strong></td>
+<td>§8.2</td>
+<td>中间同分组的必要选项匹配率为 695/2,112，未匹配任何必要选项的轨迹比例为 879/1,464</td>
+<td>匹配率按必要选项计数；遗漏比例按要求至少一个选项的轨迹计数</td>
+</tr>
+<tr>
+<td><strong>奖励优势与策略梯度损失同时为零</strong></td>
+<td>§8.1</td>
+<td>Ask-or-Act <code>group-phi-k0</code> 的 230 个优化器步骤中有 136 步满足条件，最长连续区间为第 130–164 步，共 35 步。这 136 步的 KL 损失均值为 0.0827</td>
+<td>先选出 Ask-or-Act 运行段，按 <code>training/global_step</code> 去重，再检查前述四个字段是否同时为零</td>
+</tr>
+<tr>
+<td><strong>四个模型的 50 提示组评测</strong></td>
+<td>C.2</td>
+<td>同分组数量：GiGPO 种子 1 为 40/50，种子 2 为 45/50；提示组基线（<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">k=2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span></span></span></span>）为 42/50；满分购买才给予访问奖励的模型为 39/50</td>
+<td>每个模型按任务目标分成 50 组，每组八条轨迹，再统计同分组</td>
+</tr>
+<tr>
+<td><strong>提示组基线中的轨迹重叠</strong></td>
+<td>C.2</td>
+<td>锚点轨迹的直接权重平均为 0.739；计入整体均值中的重叠部分后，有效权重平均为 0.951。约 75% 的轨迹与锚点配对中，其他七条轨迹都访问过该锚点</td>
+<td>使用 C.2 的权重公式，取 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mn>7</mn><mo separator="true">,</mo><mi>k</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">N=7,k=2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord">7</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span></span></span></span>，核对日志中的权重摘要</td>
+</tr>
+<tr>
+<td><strong>三种组外表格的覆盖</strong></td>
+<td>C.2</td>
+<td>细粒度：55 个表格项、33,544 次动作、50/153 个提示组获得不同表值；中粒度：20、33,734、63/153；粗粒度：9、33,827、126/153</td>
+<td>表格项和动作数从 JSON 读取，分别对应同一批轨迹的三种归类方式；获得不同表值的提示组数量读取日志摘要</td>
+</tr>
+<tr>
+<td><strong>Token 长度与平均优势</strong></td>
+<td>§8.2</td>
+<td>手写状态基线种子 3 的 230 条日志中，前 83 条的长度比中位数为 2.49，范围为 1.90–9.18；token 平均优势减序列平均优势的差值有 42 次为正、41 次为负，均值约 −0.00301</td>
+<td>从 <code>chain-phi-seed-20260813.log</code> 读取参与损失计算的长度及 <code>m_seq</code>、<code>m_tok</code>，逐条计算长度比和两种均值之差；该差值不是梯度方向</td>
+</tr>
+<tr>
+<td><strong>采样端与训练端的概率差异</strong></td>
+<td>C.2</td>
+<td>第 1–25 步 → 第 51–75 步：Pearson 相关均值 0.9770 → 0.9600；平均绝对差 0.00259 → 0.00193；每步最大差的中位数 0.595 → 0.486；序列级 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>χ</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\chi^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0085em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal">χ</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span> 中位数 0.0561 → 0.0622。66 步的序列级与 token 级诊断比值中位数为 39.5</td>
+<td>按 C.2 的窗口和聚合规则汇总日志；诊断比值仅使用 token 级值为正且比值有限的步骤</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h3>D.2 训练配置与资源用量</h3>
+<h4>三条路线的基准训练配置</h4>
+<p>下表对应三条训练路线。<code>SFT #1</code> 从初始 Instruct 进行监督微调，训练后直接评测。<code>SFT-GRPO #1</code> 从这个模型继续进行 GRPO，表中列出的是这段 GRPO 的配置。<code>GRPO #1</code> 则从初始 Instruct 直接进行 GRPO。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>配置项</th>
+<th><code>SFT #1</code></th>
+<th><code>SFT-GRPO #1</code> 的 GRPO 阶段</th>
+<th><code>GRPO #1</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>训练起点</td>
+<td>初始 Instruct</td>
+<td>将 <code>SFT #1</code> 的 LoRA 权重合并到原模型</td>
+<td>初始 Instruct</td>
+</tr>
+<tr>
+<td>训练数据</td>
+<td>192 条完整示范轨迹</td>
+<td>192 个任务 × 4 种请求模板，共 768 条输入</td>
+<td>192 个任务 × 4 种请求模板，共 768 条输入</td>
+</tr>
+<tr>
+<td>训练轮数</td>
+<td>3</td>
+<td>5</td>
+<td>5</td>
+</tr>
+<tr>
+<td>实际更新步数</td>
+<td>9</td>
+<td>120</td>
+<td>120</td>
+</tr>
+<tr>
+<td>每批训练输入</td>
+<td>64 条示范</td>
+<td>32 条输入</td>
+<td>32 条输入</td>
+</tr>
+<tr>
+<td>每 GPU micro-batch 配置值</td>
+<td>4</td>
+<td>4</td>
+<td>4</td>
+</tr>
+<tr>
+<td>LoRA rank / alpha</td>
+<td>32 / 32</td>
+<td>32 / 32</td>
+<td>32 / 32</td>
+</tr>
+<tr>
+<td>LoRA 目标模块</td>
+<td><code>all-linear</code></td>
+<td>attention 与 MLP 投影层，列表见下文</td>
+<td>attention 与 MLP 投影层，列表见下文</td>
+</tr>
+<tr>
+<td>优化器</td>
+<td>AdamW</td>
+<td>AdamW</td>
+<td>AdamW</td>
+</tr>
+<tr>
+<td>学习率</td>
+<td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>×</mo><msup><mn>10</mn><mrow><mo>−</mo><mn>3</mn></mrow></msup></mrow><annotation encoding="application/x-tex">1\times10^{-3}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">3</span></span></span></span></span></span></span></span></span></span></span></span></td>
+<td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><msup><mn>10</mn><mrow><mo>−</mo><mn>5</mn></mrow></msup></mrow><annotation encoding="application/x-tex">3\times10^{-5}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">5</span></span></span></span></span></span></span></span></span></span></span></span></td>
+<td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><msup><mn>10</mn><mrow><mo>−</mo><mn>5</mn></mrow></msup></mrow><annotation encoding="application/x-tex">3\times10^{-5}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">5</span></span></span></span></span></span></span></span></span></span></span></span></td>
+</tr>
+<tr>
+<td>学习率调度</td>
+<td>恒定</td>
+<td>恒定</td>
+<td>恒定</td>
+</tr>
+<tr>
+<td>warmup 比例</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>AdamW betas</td>
+<td>(0.9, 0.999)</td>
+<td>(0.9, 0.999)</td>
+<td>(0.9, 0.999)</td>
+</tr>
+<tr>
+<td>权重衰减</td>
+<td>0.01</td>
+<td>0.01</td>
+<td>0.01</td>
+</tr>
+<tr>
+<td>梯度范数裁剪</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>序列长度上限</td>
+<td>完整示范 4,096 token</td>
+<td>输入 1,024，响应 3,072 token</td>
+<td>输入 1,024，响应 3,072 token</td>
+</tr>
+<tr>
+<td>计算精度（<code>engine.dtype</code> / <code>fsdp_config.dtype</code>）</td>
+<td>bfloat16</td>
+<td>bfloat16</td>
+<td>bfloat16</td>
+</tr>
+<tr>
+<td>Attention 实现</td>
+<td>SDPA</td>
+<td>FlashAttention 2</td>
+<td>FlashAttention 2</td>
+</tr>
+<tr>
+<td><code>use_remove_padding</code></td>
+<td>false</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>gradient checkpointing</td>
+<td>true</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>训练 GPU 数</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>保存间隔（步）</td>
+<td>1,000；实际在训练结束时保存第 9 步</td>
+<td>24</td>
+<td>120</td>
+</tr>
+</tbody></table></div>
+<p>两条 GRPO 路线的 LoRA 目标模块均为：</p>
+<pre><code class="language-text">q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj
+</code></pre>
+<p><code>SFT #1</code> 开启动态 micro-batch（<code>use_dynamic_bsz=true</code>），每张 GPU 的 token 预算为 8,192（<code>max_token_len_per_gpu=8192</code>）。表中的 micro-batch 数值是配置值，实际分批还受这项 token 预算约束。</p>
+<p><code>SFT #1</code> 的随机种子设置为 <code>trainer.seed=1</code>、<code>engine.seed=42</code>。两条 GRPO 路线的训练模型均使用 <code>fsdp_config.seed=42</code> 和 <code>data_loader_seed=42</code>。</p>
+<h4>GRPO 采样、奖励与优势设置</h4>
+<p>下列设置在 <code>SFT-GRPO #1</code> 和 <code>GRPO #1</code> 中相同。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>配置项</th>
+<th>设置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>每条输入采样的轨迹数</td>
+<td>8</td>
+</tr>
+<tr>
+<td>训练采样</td>
+<td><code>do_sample=true</code>，温度 1.0，top-p 1，top-k −1</td>
+</tr>
+<tr>
+<td>轨迹奖励</td>
+<td>第 2 章的基准奖励；奖励适配器名称为 <code>founding</code></td>
+</tr>
+<tr>
+<td>优势估计</td>
+<td>GRPO，按组内标准差归一化</td>
+</tr>
+<tr>
+<td><code>ppo_mini_batch_size</code></td>
+<td>32</td>
+</tr>
+<tr>
+<td>每批采样轨迹的训练轮数</td>
+<td>1</td>
+</tr>
+<tr>
+<td>策略概率比裁剪参数</td>
+<td>下界参数 0.2，上界参数 0.2</td>
+</tr>
+<tr>
+<td>KL 正则</td>
+<td>加入策略损失，系数 0.001，类型 <code>low_var_kl</code></td>
+</tr>
+<tr>
+<td><code>use_kl_in_reward</code></td>
+<td>false</td>
+</tr>
+<tr>
+<td>熵正则系数</td>
+<td>0</td>
+</tr>
+<tr>
+<td>损失聚合</td>
+<td><code>token-mean</code>，对有效响应 token 取平均</td>
+</tr>
+<tr>
+<td>轨迹生成引擎</td>
+<td>SGLang，异步多轮交互</td>
+</tr>
+</tbody></table></div>
+<p>各项实验相对基准配置的改动见对应小节。§3.3 列出监督数据和训练轮数，§4.3 列出新增训练任务，§5.2 列出奖励与裁剪设置，§5.3 列出状态基线与随机种子。</p>
+<h4>验证与训练后评测</h4>
+<p>两条 GRPO 路线都用 48 个更换人物和文件的留出任务验证训练效果。每个任务采用六种请求模板，共 288 条输入。训练开始前验证一次，此后每 12 步验证一次。每条输入生成一条轨迹，设置为 <code>do_sample=false</code>、温度 0。</p>
+<p>第三至第五章报告的逐任务评测使用第一种请求模板，每个模型在每个任务上运行一次，温度为 0，单次模型响应上限为 1,024 token。<code>SFT #1</code> 在训练结束后接受能力评测。</p>
+<h4>GPU 与训练用时</h4>
+<p>下表列出四次训练的实际用时，取自日志中 <code>Training Progress</code> 进度条从开始到完成的计时。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>训练</th>
+<th align="right">优化器步骤</th>
+<th align="right">实际用时（时:分:秒）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ask-or-Act，提示组基线（<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">k=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span>）</td>
+<td align="right">230</td>
+<td align="right">9:54:30</td>
+</tr>
+<tr>
+<td>WebShop，GiGPO 种子 1</td>
+<td align="right">75</td>
+<td align="right">7:45:11</td>
+</tr>
+<tr>
+<td>WebShop，GiGPO 种子 2</td>
+<td align="right">75</td>
+<td align="right">8:06:07</td>
+</tr>
+<tr>
+<td>WebShop，满分购买才给予访问奖励</td>
+<td align="right">75</td>
+<td align="right">10:10:32</td>
+</tr>
+</tbody></table></div>
+<p>资源摘要记录，两套环境的训练均使用一张 A800 80GB GPU。摘要还给出 Ask-or-Act 单步用时的中位数约为 150 秒。用这个数估算 230 步训练，约需 9 小时 35 分钟；表中的 9 小时 54 分 30 秒是日志直接记录的实际用时。</p>
+<nav class="chapter-navigation"><a href="appendix-c.zh-CN.html">上一页</a><a href="references.zh-CN.html">下一章</a></nav></main><footer class="downloads"><a download href="downloads/TECHNICAL_REPORT_V2.zh-CN.pdf">下载完整报告 PDF · 3.2 MB</a></footer><script>
+const languageLink=document.querySelector('[data-language]');
+const headings=[...document.querySelectorAll('main h1[id],main h2[id],main h3[id]')];
+function syncLanguage(){let id=location.hash.slice(1);const target=document.getElementById(id);if(!target||target.getBoundingClientRect().top<0||target.getBoundingClientRect().top>innerHeight){for(const h of headings){if(h.getBoundingClientRect().top<240)id=h.id;else break;}}languageLink.href=languageLink.dataset.language+(id?'#'+id:'');}
+addEventListener('scroll',syncLanguage,{passive:true});addEventListener('hashchange',syncLanguage);addEventListener('load',syncLanguage);document.fonts.ready.then(syncLanguage);syncLanguage();
+for(const pre of document.querySelectorAll('pre')){const code=pre.querySelector('code');if(!code)continue;const button=document.createElement('button');button.className='copy-code';button.textContent=document.documentElement.lang==='en'?'Copy':'复制';button.setAttribute('aria-label',button.textContent+' code');button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(code.textContent);button.textContent=document.documentElement.lang==='en'?'Copied':'已复制';}catch{button.textContent=document.documentElement.lang==='en'?'Select to copy':'请选中复制';}});pre.append(button);}
+if(innerWidth<=900){document.querySelector('.contents-panel details')?.removeAttribute('open');}
+</script></body></html>

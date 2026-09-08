@@ -1,0 +1,486 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>第 7 章　WebShop 的访问奖励与内容响应</title><link rel="stylesheet" href="report.css"><style>
+html{scroll-behavior:smooth;scroll-padding-top:2rem}body{font-family:Arial,"Microsoft YaHei",sans-serif;font-size:16px;line-height:1.85;background:#fff;color:#303030;margin:0}
+main,body.quick main{box-sizing:border-box;max-width:860px;margin:0 0 0 304px;padding:34px 48px 72px}
+.sitebar{margin-left:304px;max-width:860px;box-sizing:border-box;border-bottom:1px solid #ddd;padding:20px 48px 12px;display:flex;gap:22px;align-items:center;flex-wrap:wrap;font:400 14px/1.5 Arial,sans-serif}
+.sitebar{justify-content:flex-end}.sitebar a{color:#164e7a;text-decoration:none}.sitebar .brand{display:none}.sitebar a:hover{text-decoration:underline}
+.downloads{margin-left:304px;max-width:860px;box-sizing:border-box;font:14px/1.8 Arial,sans-serif;padding:22px 48px 36px;color:#666;border-top:1px solid #dce3e9;display:flex;gap:20px;flex-wrap:wrap}.author-credit{font-size:14px;font-weight:400;color:#555;margin:-10px 0 32px}
+.contents-panel{box-sizing:border-box;position:fixed;left:0;top:0;bottom:0;width:304px;overflow:auto;background:#142e49;border-right:1px solid #142e49;padding:28px 18px;font:14px/1.6 Arial,"Microsoft YaHei",sans-serif;color:#fff}
+.contents-panel a{display:block;color:#dbe6f0;text-decoration:none;padding:7px 10px}.contents-panel a:hover{background:#203e5c;color:#fff}.contents-panel a[aria-current=page]{background:#294b6c;color:#fff;border-left:2px solid #c0d7eb;padding-left:8px}
+.contents-panel summary{font-weight:400;cursor:pointer;margin:0 10px 20px;font-size:17px;list-style:none}.contents-panel .subsection{padding-left:22px;font-size:14px}.contents-panel .subsection:hover{padding-left:22px}
+h1,h2,h3,h4,h5,h6,strong,b,th{font-weight:400}h1{font-size:30px;line-height:1.45;color:#222;margin:0 0 26px}h2{font-size:24px;margin:38px 0 18px;color:#222}h3{font-size:20px;margin:30px 0 14px;color:#333}h4,h5{font-size:17px;color:#333}h2,h3,h4{scroll-margin-top:2rem;line-height:1.5}p{overflow-wrap:break-word}a{color:#164e7a;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}a:hover{color:#0b3558}a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid #608cb5;outline-offset:3px}
+.formula,.katex-display{max-width:100%;overflow-x:auto;overflow-y:hidden}pre{position:relative;overflow:auto;white-space:pre;max-width:100%;padding-top:38px}pre code{font-size:14px;white-space:pre}
+.copy-code{position:absolute;right:7px;top:5px;font:14px/1.5 Arial,sans-serif;border:1px solid #ccc;background:#fff;color:#555;border-radius:2px;cursor:pointer;padding:2px 9px}
+.table-wrap{overflow-x:auto;max-width:100%}table{font-size:14px}th,td{border-color:#ddd}th{background:#f3f3f3}pre,.code-list td{background:#f7f7f7;border-color:#ddd}.code-list{table-layout:auto}.code-list pre code{font-size:14px}.code-list .code-lines{font-size:12px;color:#777}.code-list th{color:#555}blockquote{border-color:#ccc;background:#f8f8f8}.chapter-navigation{border-top:1px solid #ddd;margin-top:48px;padding-top:20px;display:flex;justify-content:space-between;gap:24px;font-size:14px}
+@media(max-width:900px){main,body.quick main{margin:0 auto;padding:28px 24px 60px}.sitebar,.downloads{margin:0;padding-left:24px;padding-right:24px}.sitebar .brand{display:block;margin-right:auto}.contents-panel{position:static;width:auto;max-height:none;padding:14px 24px;border:0;border-bottom:1px solid #ddd}.contents-panel summary{font-size:14px;margin:0;list-style:revert}.contents-panel nav{max-height:45vh;overflow:auto}.contents-panel a{padding:6px 8px}}
+@media(max-width:600px){.sitebar{gap:12px;padding:12px 16px;font-size:14px}.sitebar .brand{width:100%}main,body.quick main{padding:24px 16px 60px}.downloads{padding:10px 16px;gap:12px}.contents-panel{padding:12px 16px}h1{font-size:26px}h2{font-size:22px}.code-list{min-width:620px}pre code{font-size:14px}.table-wrap th:first-child,.table-wrap td:first-child{background:#f5f5f5}.table-wrap th:first-child{background:#eee}}
+@media print{.sitebar,.downloads,.contents-panel,.copy-code{display:none!important}main{margin:0!important;max-width:none}body{font-size:10pt}pre{padding-top:9px}}
+</style></head><body class="full"><header class="sitebar"><a data-language="chapter-7.en.html" href="chapter-7.en.html" lang="en">English</a></header><aside class="contents-panel"><details open><summary>智能体强化学习</summary><nav><a href="index.html">研究概览</a><a href="overview.zh-CN.html">摘要</a><a href="chapter-1.zh-CN.html">第 1 章　目标行为学习的证据</a><a href="chapter-2.zh-CN.html">第 2 章　Ask-or-Act 任务与评测</a><a href="chapter-3.zh-CN.html">第 3 章　SFT 的训练与泛化</a><a href="chapter-4.zh-CN.html">第 4 章　SFT-GRPO：继续训练后的行为变化</a><a href="chapter-5.zh-CN.html">第 5 章　从 Instruct 开始的 GRPO</a><a href="chapter-6.zh-CN.html">第 6 章　泛化差异与行为诊断</a><a href="chapter-7.zh-CN.html" aria-current="page">第 7 章　WebShop 的访问奖励与内容响应</a><a class="subsection" href="#section-7-1">7.1 WebShop 任务、奖励与文本处理</a><a class="subsection" href="#section-7-2">7.2 访问奖励的训练结果</a><a href="chapter-8.zh-CN.html">第 8 章　组相对训练的奖励信号</a><a href="chapter-9.zh-CN.html">第 9 章　相关工作</a><a href="chapter-10.zh-CN.html">第 10 章　智能体强化学习的行为与训练诊断</a><a href="appendix-a.zh-CN.html">附录 A　Ask-or-Act 系统与动作链</a><a href="appendix-b.zh-CN.html">附录 B　奖励、估计器与实现</a><a href="appendix-c.zh-CN.html">附录 C　补充实验与诊断</a><a href="appendix-d.zh-CN.html">附录 D　公开实现、统计规则与资源</a><a href="references.zh-CN.html">References / 参考文献</a></nav></details></aside><main><h1 id="chapter-7" class="joined-heading">第 7 章　WebShop 的访问奖励与内容响应</h1>
+<h2 id="section-7-1">7.1 WebShop 任务、奖励与文本处理</h2>
+<p>在 WebShop 实验中，我们给访问商品子页面的动作增加奖励，希望模型在购买前主动获取信息，并据此选择更符合用户要求的商品。</p>
+<p>页面访问率用于检查模型是否学会了检索动作。内容处理实验改变页面文本，比较购买字段与动作序列。下面先说明字段含义，再据此解释实验结果。同时，我们分解已购商品的属性得分，检查匹配属性在不同页面中的分布。</p>
+<h3>任务与终局分数</h3>
+<p>本节比较三个从初始 Qwen3-8B Instruct 开始、训练至第 75 步的 GRPO 模型。第一个只使用终局奖励；第二个给页面访问增加 0.08 的奖励；第三个仅在最终购买得分为满分时给予这项访问奖励。三者分别训练，用来比较奖励条件对检索行为的影响。</p>
+<p><a href="https://arxiv.org/abs/2207.01206">WebShop</a> 模拟一个购物网站。模型收到用户的购买要求后，从搜索页面开始，通过文字命令操作网站。系统执行命令，再把页面内容返回给模型。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>search[query]</code></td>
+<td>用模型生成的搜索词查找商品</td>
+</tr>
+<tr>
+<td><code>click[B0XXXXXXXX]</code></td>
+<td>打开对应商品的详情页</td>
+</tr>
+<tr>
+<td><code>click[option value]</code></td>
+<td>选择颜色、尺寸等规格</td>
+</tr>
+<tr>
+<td><code>click[description]</code>、<code>click[features]</code>、<code>click[reviews]</code>、<code>click[attributes]</code></td>
+<td>打开商品子页面，获取额外信息</td>
+</tr>
+<tr>
+<td><code>click[back to search]</code>、<code>click[&lt; prev]</code>、<code>click[next &gt;]</code></td>
+<td>返回或翻页</td>
+</tr>
+<tr>
+<td><code>click[buy now]</code></td>
+<td>购买当前商品并结束任务</td>
+</tr>
+</tbody></table></div>
+<p><code>search[...]</code> 中的搜索词由模型生成，<code>click[...]</code> 中的目标从页面显示的可点击项中选择。本实验中，每个任务最多执行 15 个动作，购买完成或动作次数用尽时结束。</p>
+<p class="formula-lead">WebShop 按最终购买的商品和所选规格计算终局得分。</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>终局得分</mtext><mo>=</mo><mfrac><mrow><mtext>匹配属性数</mtext><mo>+</mo><mtext>正确规格数</mtext><mo>+</mo><mtext>价格得分</mtext></mrow><mrow><mtext>要求属性数</mtext><mo>+</mo><mtext>要求规格数</mtext><mo>+</mo><mn>1</mn></mrow></mfrac><mo>×</mo><mtext>类型匹配系数</mtext><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">
+\text{终局得分}
+=
+\frac{
+\text{匹配属性数}+\text{正确规格数}+\text{价格得分}
+}{
+\text{要求属性数}+\text{要求规格数}+1
+}
+\times\text{类型匹配系数}.
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord cjk_fallback">终局得分</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.1297em;vertical-align:-0.7693em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3603em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord cjk_fallback">要求属性数</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord text"><span class="mord cjk_fallback">要求规格数</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">1</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord cjk_fallback">匹配属性数</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord text"><span class="mord cjk_fallback">正确规格数</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord text"><span class="mord cjk_fallback">价格得分</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7693em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord cjk_fallback">类型匹配系数</span></span><span class="mord">.</span></span></span></span></span></div>
+<p>价格不超过用户上限时，价格得分为 1，否则为 0。类型匹配系数取 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mtext>、</mtext><mn>0.1</mn><mtext>、</mtext><mn>0.5</mn><mtext>、</mtext><mn>1</mn></mrow><annotation encoding="application/x-tex">0、0.1、0.5、1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord">0</span><span class="mord cjk_fallback">、</span><span class="mord">0.1</span><span class="mord cjk_fallback">、</span><span class="mord">0.5</span><span class="mord cjk_fallback">、</span><span class="mord">1</span></span></span></span>，由商品标题、类别和检索词的匹配规则决定，具体判据见附录 B.1“WebShop 类型匹配系数”。</p>
+<p>例如，用户要求两个商品属性、一项规格，并规定价格上限，共四项。最终商品满足一个属性，规格和价格也正确，类型完全匹配，得分就是 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mi mathvariant="normal">/</mi><mn>4</mn></mrow><annotation encoding="application/x-tex">3/4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">3/4</span></span></span></span>。</p>
+<h3>访问奖励</h3>
+<p>我们把商品的 <code>description</code>、<code>features</code>、<code>reviews</code> 和 <code>attributes</code> 四类子页面纳入奖励。模型在购买前打开过该商品的任意一个子页面，就满足访问奖励的条件。重复打开页面，或打开多个子页面，都只计算一次。</p>
+<p>访问与购买必须对应同一件商品。例如，查看商品 A 的描述后购买商品 B，不会获得这项奖励。模型需要在购买 B 之前访问 B 的子页面。没有完成购买，也没有访问奖励。</p>
+<p>我们用 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi></mrow><annotation encoding="application/x-tex">p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">p</span></span></span></span> 表示访问条件指标，按满足条件的购买次数计算。</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>p</mi><mo>=</mo><mfrac><mtext>满足上述访问条件的购买次数</mtext><mtext>购买次数</mtext></mfrac><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">
+p=\frac{\text{满足上述访问条件的购买次数}}{\text{购买次数}}.
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">p</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.0463em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3603em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord cjk_fallback">购买次数</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord cjk_fallback">满足上述访问条件的购买次数</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord">.</span></span></span></span></span></div>
+<p>没有购买时，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">p=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">p</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span>。WebShop 通常在第一次有效购买后结束，因此 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi></mrow><annotation encoding="application/x-tex">p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">p</span></span></span></span> 通常只有两种取值：购买前访问过该商品的子页面为 1，否则为 0。页面实际打开了多少次另行记录，用于检查重复访问。</p>
+<p>我们比较两种奖励方式。第一种在满足访问条件时直接给予奖励。令 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi></mrow><annotation encoding="application/x-tex">G</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">G</span></span></span></span> 表示终局得分，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi></mrow><annotation encoding="application/x-tex">\lambda</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">λ</span></span></span></span> 表示访问奖励的系数，训练奖励为</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>R</mi><mo>=</mo><mi>G</mi><mo>+</mo><mi>λ</mi><mi>p</mi><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">
+R=G+\lambda p.
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">G</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">λ</span><span class="mord mathnormal">p</span><span class="mord">.</span></span></span></span></span></div>
+<p>第二种增加得分门槛 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi></mrow><annotation encoding="application/x-tex">g</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span></span></span></span>，只有终局得分达到门槛时才给予访问奖励。</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>R</mi><mo>=</mo><mrow><mo fence="true">{</mo><mtable rowspacing="0.36em" columnalign="left left" columnspacing="1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>G</mi><mo>+</mo><mi>λ</mi><mi>p</mi><mo separator="true">,</mo></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>G</mi><mo>≥</mo><mi>g</mi><mo separator="true">,</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>G</mi><mo separator="true">,</mo></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>G</mi><mo>&lt;</mo><mi>g</mi><mi mathvariant="normal">.</mi></mrow></mstyle></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+R=
+\begin{cases}
+G+\lambda p, &amp; G\ge g,\\
+G, &amp; G&lt;g.
+\end{cases}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:3em;vertical-align:-1.25em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size4">{</span></span><span class="mord"><span class="mtable"><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.69em;"><span style="top:-3.69em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord mathnormal">G</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">λ</span><span class="mord mathnormal">p</span><span class="mpunct">,</span></span></span><span style="top:-2.25em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord mathnormal">G</span><span class="mpunct">,</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.19em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:1em;"></span><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.69em;"><span style="top:-3.69em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord mathnormal">G</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≥</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mpunct">,</span></span></span><span style="top:-2.25em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord mathnormal">G</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord">.</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.19em;"><span></span></span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></div>
+<p>当 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">g=1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> 时，模型必须完成满分购买，才能获得访问奖励。</p>
+<p>默认访问奖励为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.08</mn></mrow><annotation encoding="application/x-tex">0.08</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.08</span></span></span></span>。对于计分分母不超过 12 的任务，这使未满分购买加上访问奖励后仍低于未访问页面的满分购买。例如，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>11</mn><mi mathvariant="normal">/</mi><mn>12</mn><mo>+</mo><mn>0.08</mn><mo>≈</mo><mn>0.997</mn><mo>&lt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">11/12+0.08\approx0.997&lt;1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">11/12</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.08</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6835em;vertical-align:-0.0391em;"></span><span class="mord">0.997</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span>。部分得分之间的排序仍可能改变，如 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.025</mn><mo>+</mo><mn>0.08</mn><mo>&gt;</mo><mn>0.100</mn></mrow><annotation encoding="application/x-tex">0.025+0.08&gt;0.100</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.025</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6835em;vertical-align:-0.0391em;"></span><span class="mord">0.08</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.100</span></span></span></span>。</p>
+<p>下面是两个模型完成同一购买任务的实际轨迹。一个在购买前查看商品描述和特征，另一个直接购买。</p>
+<p>查看子页面后购买：</p>
+<pre><code class="language-text">search[noise cancelling cosycost usb microphone under 70]
+→ click[B0972Q1T8T]
+→ click[description]
+→ click[&lt; prev]
+→ click[features]
+→ click[&lt; prev]
+→ click[buy now]
+</code></pre>
+<p>直接购买：</p>
+<pre><code class="language-text">search[noise cancelling cosycost usb microphone under 70]
+→ click[B0972Q1T8T]
+→ click[buy now]
+</code></pre>
+<p>两条轨迹购买了同一商品，终局得分都是 1。加入访问奖励后，第一条得到 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1.08</mn></mrow><annotation encoding="application/x-tex">1.08</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1.08</span></span></span></span>，第二条仍为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn></mrow><annotation encoding="application/x-tex">1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span>。第一条虽然打开了两个子页面，也只获得一次 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.08</mn></mrow><annotation encoding="application/x-tex">0.08</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.08</span></span></span></span> 的奖励。</p>
+<h3>评测方法</h3>
+<p>任务评测让每个模型在每个任务上运行一次，保存终局得分和页面访问情况。轨迹重放重新执行保存的动作，检查访问是否返回非空内容。内容处理实验为同一任务分别运行不同文本条件，保存各次运行的动作序列和购买字段。商品评分分解以轨迹实际购买的商品为对象，统计匹配属性在标题和子页面中的分布。</p>
+<h3>内容处理实验</h3>
+<p>脚本对每个任务、每个条件分别从初始页面运行模型，没有保存中间状态再分出两条续写。每次遇到符合条件的页面，脚本都会处理返回文本，同一条轨迹可能多次收到处理后的内容。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>条件</th>
+<th>处理方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>参照条件 <code>null</code></td>
+<td>将详情页的 <code>Rating: N.A.</code> 改为 <code>Rating: 4.3</code>；否则将第一个 <code>Rating:</code> 改为 <code>Rating: 4.3 —</code>，保留后面的原评分</td>
+</tr>
+<tr>
+<td><code>price</code></td>
+<td>将详情页价格改为用户预算的三倍</td>
+</tr>
+<tr>
+<td><code>note</code></td>
+<td>在详情页末尾追加商品不符合要求的说明</td>
+</tr>
+<tr>
+<td><code>desc</code></td>
+<td>在子页面末尾追加与用户要求冲突的信息</td>
+</tr>
+<tr>
+<td><code>note_sub</code></td>
+<td>在子页面末尾追加商品不符合要求的说明</td>
+</tr>
+</tbody></table></div>
+<p><code>null</code> 被选作参照，是因为脚本将星级视为目标要求之外的字段；它仍改变了模型看到的文本。比较子页面条件与参照条件时，差异可能已经出现在此前的详情页。我们逐对核对动作序列、目标商品和处理次数，检查两次运行在处理前是否已经不同。</p>
+<p><code>desc</code> 使用任务本身的属性和选项填入冲突句模板 <code>This product is NOT {属性}.</code> 和 <code>It is not available in {选项}.</code>。如果两者均为空，则改写为超出预算或不符合请求的说明。<code>note</code> 与 <code>note_sub</code> 追加的则始终是同一句 <code>NOTE: This item does NOT match your request.</code>，区别仅在追加位置。这里的子页面处理由前一次点击是否为 <code>description</code>、<code>features</code> 或 <code>reviews</code> 触发，不包括 <code>attributes</code>。</p>
+<p>脚本用第一次形如 <code>click[b0…]</code> 的调用指定本次运行的 <code>target</code>，后续页面处理没有再次检查当前商品是否仍为它。保存字段 <code>bought_target</code> 为真，表示环境报告结束，且动作序列中最后一次这类商品点击仍指向本次运行的 <code>target</code>。这个布尔字段只表示上述条件是否成立，完整的最终购买商品标识不在这个布尔字段中。</p>
+<p>我们按任务编号配对，仅保留两个条件均有评测输出、且两次运行均满足 <code>fired=true</code> 的任务。<code>fired</code> 表示至少一次页面文本发生变化。统计量为</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>购买字段变化率</mtext><mo>=</mo><mfrac><mtext>两次运行的 bought_target 不同的配对数</mtext><mtext>两边均触发文本处理的配对数</mtext></mfrac><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">
+\text{购买字段变化率}
+=\frac{\text{两次运行的 bought\_target 不同的配对数}}
+{\text{两边均触发文本处理的配对数}}.
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord cjk_fallback">购买字段变化率</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.0804em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3944em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord cjk_fallback">两边均触发文本处理的配对数</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.7em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord cjk_fallback">两次运行的</span><span class="mord"> bought_target </span><span class="mord cjk_fallback">不同的配对数</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord">.</span></span></span></span></span></div>
+<p>筛选条件取决于各次运行是否到达处理页面。§7.2 分别比较配对运行的购买布尔字段、目标商品和动作序列。</p>
+<h3>已购商品的属性计分分解</h3>
+<p>我们从每条可重放轨迹实际购买的商品出发，检查用户要求的属性是否出现在商品标题、Description 或 BulletPoints 中。<code>att_subpage_only</code> 统计标题中没有、但 Description 或 BulletPoints 中出现的目标属性。它们属于这件已购商品已经匹配到的属性。</p>
+<p class="formula-lead">对每条纳入分解的购买轨迹，计算</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>子页面匹配属性份额</mtext><mo>=</mo><mfrac><mtext>标题没有、但 Description 或 BulletPoints 中命中的目标属性数</mtext><mrow><mtext>要求属性数</mtext><mo>+</mo><mtext>要求规格数</mtext><mo>+</mo><mn>1</mn></mrow></mfrac><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">
+\text{子页面匹配属性份额}
+=\frac{\text{标题没有、但 Description 或 BulletPoints 中命中的目标属性数}}
+{\text{要求属性数}+\text{要求规格数}+1}.
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord cjk_fallback">子页面匹配属性份额</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.1408em;vertical-align:-0.7693em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3714em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord cjk_fallback">要求属性数</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord text"><span class="mord cjk_fallback">要求规格数</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">1</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord cjk_fallback">标题没有、但</span><span class="mord"> Description </span><span class="mord cjk_fallback">或</span><span class="mord"> BulletPoints </span><span class="mord cjk_fallback">中命中的目标属性数</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7693em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord">.</span></span></span></span></span></div>
+<p>例如，一个任务要求两个属性、一项规格，并规定价格上限，共四项。若已购商品有一个目标属性仅在上述子页面文本中命中，这个份额就是 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi mathvariant="normal">/</mi><mn>4</mn></mrow><annotation encoding="application/x-tex">1/4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1/4</span></span></span></span>。计算没有乘商品类型系数，描述的是计分项的份额。</p>
+<p>我们只纳入重放得分与保存的终局得分一致且有评分分解的任务，再计算均值、中位数和零值数量。这个量描述实际已购商品的属性计分构成，随商品及可重放任务集合变化。阅读后改买其他商品、排除不合适商品或修改规格的收益，属于这项分解之外的信息价值。</p>
+<hr>
+<h2 id="section-7-2">7.2 访问奖励的训练结果</h2>
+<h3>页面访问与内容返回</h3>
+<p>我们比较仅使用终局奖励、增加访问奖励，以及只有满分购买才给予访问奖励这三种训练方式。每个模型在相同的 500 个任务上各运行一次，分别得到 500、499 和 498 条能够解析并取得环境结果的轨迹。下表按各模型的有效任务数统计结果。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>训练奖励</th>
+<th align="right">购买前访问受奖页面</th>
+<th align="right">任务成功</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>仅终局奖励</td>
+<td align="right">94/500（18.8%）</td>
+<td align="right">214/500（42.8%）</td>
+</tr>
+<tr>
+<td>增加访问奖励</td>
+<td align="right">498/499（99.8%）</td>
+<td align="right">221/499（44.3%）</td>
+</tr>
+<tr>
+<td>满分购买才给予访问奖励</td>
+<td align="right">495/498（99.4%）</td>
+<td align="right">205/498（41.2%）</td>
+</tr>
+</tbody></table></div>
+<p>加入访问奖励后，页面访问率从 18.8% 提高到 99.8%，任务成功率从 42.8% 提高到 44.3%。把奖励限制在满分购买上，页面访问率仍达到 99.4%，任务成功率为 41.2%。两种奖励方式都让模型几乎每次购买前都会查看子页面，任务成功率的变化则小得多。</p>
+<p>以下三类只在失败任务中按顺序划分。先统计未访问受奖子页面的任务，再从已访问的任务中分出必要选项未匹配齐的任务，最后一类保留其余失败。它们描述失败轨迹中发生了什么，不把未访问本身认定为失败原因。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>训练奖励</th>
+<th align="right">未访问的失败任务</th>
+<th align="right">已访问、必要选项未匹配齐</th>
+<th align="right">已访问、选项齐全但仍失败</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>仅终局奖励</td>
+<td align="right">228/500（45.6%）</td>
+<td align="right">39/500（7.8%）</td>
+<td align="right">19/500（3.8%）</td>
+</tr>
+<tr>
+<td>增加访问奖励</td>
+<td align="right">1/499（0.2%）</td>
+<td align="right">186/499（37.3%）</td>
+<td align="right">91/499（18.2%）</td>
+</tr>
+<tr>
+<td>满分购买才给予访问奖励</td>
+<td align="right">2/498（0.4%）</td>
+<td align="right">204/498（41.0%）</td>
+<td align="right">87/498（17.5%）</td>
+</tr>
+</tbody></table></div>
+<p>加入访问奖励后，未访问子页面的失败任务从 228 个降至 1 个，已访问但必要选项未匹配齐的任务从 39 个增至 186 个。三个模型被归为选项失败的任务，均由环境评分分解确认存在选项未匹配齐的问题。由于分类先检查访问，39→186 同时受到访问率变化的影响；它展示了受奖访问之后仍未解决的规格要求。</p>
+<p>我们按 7.1 节的方法重放这些轨迹，检查访问的子页面是否返回了内容。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>模型</th>
+<th align="right">轨迹数</th>
+<th align="right">能完整重放</th>
+<th align="right">重放后符合访问条件</th>
+<th align="right">其中返回非空内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>初始 Instruct</td>
+<td align="right">500</td>
+<td align="right">475</td>
+<td align="right">33</td>
+<td align="right">28/33（84.8%）</td>
+</tr>
+<tr>
+<td>仅终局奖励训练</td>
+<td align="right">500</td>
+<td align="right">483</td>
+<td align="right">80</td>
+<td align="right">72/80（90.0%）</td>
+</tr>
+<tr>
+<td>增加访问奖励训练</td>
+<td align="right">499</td>
+<td align="right">495</td>
+<td align="right">494</td>
+<td align="right">490/494（99.2%）</td>
+</tr>
+</tbody></table></div>
+<p>增加访问奖励的模型有 494 条可重放轨迹符合访问条件，其中 490 条至少获得了一次非空商品文本。因此，这些访问通常确实返回了内容。</p>
+<h3>已购商品的属性计分份额</h3>
+<p>仅终局奖励模型有 483 个任务能够完整重放并重新计算得分。按 §7.1 的定义，全部要求属性占计分项的平均比例为 39.4%；已购商品中仅在子页面文本命中的目标属性，平均占 10.0%，中位数为 0，零值任务为 330/483。</p>
+<p>下表比较七个模型的属性计分份额，各行使用该模型实际购买的商品。可复算任务从完整重放的轨迹中继续筛选，要求重算得分与原得分一致，且评分分解可用。例如，初始 Instruct 的 475 条完整重放轨迹中，有 395 条符合这些条件。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>模型</th>
+<th align="right">可复算任务 / 有效轨迹</th>
+<th align="right">子页面匹配属性份额均值</th>
+<th align="right">零值任务</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>初始 Instruct</td>
+<td align="right">395/500</td>
+<td align="right">9.4%</td>
+<td align="right">276/395</td>
+</tr>
+<tr>
+<td>仅终局奖励</td>
+<td align="right">483/500</td>
+<td align="right">10.0%</td>
+<td align="right">330/483</td>
+</tr>
+<tr>
+<td>访问奖励</td>
+<td align="right">495/499</td>
+<td align="right">11.8%</td>
+<td align="right">308/495</td>
+</tr>
+<tr>
+<td>满分门控访问奖励</td>
+<td align="right">473/498</td>
+<td align="right">11.9%</td>
+<td align="right">296/473</td>
+</tr>
+<tr>
+<td>GiGPO 种子 1</td>
+<td align="right">495/500</td>
+<td align="right">10.4%</td>
+<td align="right">332/495</td>
+</tr>
+<tr>
+<td>GiGPO 种子 2</td>
+<td align="right">493/500</td>
+<td align="right">12.0%</td>
+<td align="right">308/493</td>
+</tr>
+<tr>
+<td>提示组状态基线</td>
+<td align="right">489/500</td>
+<td align="right">11.4%</td>
+<td align="right">316/489</td>
+</tr>
+</tbody></table></div>
+<p>七组的中位数都为零。在这些已购商品上，许多任务没有在标题之外的子页面文本中匹配到目标属性。阅读也可能让模型排除当前商品或改选规格，这些收益在上述分解之外。</p>
+<h3>文本处理实验的购买结果</h3>
+<p>我们按 §7.1 的实际协议，将各处理条件与星级文本参照条件配对。下表统计保存字段 <code>bought_target</code> 不同的配对数。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>处理内容</th>
+<th align="right">访问奖励模型</th>
+<th align="right">满分门控奖励模型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>子页面追加属性冲突信息</td>
+<td align="right">0/198</td>
+<td align="right">15/197</td>
+</tr>
+<tr>
+<td>子页面追加不符合要求的说明</td>
+<td align="right">0/198</td>
+<td align="right">3/197</td>
+</tr>
+<tr>
+<td>详情页追加不符合要求的说明</td>
+<td align="right">50/199</td>
+<td align="right">8/199</td>
+</tr>
+<tr>
+<td>详情页价格改为预算三倍</td>
+<td align="right">9/199</td>
+<td align="right">本组未报告</td>
+</tr>
+</tbody></table></div>
+<p>星级文本修改构成参照条件。本实验没有将该条件与未修改页面的运行比较，因此没有估计星级修改本身的效应。</p>
+<p>逐对检查属性冲突条件与参照条件时，我们还发现了动作序列、目标商品和处理次数的差异。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>属性冲突条件与参照条件的差异</th>
+<th align="right">访问奖励模型</th>
+<th align="right">满分门控奖励模型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>动作序列不同</td>
+<td align="right">18/198</td>
+<td align="right">73/197</td>
+</tr>
+<tr>
+<td>脚本指定的 <code>target</code> 不同</td>
+<td align="right">2/198</td>
+<td align="right">2/197</td>
+</tr>
+<tr>
+<td>处理运行中，子页面文本被修改多次</td>
+<td align="right">56/198</td>
+<td align="right">186/197</td>
+</tr>
+</tbody></table></div>
+<p>0/198 表示两个条件下“是否买回各自指定目标”的布尔值均相同；这个字段未编码完整的最终购买商品标识。其他条件的非零计数表示该字段发生了变化。前缀差异、重复处理和按触发筛选都参与了比较，因此这些结果对应整套文本处理协议。单次子页面信息变化的因果效应仍未被隔离出来。</p>
+<p>下面保留一个动作层面的实例。假发任务的参照运行与属性冲突运行都执行了：</p>
+<pre><code class="language-text">search[long clip-in hair extension natural looking under 40]
+→ click[B08H5DCD65]
+→ click[natural black #1B]
+→ click[features]
+→ click[&lt; prev]
+→ click[buy now]
+</code></pre>
+<p>两条动作链相同，但参照运行此前已经修改详情页星级，属性冲突运行则在子页面追加文本。这个实例展示了两种文本处理下重复的购买流程，不是从完全相同观测历史分出的两条续写。</p>
+<h3>访问后的动作</h3>
+<p>我们检查模型查看子页面后是否继续比较其他商品，以了解检索在购买流程中的作用。训练结束后，我们对仅使用终局奖励的模型和满分门控奖励模型分别评测，每个任务采样 8 条 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>1.0</mn></mrow><annotation encoding="application/x-tex">T=1.0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1.0</span></span></span></span> rollout。500 个任务分别得到 4,000 条和 3,987 条有效轨迹。</p>
+<p>我们根据点击内容是否符合商品编号格式，统计模型访问子页面后是否又点击了商品。脚本把 <code>click[...]</code> 中由十位小写字母或数字组成的内容识别为商品编号，因此也可能计入格式相同的规格选项。下表分别记录这类点击是否出现、点击的编号此前是否出现过，两项比例都以访问过受奖子页面的轨迹为分母。</p>
+<p>此外，环境会直接记录模型查看了几件商品，我们据此统计恰好查看两件商品的轨迹数。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>统计量</th>
+<th align="right">仅终局奖励</th>
+<th align="right">满分购买才给予访问奖励</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>访问过受奖子页面</td>
+<td align="right">1,169/4,000（29.2%）</td>
+<td align="right">3,970/3,987（99.6%）</td>
+</tr>
+<tr>
+<td>首次访问后，出现商品编号格式的点击</td>
+<td align="right">1,166/1,169（99.7%）</td>
+<td align="right">4/3,970（0.10%）</td>
+</tr>
+<tr>
+<td>首次访问后，点击此前未出现的商品编号格式文本</td>
+<td align="right">672/1,169（57.5%）</td>
+<td align="right">2/3,970（0.05%）</td>
+</tr>
+<tr>
+<td>环境记录恰好查看两件商品</td>
+<td align="right">729/4,000（18.2%）</td>
+<td align="right">2/3,987（0.05%）</td>
+</tr>
+<tr>
+<td>每条轨迹的平均动作数</td>
+<td align="right">5.58</td>
+<td align="right">7.75</td>
+</tr>
+<tr>
+<td>平均终局得分，不含访问奖励</td>
+<td align="right">0.711</td>
+<td align="right">0.712</td>
+</tr>
+</tbody></table></div>
+<p>满分门控奖励模型的子页面访问率为 99.6%。在这些访问轨迹中，首次访问后只有 4 条出现商品编号格式的点击，其中 2 条点击了此前未出现的编号。模型打开子页面后，很少再点击其他商品。</p>
+<p>每条轨迹的平均动作数从 5.58 增至 7.75，多出 2.17 步，接近打开子页面再返回商品详情所需的两步。两种模型的平均终局得分分别为 0.711 和 0.712，增加的动作没有伴随明显的得分提高。</p>
+<p>满分门控奖励模型的常见动作顺序如下。</p>
+<pre><code class="language-text">打开商品详情
+→ 查看受奖子页面
+→ 返回商品详情
+→ 购买同一商品
+</code></pre>
+<p>子页面访问主要发生在购买前的最后几步，随后很少继续查看其他商品。</p>
+<h3>商用模型怎样访问子页面</h3>
+<p>我们还让七个商用 API 模型直接执行 WebShop 测试集的前 200 个任务，没有为它们进行访问奖励训练。每题运行一次，最多 15 步，温度为 0。部分调用未得到有效结果，表中保留各模型实际完成评测的题数。</p>
+<p>这里统计完成购买的轨迹中，有多少出现了先点击商品子页面、再点击购买的动作。脚本识别 description、features、reviews 和 attributes 四类子页面，进入新商品时清空此前商品的子页面访问标记。分母是环境确认完成购买的轨迹数；分子还要求动作序列中至少有一次符合上述顺序的购买点击。它描述购买流程中的页面访问，不测返回内容是否改变了购买。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>模型</th>
+<th align="right">有效评测题数</th>
+<th align="right">购买轨迹中出现先看后买</th>
+<th align="right">获得满分的任务</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Claude-Haiku-4.5</td>
+<td align="right">200</td>
+<td align="right">43/165（26.1%）</td>
+<td align="right">55/200</td>
+</tr>
+<tr>
+<td>DeepSeek-v4-pro</td>
+<td align="right">197</td>
+<td align="right">42/169（24.9%）</td>
+<td align="right">61/197</td>
+</tr>
+<tr>
+<td>DeepSeek-v4-flash</td>
+<td align="right">200</td>
+<td align="right">32/157（20.4%）</td>
+<td align="right">54/200</td>
+</tr>
+<tr>
+<td>Gemini-3.6-flash</td>
+<td align="right">185</td>
+<td align="right">34/167（20.4%）</td>
+<td align="right">82/185</td>
+</tr>
+<tr>
+<td>Qwen3-max</td>
+<td align="right">189</td>
+<td align="right">31/154（20.1%）</td>
+<td align="right">53/189</td>
+</tr>
+<tr>
+<td>GPT-5.1</td>
+<td align="right">197</td>
+<td align="right">10/187（5.3%）</td>
+<td align="right">56/197</td>
+</tr>
+<tr>
+<td>Qwen3.7-plus</td>
+<td align="right">200</td>
+<td align="right">4/48（8.3%）</td>
+<td align="right">16/200</td>
+</tr>
+</tbody></table></div>
+<p>前六个模型的先看后买比例介于 5.3% 和 26.1% 之间。Qwen3.7-plus 在 158/200 个任务上用尽 15 步预算，只有 48 条轨迹完成购买。它的 4/48 主要描述少数走到购买环节的任务，需要与较低的任务完成情况一起读。</p>
+<p>这些模型在没有经过本项目访问奖励训练时，也常直接购买商品。页面访问较少并非只出现在我们的终局奖励模型上。</p>
+<h3>访问增长与内容使用的证据</h3>
+<p>访问奖励让购买前的子页面访问接近普遍发生，重放也确认这些访问通常返回非空内容。任务成功率的变化远小于访问率，满分门控模型的访问则通常位于购买流程末尾。</p>
+<p>文本处理实验比较了不同条件下的购买字段响应，尚未建立“模型学会检索却没有学会使用信息”这一更强结论。属性分解描述的是已购商品的匹配情况，购买选择之前阅读信息的收益仍未得到测量。</p>
+<hr>
+<nav class="chapter-navigation"><a href="chapter-6.zh-CN.html">上一页</a><a href="chapter-8.zh-CN.html">下一章</a></nav></main><footer class="downloads"><a download href="downloads/TECHNICAL_REPORT_V2.zh-CN.pdf">下载完整报告 PDF · 3.2 MB</a></footer><script>
+const languageLink=document.querySelector('[data-language]');
+const headings=[...document.querySelectorAll('main h1[id],main h2[id],main h3[id]')];
+function syncLanguage(){let id=location.hash.slice(1);const target=document.getElementById(id);if(!target||target.getBoundingClientRect().top<0||target.getBoundingClientRect().top>innerHeight){for(const h of headings){if(h.getBoundingClientRect().top<240)id=h.id;else break;}}languageLink.href=languageLink.dataset.language+(id?'#'+id:'');}
+addEventListener('scroll',syncLanguage,{passive:true});addEventListener('hashchange',syncLanguage);addEventListener('load',syncLanguage);document.fonts.ready.then(syncLanguage);syncLanguage();
+for(const pre of document.querySelectorAll('pre')){const code=pre.querySelector('code');if(!code)continue;const button=document.createElement('button');button.className='copy-code';button.textContent=document.documentElement.lang==='en'?'Copy':'复制';button.setAttribute('aria-label',button.textContent+' code');button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(code.textContent);button.textContent=document.documentElement.lang==='en'?'Copied':'已复制';}catch{button.textContent=document.documentElement.lang==='en'?'Select to copy':'请选中复制';}});pre.append(button);}
+if(innerWidth<=900){document.querySelector('.contents-panel details')?.removeAttribute('open');}
+</script></body></html>

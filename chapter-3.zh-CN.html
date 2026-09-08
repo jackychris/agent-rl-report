@@ -1,0 +1,353 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>第 3 章　SFT 的训练与泛化</title><link rel="stylesheet" href="report.css"><style>
+html{scroll-behavior:smooth;scroll-padding-top:2rem}body{font-family:Arial,"Microsoft YaHei",sans-serif;font-size:16px;line-height:1.85;background:#fff;color:#303030;margin:0}
+main,body.quick main{box-sizing:border-box;max-width:860px;margin:0 0 0 304px;padding:34px 48px 72px}
+.sitebar{margin-left:304px;max-width:860px;box-sizing:border-box;border-bottom:1px solid #ddd;padding:20px 48px 12px;display:flex;gap:22px;align-items:center;flex-wrap:wrap;font:400 14px/1.5 Arial,sans-serif}
+.sitebar{justify-content:flex-end}.sitebar a{color:#164e7a;text-decoration:none}.sitebar .brand{display:none}.sitebar a:hover{text-decoration:underline}
+.downloads{margin-left:304px;max-width:860px;box-sizing:border-box;font:14px/1.8 Arial,sans-serif;padding:22px 48px 36px;color:#666;border-top:1px solid #dce3e9;display:flex;gap:20px;flex-wrap:wrap}.author-credit{font-size:14px;font-weight:400;color:#555;margin:-10px 0 32px}
+.contents-panel{box-sizing:border-box;position:fixed;left:0;top:0;bottom:0;width:304px;overflow:auto;background:#142e49;border-right:1px solid #142e49;padding:28px 18px;font:14px/1.6 Arial,"Microsoft YaHei",sans-serif;color:#fff}
+.contents-panel a{display:block;color:#dbe6f0;text-decoration:none;padding:7px 10px}.contents-panel a:hover{background:#203e5c;color:#fff}.contents-panel a[aria-current=page]{background:#294b6c;color:#fff;border-left:2px solid #c0d7eb;padding-left:8px}
+.contents-panel summary{font-weight:400;cursor:pointer;margin:0 10px 20px;font-size:17px;list-style:none}.contents-panel .subsection{padding-left:22px;font-size:14px}.contents-panel .subsection:hover{padding-left:22px}
+h1,h2,h3,h4,h5,h6,strong,b,th{font-weight:400}h1{font-size:30px;line-height:1.45;color:#222;margin:0 0 26px}h2{font-size:24px;margin:38px 0 18px;color:#222}h3{font-size:20px;margin:30px 0 14px;color:#333}h4,h5{font-size:17px;color:#333}h2,h3,h4{scroll-margin-top:2rem;line-height:1.5}p{overflow-wrap:break-word}a{color:#164e7a;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}a:hover{color:#0b3558}a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid #608cb5;outline-offset:3px}
+.formula,.katex-display{max-width:100%;overflow-x:auto;overflow-y:hidden}pre{position:relative;overflow:auto;white-space:pre;max-width:100%;padding-top:38px}pre code{font-size:14px;white-space:pre}
+.copy-code{position:absolute;right:7px;top:5px;font:14px/1.5 Arial,sans-serif;border:1px solid #ccc;background:#fff;color:#555;border-radius:2px;cursor:pointer;padding:2px 9px}
+.table-wrap{overflow-x:auto;max-width:100%}table{font-size:14px}th,td{border-color:#ddd}th{background:#f3f3f3}pre,.code-list td{background:#f7f7f7;border-color:#ddd}.code-list{table-layout:auto}.code-list pre code{font-size:14px}.code-list .code-lines{font-size:12px;color:#777}.code-list th{color:#555}blockquote{border-color:#ccc;background:#f8f8f8}.chapter-navigation{border-top:1px solid #ddd;margin-top:48px;padding-top:20px;display:flex;justify-content:space-between;gap:24px;font-size:14px}
+@media(max-width:900px){main,body.quick main{margin:0 auto;padding:28px 24px 60px}.sitebar,.downloads{margin:0;padding-left:24px;padding-right:24px}.sitebar .brand{display:block;margin-right:auto}.contents-panel{position:static;width:auto;max-height:none;padding:14px 24px;border:0;border-bottom:1px solid #ddd}.contents-panel summary{font-size:14px;margin:0;list-style:revert}.contents-panel nav{max-height:45vh;overflow:auto}.contents-panel a{padding:6px 8px}}
+@media(max-width:600px){.sitebar{gap:12px;padding:12px 16px;font-size:14px}.sitebar .brand{width:100%}main,body.quick main{padding:24px 16px 60px}.downloads{padding:10px 16px;gap:12px}.contents-panel{padding:12px 16px}h1{font-size:26px}h2{font-size:22px}.code-list{min-width:620px}pre code{font-size:14px}.table-wrap th:first-child,.table-wrap td:first-child{background:#f5f5f5}.table-wrap th:first-child{background:#eee}}
+@media print{.sitebar,.downloads,.contents-panel,.copy-code{display:none!important}main{margin:0!important;max-width:none}body{font-size:10pt}pre{padding-top:9px}}
+</style></head><body class="full"><header class="sitebar"><a data-language="chapter-3.en.html" href="chapter-3.en.html" lang="en">English</a></header><aside class="contents-panel"><details open><summary>智能体强化学习</summary><nav><a href="index.html">研究概览</a><a href="overview.zh-CN.html">摘要</a><a href="chapter-1.zh-CN.html">第 1 章　目标行为学习的证据</a><a href="chapter-2.zh-CN.html">第 2 章　Ask-or-Act 任务与评测</a><a href="chapter-3.zh-CN.html" aria-current="page">第 3 章　SFT 的训练与泛化</a><a class="subsection" href="#section-3-1">3.1 SFT #1 的训练任务与留出任务</a><a class="subsection" href="#section-3-2">3.2 SFT #1 的任务表现</a><a class="subsection" href="#section-3-3">3.3 监督示范的构造方式</a><a href="chapter-4.zh-CN.html">第 4 章　SFT-GRPO：继续训练后的行为变化</a><a href="chapter-5.zh-CN.html">第 5 章　从 Instruct 开始的 GRPO</a><a href="chapter-6.zh-CN.html">第 6 章　泛化差异与行为诊断</a><a href="chapter-7.zh-CN.html">第 7 章　WebShop 的访问奖励与内容响应</a><a href="chapter-8.zh-CN.html">第 8 章　组相对训练的奖励信号</a><a href="chapter-9.zh-CN.html">第 9 章　相关工作</a><a href="chapter-10.zh-CN.html">第 10 章　智能体强化学习的行为与训练诊断</a><a href="appendix-a.zh-CN.html">附录 A　Ask-or-Act 系统与动作链</a><a href="appendix-b.zh-CN.html">附录 B　奖励、估计器与实现</a><a href="appendix-c.zh-CN.html">附录 C　补充实验与诊断</a><a href="appendix-d.zh-CN.html">附录 D　公开实现、统计规则与资源</a><a href="references.zh-CN.html">References / 参考文献</a></nav></details></aside><main><h1 id="chapter-3">第 3 章　SFT 的训练与泛化</h1>
+<h2 id="section-3-1">3.1 <code>SFT #1</code> 的训练任务与留出任务</h2>
+<p>我们先用 192 条按任务规则构造的示范轨迹进行九次 SFT 更新，训练模型执行 Ask-or-Act 的基本流程。由此得到的 <code>SFT #1</code> 也是 <code>SFT-GRPO #1</code> 的训练起点。</p>
+<p>训练数据分别展示了如何澄清收件人、如何在发送前请求确认。我们用两组任务检查模型能否迁移这些能力：一组只更换人物和文件，另一组对比仅需澄清与需要先澄清再确认的情况。下面列出两类训练任务、对象替换任务和组合任务的动作链。</p>
+<pre><code class="language-text">训练任务 1：收件人需要澄清（张伟 / 报告）
+retrieve_outbox()
+→ retrieve_contacts(query=&quot;张伟&quot;)
+→ retrieve_files(query=&quot;报告&quot;)
+→ ask_clarification(field=&quot;recipient_id&quot;)
+→ send_email(file_id=&quot;report_target_1&quot;, recipient_id=&quot;contact_target_1&quot;)
+→ finish()
+</code></pre>
+<pre><code class="language-text">训练任务 2：发送前需要确认（张伟 / 报告）
+retrieve_outbox()
+→ retrieve_contacts(query=&quot;张伟&quot;)
+→ retrieve_files(query=&quot;报告&quot;)
+→ request_confirmation()
+→ send_email(file_id=&quot;report_target_1&quot;, recipient_id=&quot;contact_target_1&quot;)
+→ finish()
+</code></pre>
+<pre><code class="language-text">更换人物和文件：相同的澄清关系（吴敏 / 数据表）
+retrieve_outbox()
+→ retrieve_contacts(query=&quot;吴敏&quot;)
+→ retrieve_files(query=&quot;数据表&quot;)
+→ ask_clarification(field=&quot;recipient_id&quot;)
+→ send_email(file_id=&quot;dataset_target_9&quot;, recipient_id=&quot;contact_target_9&quot;)
+→ finish()
+</code></pre>
+<pre><code class="language-text">澄清与确认组合：先问清收件人，再确认是否发送（张伟 / 报告）
+retrieve_outbox()
+→ retrieve_contacts(query=&quot;张伟&quot;)
+→ retrieve_email_context(query=&quot;张伟&quot;)
+→ ask_clarification(field=&quot;recipient_id&quot;)
+→ retrieve_files(query=&quot;报告&quot;)
+→ request_confirmation()
+→ send_email(file_id=&quot;report_target_1&quot;, recipient_id=&quot;contact_target_1&quot;)
+→ finish()
+</code></pre>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>划分</th>
+<th>关系与任务对象</th>
+<th align="right">任务数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>训练任务</strong></td>
+<td>12 项基础关系的两个分支，每个分支使用前 8 组任务对象</td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>12</mn><mo>×</mo><mn>2</mn><mo>×</mo><mn>8</mn><mo>=</mo><mn>192</mn></mrow><annotation encoding="application/x-tex">12\times2\times8=192</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">12</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">8</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">192</span></span></span></span></td>
+</tr>
+<tr>
+<td><strong>更换人物和文件</strong></td>
+<td>相同关系与分支，使用第 9、10 组任务对象</td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>12</mn><mo>×</mo><mn>2</mn><mo>×</mo><mn>2</mn><mo>=</mo><mn>48</mn></mrow><annotation encoding="application/x-tex">12\times2\times2=48</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">12</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">48</span></span></span></span></td>
+</tr>
+<tr>
+<td><strong>澄清—确认配对测试</strong></td>
+<td>10 个仅需澄清的对照任务与 10 个需要先澄清再确认的组合任务</td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10</mn><mo>+</mo><mn>10</mn><mo>=</mo><mn>20</mn></mrow><annotation encoding="application/x-tex">10+10=20</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">10</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">10</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">20</span></span></span></span></td>
+</tr>
+</tbody></table></div>
+<p>本节评测统一使用附录 A.1 的第一种请求模板。§3.3 比较加入不同请求说法和合法查询顺序后的训练结果。</p>
+<h2 id="section-3-2">3.2 <code>SFT #1</code> 的任务表现</h2>
+<p>我们在每个任务上分别运行一次训练前的 Instruct 模型和 <code>SFT #1</code>，结果如下：</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>任务</th>
+<th align="right">完成任务</th>
+<th align="right">交互签名匹配</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>训练任务（192 个）</td>
+<td align="right">156/192 → 178/192</td>
+<td align="right">72/192 → 146/192</td>
+</tr>
+<tr>
+<td>更换人物和文件后的任务（48 个）</td>
+<td align="right">41/48 → 44/48</td>
+<td align="right">30/48 → 36/48</td>
+</tr>
+<tr>
+<td>澄清—确认配对测试（20 个）</td>
+<td align="right">18/20 → 20/20</td>
+<td align="right">9/20 → 20/20</td>
+</tr>
+</tbody></table></div>
+<p>训练前的模型已经能够完成多数任务，但经常没有通过澄清、确认和终态组成的交互签名检查。SFT 后，训练任务中通过交互签名检查的轨迹从 72/192 增至 146/192。澄清—确认配对测试也从 9/20 增至 20/20。更换人物和文件后的任务上的变化较小，完成任务从 41/48 增至 44/48，签名匹配数从 30/48 增至 36/48。</p>
+<p>我们还用 60 个训练中没有出现的双工具任务，测试模型能否在写入前取得并组合两个工具返回的信息。文件查询 <code>retrieve_files</code> 返回文件大小 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>s</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">s_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，分享策略查询 <code>retrieve_sharing_policy</code> 返回审批阈值 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\alpha_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0037em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 和禁止共享的上限 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>η</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\eta_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">η</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>。模型需要比较文件大小与两个阈值，按以下规则行动：</p>
+<div class="formula"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>要求的行动</mtext><mo>=</mo><mrow><mo fence="true">{</mo><mtable rowspacing="0.36em" columnalign="left left" columnspacing="1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mtext>直接发送</mtext><mo separator="true">,</mo></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><msub><mi>s</mi><mi>i</mi></msub><mo>&lt;</mo><msub><mi>α</mi><mi>i</mi></msub><mo separator="true">,</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mtext>请求确认，按用户答复决定是否发送</mtext><mo separator="true">,</mo></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><msub><mi>α</mi><mi>i</mi></msub><mo>&lt;</mo><msub><mi>s</mi><mi>i</mi></msub><mo>&lt;</mo><msub><mi>η</mi><mi>i</mi></msub><mo separator="true">,</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mtext>停止发送</mtext><mo separator="true">,</mo></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><msub><mi>s</mi><mi>i</mi></msub><mo>&gt;</mo><msub><mi>η</mi><mi>i</mi></msub><mi mathvariant="normal">.</mi></mrow></mstyle></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+\text{要求的行动}=
+\begin{cases}
+\text{直接发送}, &amp; s_i&lt;\alpha_i,\\
+\text{请求确认，按用户答复决定是否发送}, &amp; \alpha_i&lt;s_i&lt;\eta_i,\\
+\text{停止发送}, &amp; s_i&gt;\eta_i.
+\end{cases}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord cjk_fallback">要求的行动</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:4.32em;vertical-align:-1.91em;"></span><span class="minner"><span class="mopen"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.35em;"><span style="top:-2.2em;"><span class="pstrut" style="height:3.15em;"></span><span class="delimsizinginner delim-size4"><span>⎩</span></span></span><span style="top:-2.192em;"><span class="pstrut" style="height:3.15em;"></span><span style="height:0.316em;width:0.8889em;"><svg xmlns="http://www.w3.org/2000/svg" width="0.8889em" height="0.316em" style="width:0.8889em" viewBox="0 0 888.89 316" preserveAspectRatio="xMinYMin"><path d="M384 0 H504 V316 H384z M384 0 H504 V316 H384z"/></svg></span></span><span style="top:-3.15em;"><span class="pstrut" style="height:3.15em;"></span><span class="delimsizinginner delim-size4"><span>⎨</span></span></span><span style="top:-4.292em;"><span class="pstrut" style="height:3.15em;"></span><span style="height:0.316em;width:0.8889em;"><svg xmlns="http://www.w3.org/2000/svg" width="0.8889em" height="0.316em" style="width:0.8889em" viewBox="0 0 888.89 316" preserveAspectRatio="xMinYMin"><path d="M384 0 H504 V316 H384z M384 0 H504 V316 H384z"/></svg></span></span><span style="top:-4.6em;"><span class="pstrut" style="height:3.15em;"></span><span class="delimsizinginner delim-size4"><span>⎧</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.85em;"><span></span></span></span></span></span></span><span class="mord"><span class="mtable"><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.41em;"><span style="top:-4.41em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord text"><span class="mord cjk_fallback">直接发送</span></span><span class="mpunct">,</span></span></span><span style="top:-2.97em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord text"><span class="mord cjk_fallback">请求确认，按用户答复决定是否发送</span></span><span class="mpunct">,</span></span></span><span style="top:-1.53em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord text"><span class="mord cjk_fallback">停止发送</span></span><span class="mpunct">,</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.91em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:1em;"></span><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.41em;"><span style="top:-4.41em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0037em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span></span></span><span style="top:-2.97em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0037em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">η</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span></span></span><span style="top:-1.53em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">η</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">.</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.91em;"><span></span></span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></div>
+<p>这组任务中的文件大小都不等于阈值。</p>
+<p>在同一组双工具任务上，训练前后的结果如下：</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>检查项</th>
+<th align="right">Instruct</th>
+<th align="right"><code>SFT #1</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>完成任务</td>
+<td align="right">39/60</td>
+<td align="right">50/60</td>
+</tr>
+<tr>
+<td>交互签名匹配</td>
+<td align="right">18/60</td>
+<td align="right">30/60</td>
+</tr>
+<tr>
+<td>满足写前查询条件</td>
+<td align="right">10/60</td>
+<td align="right">60/60</td>
+</tr>
+<tr>
+<td>发生过早行动</td>
+<td align="right">48/60</td>
+<td align="right">0/60</td>
+</tr>
+</tbody></table></div>
+<p>SFT 后，模型多完成了 11 个任务，过早行动从 48 个任务降至零。模型在 50 个任务中先查询分享策略再写入，另外 10 个任务查询后没有写入，全部满足写前查询条件。</p>
+<p>这些双工具任务没有参与 SFT，模型仍然改善了查询顺序。这说明原始任务中的示范帮助它把先查询、后行动的要求用到了新的信息来源上。</p>
+<h3>付款与日程任务</h3>
+<p>我们用第二章的付款和日程任务检查邮件 SFT 后的跨领域表现。表中箭头表示初始 Instruct 模型到 <code>SFT #1</code> 的变化。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>测试任务</th>
+<th align="right">任务成功</th>
+<th align="right">交互签名匹配</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>付款，保留基础规则</td>
+<td align="right">226/260 → 207/260</td>
+<td align="right">51/260 → 48/260</td>
+</tr>
+<tr>
+<td>日程，保留基础规则</td>
+<td align="right">214/260 → 23/260</td>
+<td align="right">91/260 → 6/260</td>
+</tr>
+<tr>
+<td>付款，增加数值判断</td>
+<td align="right">28/60 → 50/60</td>
+<td align="right">18/60 → 0/60</td>
+</tr>
+<tr>
+<td>日程，增加参数传递</td>
+<td align="right">52/60 → 29/60</td>
+<td align="right">10/60 → 0/60</td>
+</tr>
+</tbody></table></div>
+<p>保留基础规则时，SFT 后的付款和日程表现都下降了，日程任务成功数从 214/260 降至 23/260。邮件训练改善了前面的邮件任务，却损害了模型原有的部分跨领域能力。</p>
+<p>增加新要求后，付款数值任务的成功数从 28/60 增至 50/60，但没有一条轨迹通过交互签名检查。日程参数传递任务的成功数和交互签名匹配数都下降了。</p>
+<h2 id="section-3-3">3.3 监督示范的构造方式</h2>
+<p>这项实验检查改变请求模板和示范顺序后，SFT 的原始任务表现与泛化表现如何变化。同一个任务可以写成“把最新版报告发给张伟”，也可以写成“张伟还没收到最新的报告，麻烦发一下”。后一种说法增加了尚未送达的暗示，环境事实和评分规则仍然不变。联系人查询和文件查询互不依赖，先查联系人或先查文件都符合任务规则。我们把请求模板和查询顺序以不同组合加入由相同 192 个任务构造的四组监督数据。每组训练让每个任务约出现八次，并进行约 24 次更新。训练后，我们用 320 个任务检查模型的行为，其中 260 个原始任务覆盖 13 类能力，另外 60 个任务要求模型组合两个工具返回的信息。</p>
+<p>作为比较，Instruct 完成了 215/260 个原始任务和 39/60 个双工具任务，<code>SFT #1</code> 分别完成了 242/260 和 50/60。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>监督数据</th>
+<th align="right">请求说法</th>
+<th align="right">合法查询顺序</th>
+<th align="right">原始任务完成</th>
+<th align="right">原始任务交互签名</th>
+<th align="right">双工具任务完成</th>
+<th align="right">双工具任务交互签名</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>重复单一示范</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">237/260</td>
+<td align="right">240/260</td>
+<td align="right">48/60</td>
+<td align="right">20/60</td>
+</tr>
+<tr>
+<td>加入另一种查询顺序</td>
+<td align="right">1</td>
+<td align="right">最多 2</td>
+<td align="right">260/260</td>
+<td align="right">260/260</td>
+<td align="right">10/60</td>
+<td align="right">10/60</td>
+</tr>
+<tr>
+<td>加入四种请求说法</td>
+<td align="right">4</td>
+<td align="right">1</td>
+<td align="right">260/260</td>
+<td align="right">260/260</td>
+<td align="right">11/60</td>
+<td align="right">8/60</td>
+</tr>
+<tr>
+<td>同时加入两类变化</td>
+<td align="right">4</td>
+<td align="right">最多 2</td>
+<td align="right">260/260</td>
+<td align="right">260/260</td>
+<td align="right">10/60</td>
+<td align="right">4/60</td>
+</tr>
+</tbody></table></div>
+<p>只重复单一示范时，模型完成了 237/260 个原始任务和 48/60 个双工具任务。加入不同的请求说法或合法查询顺序后，三次训练都完成了全部 260 个原始任务；双工具任务的完成数分别为 10/60、11/60 和 10/60。增加这些示范变化后，原始任务完成得更多，双工具任务完成得更少。</p>
+<p>我们用表中“同时加入两类变化”的监督数据，分别训练一轮、两轮和三轮，检查增加训练轮数能否改善双工具任务的表现。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>训练轮数（epoch）</th>
+<th align="right">原始任务完成</th>
+<th align="right">双工具任务完成</th>
+<th align="right">双工具任务写前查询</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>一轮</td>
+<td align="right">260/260</td>
+<td align="right">10/60</td>
+<td align="right">0/60</td>
+</tr>
+<tr>
+<td>两轮</td>
+<td align="right">260/260</td>
+<td align="right">0/60</td>
+<td align="right">0/60</td>
+</tr>
+<tr>
+<td>三轮</td>
+<td align="right">250/260</td>
+<td align="right">10/60</td>
+<td align="right">0/60</td>
+</tr>
+</tbody></table></div>
+<p>增加训练轮数没有改善双工具任务的完成率，写前查询也始终为零。第三轮还使原始任务增加了 10 个错误。</p>
+<p>任务完成数来自评测汇总，写前查询来自当时的实验笔记，来源见附录 C。</p>
+<h3>生成轨迹的筛选</h3>
+<p>另一组 SFT 数据来自模型自己生成的正确轨迹。根据实验笔记，模型在每个原始任务上运行八次，筛出 1,458 条同时完成任务并遵守规定动作顺序的轨迹。笔记中的评测汇总显示，用这些轨迹训练后，模型仍能完成原始任务。筛选后的训练数据只包含原始任务中的做法，测试中要求的新关系没有进入这份数据。该项结果按历史汇总保留，见附录 C.1。</p>
+<p>我们也把这 1,458 条原始任务轨迹与最初按规则构造的原始任务示范合并，再次进行 SFT。这两部分数据都包含查询和写入动作，但都没有展示变换任务要求的新顺序。训练后的模型会执行这些动作，在变换任务上仍然先尝试写入、后查询。</p>
+<p>除了筛选模型自己的轨迹，我们还尝试让 GPT-5.1 为 <code>GRPO #1</code> 的 192 个训练任务重写完整动作序列。输入包含原轨迹及其真实工具返回，不提供按任务规则构造的示范答案。改写后的动作序列放回确定性环境执行，再检查是否适合作为监督示范。以下数字来自这次实验的历史汇总。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>筛选标准</th>
+<th align="right">通过的改写</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>只检查任务完成</td>
+<td align="right">143/192</td>
+</tr>
+<tr>
+<td>同时检查任务完成和执行要求</td>
+<td align="right">26/192</td>
+</tr>
+</tbody></table></div>
+<p>严格筛选还要求确认正确，且没有策略违规、过早行动、多余提问或非预期副作用。143 条完成任务的改写中，只有 26 条同时通过这些检查。在全部 192 条改写轨迹中，实验笔记记录了 145 条确认错误或多余确认，38 条过早行动；同一条轨迹可能有多种错误。</p>
+<p>这个结果直接影响示范的筛选方式。只按任务完成筛选，会把确认和行动顺序有误的轨迹带入监督数据。若希望模型学会这些顺序，筛选条件就需要包含相应的行为检查。</p>
+<h3>增加训练后的跨领域表现</h3>
+<p>付款和日程测试使用的是同时增加请求说法和合法查询顺序的监督数据训练两轮后的模型。表中箭头表示初始 Instruct 模型到该 SFT 模型的变化。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>测试任务</th>
+<th align="right">任务成功</th>
+<th align="right">交互签名匹配</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>付款，保留基础规则</td>
+<td align="right">226/260 → 247/260</td>
+<td align="right">51/260 → 22/260</td>
+</tr>
+<tr>
+<td>日程，保留基础规则</td>
+<td align="right">214/260 → 260/260</td>
+<td align="right">91/260 → 30/260</td>
+</tr>
+<tr>
+<td>付款，增加数值判断</td>
+<td align="right">28/60 → 3/60</td>
+<td align="right">18/60 → 3/60</td>
+</tr>
+<tr>
+<td>日程，增加参数传递</td>
+<td align="right">52/60 → 30/60</td>
+<td align="right">10/60 → 0/60</td>
+</tr>
+</tbody></table></div>
+<p>保留基础规则时，模型完成了更多付款和日程任务，日程任务全部成功。不过，两类任务中交互签名匹配的轨迹都减少了。</p>
+<p>增加数值判断后，付款任务只完成了 3/60；增加参数传递后，日程任务完成了 30/60，两项都低于初始 Instruct。与前面的 <code>SFT #1</code> 相比，这次训练恢复了基础跨领域任务的完成率，新增要求下的表现仍然较差。</p>
+<h3>SFT 的泛化表现</h3>
+<p><code>SFT #1</code> 同时改善了原始任务和双工具任务。后续增加示范变化和训练量，原始任务表现继续提高，双工具任务上的改善却没有保持。</p>
+<p>加入请求说法或合法查询顺序的三个模型都完成了全部原始任务，双工具任务却只完成了 10 或 11 个，低于 Instruct 的 39 个。延长训练也没有恢复写前查询。</p>
+<p>跨领域测试中，邮件 SFT 没有带来稳定的能力提升。<code>SFT #1</code> 降低了基础付款和日程任务的完成率。改用更多样的示范并训练两轮后，基础任务的完成率恢复，但交互签名匹配的轨迹仍少于初始 Instruct，增加数值判断和参数传递后的表现也较差。</p>
+<p>一个反常特例是 <code>SFT #1</code> 的付款数值任务。基础付款任务的成功数从 226/260 降至 207/260，增加数值判断后的任务反而从 28/60 提高到 50/60。查看轨迹后发现，模型在全部 60 个数值任务上都先尝试提交付款，再查询策略。允许付款的任务完成得更多，超过禁止付款上限的 10 个任务则全部失败。成功数的提高主要来自付款流程执行得更稳定，必要查询仍然发生在付款尝试之后。</p>
+<p>为了分解陌生业务和数值判断的影响，我们把同类判断放回熟悉的邮件领域，让文件大小与共享阈值分别由两个工具返回。两组任务都要求结合两次查询的信息，但 <code>SFT #1</code> 的行动顺序明显不同。</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>测试</th>
+<th align="right">Instruct 任务成功</th>
+<th align="right"><code>SFT #1</code> 任务成功</th>
+<th align="right">Instruct 过早行动</th>
+<th align="right"><code>SFT #1</code> 过早行动</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>付款数值任务</td>
+<td align="right">28/60</td>
+<td align="right">50/60</td>
+<td align="right">35/60</td>
+<td align="right">60/60</td>
+</tr>
+<tr>
+<td>邮件双工具任务</td>
+<td align="right">39/60</td>
+<td align="right">50/60</td>
+<td align="right">48/60</td>
+<td align="right">0/60</td>
+</tr>
+</tbody></table></div>
+<p>回到邮件领域，同一个模型在 50 个任务中先查询分享策略再写入，另外 10 个任务查询后没有写入，全部满足写前查询条件。这里的成功数提高伴随着查询顺序的改善。后续增加示范变化和训练量，模型在原始邮件任务上的表现继续提高，这项改善却没有保持。</p>
+<p>一种可能解释是，训练加深了模型对示范流程的依赖。原始邮件任务的文件查询已经提供共享规则，沿用示范顺序即可完成任务。规则移到另一个工具后，如果模型仍沿用原来的流程，就会在取得规则前尝试写入。这个解释把泛化差异落在对信息来源变化的适应上，后文将分别检查工具发现、调用时机和返回内容的影响。</p>
+<p>这组结果呈现出两个层次的泛化差异。少量 SFT 改善了邮件领域内的查询顺序，跨领域时仍可能提前行动；扩大训练后，连邮件领域内对新信息来源的适应也出现了退化。后文围绕信息来源、查询提示和返回内容，进一步分解这些行为变化。</p>
+<nav class="chapter-navigation"><a href="chapter-2.zh-CN.html">上一页</a><a href="chapter-4.zh-CN.html">下一章</a></nav></main><footer class="downloads"><a download href="downloads/TECHNICAL_REPORT_V2.zh-CN.pdf">下载完整报告 PDF · 3.2 MB</a></footer><script>
+const languageLink=document.querySelector('[data-language]');
+const headings=[...document.querySelectorAll('main h1[id],main h2[id],main h3[id]')];
+function syncLanguage(){let id=location.hash.slice(1);const target=document.getElementById(id);if(!target||target.getBoundingClientRect().top<0||target.getBoundingClientRect().top>innerHeight){for(const h of headings){if(h.getBoundingClientRect().top<240)id=h.id;else break;}}languageLink.href=languageLink.dataset.language+(id?'#'+id:'');}
+addEventListener('scroll',syncLanguage,{passive:true});addEventListener('hashchange',syncLanguage);addEventListener('load',syncLanguage);document.fonts.ready.then(syncLanguage);syncLanguage();
+for(const pre of document.querySelectorAll('pre')){const code=pre.querySelector('code');if(!code)continue;const button=document.createElement('button');button.className='copy-code';button.textContent=document.documentElement.lang==='en'?'Copy':'复制';button.setAttribute('aria-label',button.textContent+' code');button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(code.textContent);button.textContent=document.documentElement.lang==='en'?'Copied':'已复制';}catch{button.textContent=document.documentElement.lang==='en'?'Select to copy':'请选中复制';}});pre.append(button);}
+if(innerWidth<=900){document.querySelector('.contents-panel details')?.removeAttribute('open');}
+</script></body></html>

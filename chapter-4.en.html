@@ -1,0 +1,263 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Chapter 4. SFT-GRPO: Behavioral Change During Continued Training</title><link rel="stylesheet" href="report.css"><style>
+html{scroll-behavior:smooth;scroll-padding-top:2rem}body{font-family:Arial,"Microsoft YaHei",sans-serif;font-size:16px;line-height:1.85;background:#fff;color:#303030;margin:0}
+main,body.quick main{box-sizing:border-box;max-width:860px;margin:0 0 0 304px;padding:34px 48px 72px}
+.sitebar{margin-left:304px;max-width:860px;box-sizing:border-box;border-bottom:1px solid #ddd;padding:20px 48px 12px;display:flex;gap:22px;align-items:center;flex-wrap:wrap;font:400 14px/1.5 Arial,sans-serif}
+.sitebar{justify-content:flex-end}.sitebar a{color:#164e7a;text-decoration:none}.sitebar .brand{display:none}.sitebar a:hover{text-decoration:underline}
+.downloads{margin-left:304px;max-width:860px;box-sizing:border-box;font:14px/1.8 Arial,sans-serif;padding:22px 48px 36px;color:#666;border-top:1px solid #dce3e9;display:flex;gap:20px;flex-wrap:wrap}.author-credit{font-size:14px;font-weight:400;color:#555;margin:-10px 0 32px}
+.contents-panel{box-sizing:border-box;position:fixed;left:0;top:0;bottom:0;width:304px;overflow:auto;background:#142e49;border-right:1px solid #142e49;padding:28px 18px;font:14px/1.6 Arial,"Microsoft YaHei",sans-serif;color:#fff}
+.contents-panel a{display:block;color:#dbe6f0;text-decoration:none;padding:7px 10px}.contents-panel a:hover{background:#203e5c;color:#fff}.contents-panel a[aria-current=page]{background:#294b6c;color:#fff;border-left:2px solid #c0d7eb;padding-left:8px}
+.contents-panel summary{font-weight:400;cursor:pointer;margin:0 10px 20px;font-size:17px;list-style:none}.contents-panel .subsection{padding-left:22px;font-size:14px}.contents-panel .subsection:hover{padding-left:22px}
+h1,h2,h3,h4,h5,h6,strong,b,th{font-weight:400}h1{font-size:30px;line-height:1.45;color:#222;margin:0 0 26px}h2{font-size:24px;margin:38px 0 18px;color:#222}h3{font-size:20px;margin:30px 0 14px;color:#333}h4,h5{font-size:17px;color:#333}h2,h3,h4{scroll-margin-top:2rem;line-height:1.5}p{overflow-wrap:break-word}a{color:#164e7a;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}a:hover{color:#0b3558}a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid #608cb5;outline-offset:3px}
+.formula,.katex-display{max-width:100%;overflow-x:auto;overflow-y:hidden}pre{position:relative;overflow:auto;white-space:pre;max-width:100%;padding-top:38px}pre code{font-size:14px;white-space:pre}
+.copy-code{position:absolute;right:7px;top:5px;font:14px/1.5 Arial,sans-serif;border:1px solid #ccc;background:#fff;color:#555;border-radius:2px;cursor:pointer;padding:2px 9px}
+.table-wrap{overflow-x:auto;max-width:100%}table{font-size:14px}th,td{border-color:#ddd}th{background:#f3f3f3}pre,.code-list td{background:#f7f7f7;border-color:#ddd}.code-list{table-layout:auto}.code-list pre code{font-size:14px}.code-list .code-lines{font-size:12px;color:#777}.code-list th{color:#555}blockquote{border-color:#ccc;background:#f8f8f8}.chapter-navigation{border-top:1px solid #ddd;margin-top:48px;padding-top:20px;display:flex;justify-content:space-between;gap:24px;font-size:14px}
+@media(max-width:900px){main,body.quick main{margin:0 auto;padding:28px 24px 60px}.sitebar,.downloads{margin:0;padding-left:24px;padding-right:24px}.sitebar .brand{display:block;margin-right:auto}.contents-panel{position:static;width:auto;max-height:none;padding:14px 24px;border:0;border-bottom:1px solid #ddd}.contents-panel summary{font-size:14px;margin:0;list-style:revert}.contents-panel nav{max-height:45vh;overflow:auto}.contents-panel a{padding:6px 8px}}
+@media(max-width:600px){.sitebar{gap:12px;padding:12px 16px;font-size:14px}.sitebar .brand{width:100%}main,body.quick main{padding:24px 16px 60px}.downloads{padding:10px 16px;gap:12px}.contents-panel{padding:12px 16px}h1{font-size:26px}h2{font-size:22px}.code-list{min-width:620px}pre code{font-size:14px}.table-wrap th:first-child,.table-wrap td:first-child{background:#f5f5f5}.table-wrap th:first-child{background:#eee}}
+@media print{.sitebar,.downloads,.contents-panel,.copy-code{display:none!important}main{margin:0!important;max-width:none}body{font-size:10pt}pre{padding-top:9px}}
+</style></head><body class="full"><header class="sitebar"><a data-language="chapter-4.zh-CN.html" href="chapter-4.zh-CN.html" lang="zh-CN">中文</a></header><aside class="contents-panel"><details open><summary>Agent Reinforcement Learning</summary><nav><a href="quick.en.html">Research overview</a><a href="overview.en.html">Abstract</a><a href="chapter-1.en.html">Chapter 1. Evidence for Learned Target Behavior</a><a href="chapter-2.en.html">Chapter 2. Ask-or-Act Tasks and Evaluation</a><a href="chapter-3.en.html">Chapter 3. SFT Training and Generalization</a><a href="chapter-4.en.html" aria-current="page">Chapter 4. SFT-GRPO: Behavioral Change During Continued Training</a><a class="subsection" href="#section-4-1">4.1 Original Tasks and Cross-Domain Tests</a><a class="subsection" href="#section-4-2">4.2 Action Order in Two-Tool Tasks</a><a class="subsection" href="#section-4-3">4.3 Adding Training Tasks for the New Tool</a><a href="chapter-5.en.html">Chapter 5. GRPO Starting from Instruct</a><a href="chapter-6.en.html">Chapter 6. Generalization Differences and Behavioral Diagnosis</a><a href="chapter-7.en.html">Chapter 7. Visit Rewards and Content Responses in WebShop</a><a href="chapter-8.en.html">Chapter 8. Reward Signals in Group-Relative Training</a><a href="chapter-9.en.html">Chapter 9. Related Work</a><a href="chapter-10.en.html">Chapter 10. Diagnosing Behavior and Training in Agent RL</a><a href="appendix-a.en.html">Appendix A. The Ask-or-Act System and Action Chains</a><a href="appendix-b.en.html">Appendix B. Rewards, Estimators, and Implementation</a><a href="appendix-c.en.html">Appendix C. Supplementary Experiments and Diagnostics</a><a href="appendix-d.en.html">Appendix D. Public Implementation, Statistics, and Resources</a><a href="references.en.html">References / 参考文献</a></nav></details></aside><main><h1 id="chapter-4">Chapter 4. SFT-GRPO: Behavioral Change During Continued Training</h1>
+<h2 id="section-4-1">4.1 Original Tasks and Cross-Domain Tests</h2>
+<p>We continue GRPO from <code>SFT #1</code> in Chapter 3 to examine how reinforcement learning changes the capabilities the model has already learned. Training uses the same 192 original email tasks, each with four request formulations, giving 768 inputs. Whereas SFT supplies complete demonstrations, these inputs contain only the system prompt and user request. The model generates the subsequent tool calls, and the resulting trajectories are scored using the baseline reward defined in Chapter 2.</p>
+<p>Each training batch contains 32 inputs, with eight trajectories sampled per input at temperature 1.0. We compute GRPO advantages from the rewards of the eight trajectories sharing an input and update the LoRA parameters. Each epoch comprises 24 training steps, giving 120 steps over five epochs. This chapter compares <code>SFT #1</code> before continued training with <code>SFT-GRPO #1</code> at the end of the fifth epoch. Key hyperparameters are listed in Appendix D.2.</p>
+<p>During training, we check model performance on the 48 tasks from Chapter 3 with changed people and files. Each task is instantiated with the six request templates in Appendix A.1, giving 288 validation inputs. Four of these templates are also used for training; the other two are used only for validation. We validate once before training and then every 12 training steps.</p>
+<p>After training, we compare <code>SFT #1</code> and <code>SFT-GRPO #1</code> on the evaluation tasks from Chapter 3. The table below covers the 192 training tasks, the 48 tasks with changed people and files, and the 20 clarification–confirmation paired tasks. Evaluation uses the first request template in Appendix A.1 throughout, with each model run once on each task.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Evaluation partition</th>
+<th>Measured field</th>
+<th align="right"><code>SFT #1</code></th>
+<th align="right"><code>SFT-GRPO #1</code></th>
+<th align="right">Count change</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Training tasks (192)</td>
+<td>Task success</td>
+<td align="right">178/192</td>
+<td align="right">192/192</td>
+<td align="right">+14</td>
+</tr>
+<tr>
+<td>Training tasks (192)</td>
+<td>Interaction signature match</td>
+<td align="right">146/192</td>
+<td align="right">192/192</td>
+<td align="right">+46</td>
+</tr>
+<tr>
+<td>Changed people and files (48)</td>
+<td>Task success</td>
+<td align="right">44/48</td>
+<td align="right">48/48</td>
+<td align="right">+4</td>
+</tr>
+<tr>
+<td>Changed people and files (48)</td>
+<td>Interaction signature match</td>
+<td align="right">36/48</td>
+<td align="right">48/48</td>
+<td align="right">+12</td>
+</tr>
+<tr>
+<td>Clarification–confirmation paired test (20)</td>
+<td>Task success</td>
+<td align="right">20/20</td>
+<td align="right">20/20</td>
+<td align="right">0</td>
+</tr>
+<tr>
+<td>Clarification–confirmation paired test (20)</td>
+<td>Interaction signature match</td>
+<td align="right">20/20</td>
+<td align="right">20/20</td>
+<td align="right">0</td>
+</tr>
+</tbody></table></div>
+<p>After continued GRPO, every task in the table succeeds and matches the interaction signature. On the 20 clarification–confirmation paired tasks, both models retain 20/20 success and 20/20 signature matches, while premature action falls from 19/20 to 0/20. Continued training reduces the number of original paired tasks with premature write attempts.</p>
+<h3>Payment and Scheduling Tasks</h3>
+<p>In Chapter 3, <code>SFT #1</code> performs worse than Instruct on payment and scheduling tasks that preserve the original rules. We use the same tasks to test whether further optimization on email also improves execution of these requirements in new domains. Training still uses only the original email tasks. Arrows show the change from <code>SFT #1</code> to <code>SFT-GRPO #1</code>.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Tasks</th>
+<th align="right">Tasks completed</th>
+<th align="right">Interaction signature match</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Payments: original rules</td>
+<td align="right">207/260 → 242/260</td>
+<td align="right">48/260 → 186/260</td>
+</tr>
+<tr>
+<td>Scheduling: original rules</td>
+<td align="right">23/260 → 235/260</td>
+<td align="right">6/260 → 53/260</td>
+</tr>
+<tr>
+<td>Payments: numerical comparison added</td>
+<td align="right">50/60 → 50/60</td>
+<td align="right">0/60 → 27/60</td>
+</tr>
+<tr>
+<td>Scheduling: argument passing added</td>
+<td align="right">29/60 → 37/60</td>
+<td align="right">0/60 → 6/60</td>
+</tr>
+</tbody></table></div>
+<p>Continuing GRPO from <code>SFT #1</code> raises basic-payment success from 207/260 to 242/260 and basic-scheduling success from 23/260 to 235/260, both above the initial Instruct model. Success on payment tasks with numerical comparison remains at 50/60, while scheduling tasks with argument passing improve from 29/60 to 37/60.</p>
+<p>Chapter 3 also tests an SFT model trained from Instruct for two epochs with varied demonstrations; it completes 3/60 numerical-payment tasks and 30/60 argument-passing scheduling tasks. Continuing GRPO from <code>SFT #1</code> here reaches 50/60 and 37/60, respectively. Both routes restore basic cross-domain completion, while their results under the added requirements differ substantially.</p>
+<p>On numerical payment tasks, trajectories matching the interaction signature increase from zero to 27/60. Although argument-passing scheduling performance recovers somewhat, success remains below Instruct&#39;s 52/60.</p>
+<h2 id="section-4-2">4.2 Action Order in Two-Tool Tasks</h2>
+<p>We compare <code>SFT #1</code> and <code>SFT-GRPO #1</code> on the same 60 two-tool tasks from Chapter 3 to check whether the model still queries the sharing policy before writing after continued training.</p>
+<p>We use the pre-write lookup definition from Chapter 1. Here, the lookup is <code>retrieve_sharing_policy</code>, and a write is a <code>create_draft</code> or <code>send_email</code> call.</p>
+<h3>Lookup and Sending</h3>
+<p>On the same two-tool task, <code>SFT #1</code> queries the sharing policy before sending. <code>SFT-GRPO #1</code> attempts to send first, then queries and sends again after being blocked. Both succeed, but the timing of the first send attempt differs. The <a href="chapter-6.en.html#case-timing">paired case in §6.1</a> gives the complete calls, tool returns, and per-trajectory judgments alongside the improvement on original combined requirements.</p>
+<h3>Two-tool task results</h3>
+<p>The two models perform as follows on the same 60 two-tool tasks:</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Check</th>
+<th align="right"><code>SFT #1</code></th>
+<th align="right"><code>SFT-GRPO #1</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Task completed</td>
+<td align="right">50/60</td>
+<td align="right">50/60</td>
+</tr>
+<tr>
+<td>Interaction signature match</td>
+<td align="right">30/60</td>
+<td align="right">30/60</td>
+</tr>
+<tr>
+<td>Pre-write lookup condition satisfied</td>
+<td align="right">60/60</td>
+<td align="right">0/60</td>
+</tr>
+<tr>
+<td>Premature action occurred</td>
+<td align="right">0/60</td>
+<td align="right">60/60</td>
+</tr>
+</tbody></table></div>
+<p>On these 60 email two-tool tasks, both models complete the same 50 tasks. However, <code>SFT #1</code> satisfies the pre-write lookup condition on every task, while the model after continued GRPO satisfies it on none and acts prematurely on all tasks. The same 30 tasks also match the interaction signature under both models; the change is in action order.</p>
+<p>In Chapter 3, expanded SFT training reduces both task completion and pre-write lookup on the two-tool tasks. Continuing GRPO from <code>SFT #1</code> preserves their completion rate while losing the correct query order. Both forms of training improve performance on the original tasks, with deterioration on the two-tool tasks taking different forms.</p>
+<p>Together with the cross-domain results in §4.1, this shows recovery on basic tasks in unfamiliar domains, with inconsistent adaptation to added action requirements.</p>
+<p>We hypothesize that GRPO reinforces procedures effective on the original email tasks. Some of these procedures also apply to payments and scheduling, helping recover cross-domain completion rates. However, the original email tasks supply the sharing rules through the file lookup, so the model may increasingly tend to act directly after that query. When the rules move behind another tool, following the same order leads it to attempt a write before obtaining the necessary information. This could explain why cross-domain improvement and deterioration on email two-tool tasks occur together.</p>
+<h2 id="section-4-3">4.3 Adding Training Tasks for the New Tool</h2>
+<p>In the original tasks, <code>retrieve_files</code> returns file information together with whether sending is allowed and whether confirmation is required. The added tasks remove these two rules from the file response and return them through <code>retrieve_sharing_policy</code> instead. The model therefore needs an additional tool call to obtain information previously available from a single query.</p>
+<p>We again start GRPO from <code>SFT #1</code>. Each of the 60 added tasks uses four request templates, producing 240 inputs. Combined with the original 768, this gives 1,008 inputs. We call the trained model <code>SFT-GRPO #2</code>.</p>
+<p>After training, we evaluate the model on the original email tasks and two sets of 60 numerical-comparison tasks. In the two-tool numerical-comparison tasks, file size and sharing thresholds come from separate tools. In the single-tool numerical-comparison tasks, the sharing-policy tool returns these numbers together in one response.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Test tasks</th>
+<th>File lookup returns</th>
+<th>Sharing-policy lookup returns</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Two-tool numerical-comparison tasks</td>
+<td>File size</td>
+<td>Approval threshold and hard sharing limit</td>
+</tr>
+<tr>
+<td>Single-tool numerical-comparison tasks</td>
+<td>File information without size</td>
+<td>File size, approval threshold, and hard sharing limit</td>
+</tr>
+</tbody></table></div>
+<p>Neither test set appears in training. The added training tasks let the model obtain the rules directly from the sharing-policy tool; the tests require it to use the returned numbers to determine whether sending is allowed and whether confirmation is required.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Evaluation</th>
+<th>Behavioral field</th>
+<th align="right"><code>SFT-GRPO #1</code></th>
+<th align="right"><code>SFT-GRPO #2</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Original email tasks (260)</td>
+<td>Task success</td>
+<td align="right">260/260</td>
+<td align="right">260/260</td>
+</tr>
+<tr>
+<td>Original email tasks (260)</td>
+<td>Interaction signature match</td>
+<td align="right">260/260</td>
+<td align="right">250/260</td>
+</tr>
+<tr>
+<td>Two-tool numerical-comparison tasks (60)</td>
+<td>Task success</td>
+<td align="right">50/60</td>
+<td align="right">50/60</td>
+</tr>
+<tr>
+<td>Two-tool numerical-comparison tasks (60)</td>
+<td>Interaction signature match</td>
+<td align="right">30/60</td>
+<td align="right">30/60</td>
+</tr>
+<tr>
+<td>Two-tool numerical-comparison tasks (60)</td>
+<td>Pre-write <code>retrieve_sharing_policy</code></td>
+<td align="right">0/60</td>
+<td align="right">0/60</td>
+</tr>
+<tr>
+<td>Two-tool numerical-comparison tasks (60)</td>
+<td>Premature action</td>
+<td align="right">60/60</td>
+<td align="right">60/60</td>
+</tr>
+<tr>
+<td>Single-tool numerical-comparison tasks (60)</td>
+<td>Task success</td>
+<td align="right">Not run</td>
+<td align="right">49/60</td>
+</tr>
+<tr>
+<td>Single-tool numerical-comparison tasks (60)</td>
+<td>Interaction signature match</td>
+<td align="right">Not run</td>
+<td align="right">29/60</td>
+</tr>
+<tr>
+<td>Single-tool numerical-comparison tasks (60)</td>
+<td>Pre-write <code>retrieve_sharing_policy</code></td>
+<td align="right">Not run</td>
+<td align="right">0/60</td>
+</tr>
+</tbody></table></div>
+<p>The added training preserves original-email completion, with ten fewer trajectories matching the interaction signature. All four two-tool test results remain unchanged. When file size and thresholds are returned together, the model completes 49/60 tasks, with pre-write lookup again at zero.</p>
+<p>Each test set contains a task asking the model to send a report to Zhang Wei. On these two tasks, <code>SFT-GRPO #2</code> executes exactly the same actions:</p>
+<pre><code class="language-text">retrieve_outbox({})
+→ retrieve_contacts({&quot;query&quot;:&quot;张伟&quot;})
+→ retrieve_files({&quot;query&quot;:&quot;报告&quot;})
+→ send_email({
+     &quot;file_id&quot;:&quot;report_target_1&quot;,
+     &quot;recipient_id&quot;:&quot;contact_target_1&quot;
+   })                                  ← first write attempt
+   =&gt; {&quot;error&quot;:&quot;missing required facts&quot;,
+       &quot;missing&quot;:[&quot;external_allowed&quot;,&quot;confirmation_required&quot;]}
+→ retrieve_sharing_policy({})
+→ request_confirmation({})
+→ send_email({
+     &quot;file_id&quot;:&quot;report_target_1&quot;,
+     &quot;recipient_id&quot;:&quot;contact_target_1&quot;
+   }) =&gt; {&quot;created_id&quot;:1}              ← email actually sent
+→ finish({})
+</code></pre>
+<p>Both trajectories attempt to send after the file lookup and obtain the sharing policy only after being blocked. They fit the hypothesis in §4.2 that completing the file lookup has become a cue to proceed with sending. Although the added training includes the sharing-policy tool, the same premature attempt persists in both numerical tests. Whether a tool appears in training and whether the model calls it in time when information is missing are two separate checks here.</p>
+<h3>Chapter summary</h3>
+<p>After continuing GRPO from <code>SFT #1</code>, the model completes all original email tasks and recovers performance on payment and scheduling tasks that preserve the original rules. At the same time, it loses its previously correct query order on the email two-tool tasks. Adding training tasks that require the sharing-policy tool leaves pre-write lookup at zero on both numerical test sets. Including this tool in the training tasks does not make the model call it at the required time under the new task requirements.</p>
+<nav class="chapter-navigation"><a href="chapter-3.en.html">Previous</a><a href="chapter-5.en.html">Next</a></nav></main><footer class="downloads"><a download href="downloads/TECHNICAL_REPORT_V2.en.pdf">Download full report PDF · 2.8 MB</a></footer><script>
+const languageLink=document.querySelector('[data-language]');
+const headings=[...document.querySelectorAll('main h1[id],main h2[id],main h3[id]')];
+function syncLanguage(){let id=location.hash.slice(1);const target=document.getElementById(id);if(!target||target.getBoundingClientRect().top<0||target.getBoundingClientRect().top>innerHeight){for(const h of headings){if(h.getBoundingClientRect().top<240)id=h.id;else break;}}languageLink.href=languageLink.dataset.language+(id?'#'+id:'');}
+addEventListener('scroll',syncLanguage,{passive:true});addEventListener('hashchange',syncLanguage);addEventListener('load',syncLanguage);document.fonts.ready.then(syncLanguage);syncLanguage();
+for(const pre of document.querySelectorAll('pre')){const code=pre.querySelector('code');if(!code)continue;const button=document.createElement('button');button.className='copy-code';button.textContent=document.documentElement.lang==='en'?'Copy':'复制';button.setAttribute('aria-label',button.textContent+' code');button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(code.textContent);button.textContent=document.documentElement.lang==='en'?'Copied':'已复制';}catch{button.textContent=document.documentElement.lang==='en'?'Select to copy':'请选中复制';}});pre.append(button);}
+if(innerWidth<=900){document.querySelector('.contents-panel details')?.removeAttribute('open');}
+</script></body></html>

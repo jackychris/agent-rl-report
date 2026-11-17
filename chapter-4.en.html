@@ -1,10 +1,10 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Chapter 4. SFT-GRPO: Behavioral Change During Continued Training</title><link rel="stylesheet" href="report.css"><style>
-html{scroll-behavior:smooth;scroll-padding-top:2rem}body{font-family:Arial,"Microsoft YaHei",sans-serif;font-size:16px;line-height:1.85;background:#fff;color:#303030;margin:0}
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>4. Training Routes and Behavioral Generalization</title><link rel="stylesheet" href="report.css"><style>
+html{scroll-behavior:smooth;scroll-padding-top:2rem}body{font-family:"Segoe UI",Arial,"Microsoft YaHei",sans-serif;font-size:16px;line-height:1.8;background:#fff;color:#303030;margin:0}
 main,body.quick main{box-sizing:border-box;max-width:860px;margin:0 0 0 304px;padding:34px 48px 72px}
-.sitebar{margin-left:304px;max-width:860px;box-sizing:border-box;border-bottom:1px solid #ddd;padding:20px 48px 12px;display:flex;gap:22px;align-items:center;flex-wrap:wrap;font:400 14px/1.5 Arial,sans-serif}
+.sitebar{margin-left:304px;max-width:860px;box-sizing:border-box;border-bottom:1px solid #ddd;padding:20px 48px 12px;display:flex;gap:22px;align-items:center;flex-wrap:wrap;font:400 14px/1.5 "Segoe UI",Arial,sans-serif}
 .sitebar{justify-content:flex-end}.sitebar a{color:#164e7a;text-decoration:none}.sitebar .brand{display:none}.sitebar a:hover{text-decoration:underline}
-.downloads{margin-left:304px;max-width:860px;box-sizing:border-box;font:14px/1.8 Arial,sans-serif;padding:22px 48px 36px;color:#666;border-top:1px solid #dce3e9;display:flex;gap:20px;flex-wrap:wrap}.author-credit{font-size:14px;font-weight:400;color:#555;margin:-10px 0 32px}
-.contents-panel{box-sizing:border-box;position:fixed;left:0;top:0;bottom:0;width:304px;overflow:auto;background:#142e49;border-right:1px solid #142e49;padding:28px 18px;font:14px/1.6 Arial,"Microsoft YaHei",sans-serif;color:#fff}
+.downloads{margin-left:304px;max-width:860px;box-sizing:border-box;font:14px/1.8 "Segoe UI",Arial,sans-serif;padding:22px 48px 36px;color:#666;border-top:1px solid #dce3e9;display:flex;gap:20px;flex-wrap:wrap}.author-credit{font-size:14px;font-weight:400;color:#555;margin:-10px 0 32px}
+.contents-panel{box-sizing:border-box;position:fixed;left:0;top:0;bottom:0;width:304px;overflow:auto;background:#142e49;border-right:1px solid #142e49;padding:28px 18px;font:14px/1.6 "Segoe UI",Arial,"Microsoft YaHei",sans-serif;color:#fff}
 .contents-panel a{display:block;color:#dbe6f0;text-decoration:none;padding:7px 10px}.contents-panel a:hover{background:#203e5c;color:#fff}.contents-panel a[aria-current=page]{background:#294b6c;color:#fff;border-left:2px solid #c0d7eb;padding-left:8px}
 .contents-panel summary{font-weight:400;cursor:pointer;margin:0 10px 20px;font-size:17px;list-style:none}.contents-panel .subsection{padding-left:22px;font-size:14px}.contents-panel .subsection:hover{padding-left:22px}
 h1,h2,h3,h4,h5,h6,strong,b,th{font-weight:400}h1{font-size:30px;line-height:1.45;color:#222;margin:0 0 26px}h2{font-size:24px;margin:38px 0 18px;color:#222}h3{font-size:20px;margin:30px 0 14px;color:#333}h4,h5{font-size:17px;color:#333}h2,h3,h4{scroll-margin-top:2rem;line-height:1.5}p{overflow-wrap:break-word}a{color:#164e7a;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}a:hover{color:#0b3558}a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid #608cb5;outline-offset:3px}
@@ -14,246 +14,386 @@ h1,h2,h3,h4,h5,h6,strong,b,th{font-weight:400}h1{font-size:30px;line-height:1.45
 @media(max-width:900px){main,body.quick main{margin:0 auto;padding:28px 24px 60px}.sitebar,.downloads{margin:0;padding-left:24px;padding-right:24px}.sitebar .brand{display:block;margin-right:auto}.contents-panel{position:static;width:auto;max-height:none;padding:14px 24px;border:0;border-bottom:1px solid #ddd}.contents-panel summary{font-size:14px;margin:0;list-style:revert}.contents-panel nav{max-height:45vh;overflow:auto}.contents-panel a{padding:6px 8px}}
 @media(max-width:600px){.sitebar{gap:12px;padding:12px 16px;font-size:14px}.sitebar .brand{width:100%}main,body.quick main{padding:24px 16px 60px}.downloads{padding:10px 16px;gap:12px}.contents-panel{padding:12px 16px}h1{font-size:26px}h2{font-size:22px}.code-list{min-width:620px}pre code{font-size:14px}.table-wrap th:first-child,.table-wrap td:first-child{background:#f5f5f5}.table-wrap th:first-child{background:#eee}}
 @media print{.sitebar,.downloads,.contents-panel,.copy-code{display:none!important}main{margin:0!important;max-width:none}body{font-size:10pt}pre{padding-top:9px}}
-</style></head><body class="full"><header class="sitebar"><a data-language="chapter-4.zh-CN.html" href="chapter-4.zh-CN.html" lang="zh-CN">中文</a></header><aside class="contents-panel"><details open><summary>Agent Reinforcement Learning</summary><nav><a href="quick.en.html">Research overview</a><a href="overview.en.html">Abstract</a><a href="chapter-1.en.html">Chapter 1. Evidence for Learned Target Behavior</a><a href="chapter-2.en.html">Chapter 2. Ask-or-Act Tasks and Evaluation</a><a href="chapter-3.en.html">Chapter 3. SFT Training and Generalization</a><a href="chapter-4.en.html" aria-current="page">Chapter 4. SFT-GRPO: Behavioral Change During Continued Training</a><a class="subsection" href="#section-4-1">4.1 Original Tasks and Cross-Domain Tests</a><a class="subsection" href="#section-4-2">4.2 Action Order in Two-Tool Tasks</a><a class="subsection" href="#section-4-3">4.3 Adding Training Tasks for the New Tool</a><a href="chapter-5.en.html">Chapter 5. GRPO Starting from Instruct</a><a href="chapter-6.en.html">Chapter 6. Generalization Differences and Behavioral Diagnosis</a><a href="chapter-7.en.html">Chapter 7. Visit Rewards and Content Responses in WebShop</a><a href="chapter-8.en.html">Chapter 8. Reward Signals in Group-Relative Training</a><a href="chapter-9.en.html">Chapter 9. Related Work</a><a href="chapter-10.en.html">Chapter 10. Diagnosing Behavior and Training in Agent RL</a><a href="appendix-a.en.html">Appendix A. The Ask-or-Act System and Action Chains</a><a href="appendix-b.en.html">Appendix B. Rewards, Estimators, and Implementation</a><a href="appendix-c.en.html">Appendix C. Supplementary Experiments and Diagnostics</a><a href="appendix-d.en.html">Appendix D. Public Implementation, Statistics, and Resources</a><a href="references.en.html">References / 参考文献</a></nav></details></aside><main><h1 id="chapter-4">Chapter 4. SFT-GRPO: Behavioral Change During Continued Training</h1>
-<h2 id="section-4-1">4.1 Original Tasks and Cross-Domain Tests</h2>
-<p>We continue GRPO from <code>SFT #1</code> in Chapter 3 to examine how reinforcement learning changes the capabilities the model has already learned. Training uses the same 192 original email tasks, each with four request formulations, giving 768 inputs. Whereas SFT supplies complete demonstrations, these inputs contain only the system prompt and user request. The model generates the subsequent tool calls, and the resulting trajectories are scored using the baseline reward defined in Chapter 2.</p>
-<p>Each training batch contains 32 inputs, with eight trajectories sampled per input at temperature 1.0. We compute GRPO advantages from the rewards of the eight trajectories sharing an input and update the LoRA parameters. Each epoch comprises 24 training steps, giving 120 steps over five epochs. This chapter compares <code>SFT #1</code> before continued training with <code>SFT-GRPO #1</code> at the end of the fifth epoch. Key hyperparameters are listed in Appendix D.2.</p>
-<p>During training, we check model performance on the 48 tasks from Chapter 3 with changed people and files. Each task is instantiated with the six request templates in Appendix A.1, giving 288 validation inputs. Four of these templates are also used for training; the other two are used only for validation. We validate once before training and then every 12 training steps.</p>
-<p>After training, we compare <code>SFT #1</code> and <code>SFT-GRPO #1</code> on the evaluation tasks from Chapter 3. The table below covers the 192 training tasks, the 48 tasks with changed people and files, and the 20 clarification–confirmation paired tasks. Evaluation uses the first request template in Appendix A.1 throughout, with each model run once on each task.</p>
+</style></head><body class="full"><header class="sitebar"><a data-language="chapter-4.zh-CN.html" href="chapter-4.zh-CN.html" lang="zh-CN">中文</a></header><aside class="contents-panel"><details open><summary>Agent Reinforcement Learning</summary><nav><a href="index.html">Research overview</a><a href="overview.en.html">Abstract</a><a href="chapter-1.en.html">1. Introduction</a><a href="chapter-2.en.html">2. Background and Related Work</a><a href="chapter-3.en.html">3. Controlled Behavioral Evaluation in Ask-or-Act</a><a href="chapter-4.en.html" aria-current="page">4. Training Routes and Behavioral Generalization</a><a class="subsection" href="#section-4-1">4.1. SFT, Continued GRPO, and Direct GRPO</a><a class="subsection" href="#section-4-2">4.2. Tool Relocation, Source Pointers, and Content Branching</a><a class="subsection" href="#section-4-3">4.3. Five Repair Interventions</a><a href="chapter-5.en.html">5. Subpage Visit Rewards and Observation Use on WebShop</a><a href="chapter-6.en.html">6. Group-Relative Credit Assignment and Step-Level Interventions</a><a href="chapter-7.en.html">7. Discussion and Conclusion</a><a href="appendix-a.en.html">Appendix A. Implementation, Training Settings, and Archive Verification</a><a href="references.en.html">References</a></nav></details></aside><main><h1 id="chapter-4">4. Training Routes and Behavioral Generalization</h1>
+<h2 id="section-4-1">4.1. SFT, Continued GRPO, and Direct GRPO</h2>
+<p>We evaluate four core checkpoints with greedy decoding (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">T=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span>): initial <code>Qwen3-8B</code> Instruct, <code>SFT #1</code>, <code>SFT-GRPO #1</code>, and <code>GRPO #1</code>. Here <code>SFT #1</code> runs 9 updates over 3 epochs on 192 single-formulation demonstrations covering 12 relations. <code>SFT-GRPO #1</code> runs 120 GRPO steps from merged <code>SFT #1</code> on 192 tasks × 4 templates (768 prompts), and <code>GRPO #1</code> runs 120 GRPO steps from Instruct on the same 768 prompts. We summarize success, signature match, pre-write policy queries, premature actions, and identifier binding across 11 benchmark slices in Table 4.1.</p>
+<p class="table-caption"><strong>Table 4.1:</strong> Checkpoint comparison at <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">T=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span> across original email, two-tool transfer, payments, and scheduling slices.</p>
 <div class="table-wrap"><table><thead>
 <tr>
-<th>Evaluation partition</th>
-<th>Measured field</th>
+<th>Benchmark Slice and Metric</th>
+<th align="right">Instruct</th>
 <th align="right"><code>SFT #1</code></th>
 <th align="right"><code>SFT-GRPO #1</code></th>
-<th align="right">Count change</th>
+<th align="right"><code>GRPO #1</code></th>
 </tr>
 </thead>
 <tbody><tr>
-<td>Training tasks (192)</td>
-<td>Task success</td>
-<td align="right">178/192</td>
-<td align="right">192/192</td>
-<td align="right">+14</td>
+<td>Original email train (192): success / sig</td>
+<td align="right">156 / 72</td>
+<td align="right">178 / 146</td>
+<td align="right">192 / 192</td>
+<td align="right">176 / 168</td>
 </tr>
 <tr>
-<td>Training tasks (192)</td>
-<td>Interaction signature match</td>
-<td align="right">146/192</td>
-<td align="right">192/192</td>
-<td align="right">+46</td>
+<td>Held-out entities (48): success / sig</td>
+<td align="right">41 / 30</td>
+<td align="right">44 / 36</td>
+<td align="right">48 / 48</td>
+<td align="right">44 / 42</td>
 </tr>
 <tr>
-<td>Changed people and files (48)</td>
-<td>Task success</td>
-<td align="right">44/48</td>
-<td align="right">48/48</td>
-<td align="right">+4</td>
+<td>Clarification + confirmation pairs (20): success / sig</td>
+<td align="right">18 / 9</td>
+<td align="right">20 / 20</td>
+<td align="right">20 / 20</td>
+<td align="right">20 / 20</td>
 </tr>
 <tr>
-<td>Changed people and files (48)</td>
-<td>Interaction signature match</td>
-<td align="right">36/48</td>
-<td align="right">48/48</td>
-<td align="right">+12</td>
-</tr>
-<tr>
-<td>Clarification–confirmation paired test (20)</td>
-<td>Task success</td>
+<td>Clarification + confirmation pairs (20): premature</td>
+<td align="right">n/a</td>
+<td align="right">19/20</td>
+<td align="right">0/20</td>
 <td align="right">20/20</td>
-<td align="right">20/20</td>
-<td align="right">0</td>
 </tr>
 <tr>
-<td>Clarification–confirmation paired test (20)</td>
-<td>Interaction signature match</td>
-<td align="right">20/20</td>
-<td align="right">20/20</td>
-<td align="right">0</td>
+<td>Two-tool email (<code>E</code>, 60): success / sig</td>
+<td align="right">39 / 18</td>
+<td align="right">50 / 30</td>
+<td align="right">50 / 30</td>
+<td align="right">39 / 56</td>
+</tr>
+<tr>
+<td>Two-tool email (<code>E</code>, 60): pre-write query / premature</td>
+<td align="right">10 / 48</td>
+<td align="right">60 / 0</td>
+<td align="right">0 / 60</td>
+<td align="right">58 / 60</td>
+</tr>
+<tr>
+<td>Base <code>payments</code> (260): success / sig</td>
+<td align="right">226 / 51</td>
+<td align="right">207 / 48</td>
+<td align="right">242 / 186</td>
+<td align="right">236 / 85</td>
+</tr>
+<tr>
+<td>Numerical <code>payments</code> (60): success / sig</td>
+<td align="right">28 / 18</td>
+<td align="right">50 / 0</td>
+<td align="right">50 / 27</td>
+<td align="right">43 / 51</td>
+</tr>
+<tr>
+<td>Base <code>scheduling</code> (260): success / sig</td>
+<td align="right">214 / 91</td>
+<td align="right">23 / 6</td>
+<td align="right">235 / 53</td>
+<td align="right">228 / 117</td>
+</tr>
+<tr>
+<td>Argument <code>scheduling</code> total (60): success / sig</td>
+<td align="right">52 / 10</td>
+<td align="right">29 / 0</td>
+<td align="right">37 / 6</td>
+<td align="right">60 / 20</td>
+</tr>
+<tr>
+<td>Handle-binding <code>scheduling</code> (<code>C-B</code>, 30): success / bound</td>
+<td align="right">n/a</td>
+<td align="right">28 / 30</td>
+<td align="right">9 / 1</td>
+<td align="right">30 / 6</td>
 </tr>
 </tbody></table></div>
-<p>After continued GRPO, every task in the table succeeds and matches the interaction signature. On the 20 clarification–confirmation paired tasks, both models retain 20/20 success and 20/20 signature matches, while premature action falls from 19/20 to 0/20. Continued training reduces the number of original paired tasks with premature write attempts.</p>
-<h3>Payment and Scheduling Tasks</h3>
-<p>In Chapter 3, <code>SFT #1</code> performs worse than Instruct on payment and scheduling tasks that preserve the original rules. We use the same tasks to test whether further optimization on email also improves execution of these requirements in new domains. Training still uses only the original email tasks. Arrows show the change from <code>SFT #1</code> to <code>SFT-GRPO #1</code>.</p>
-<div class="table-wrap"><table><thead>
-<tr>
-<th>Tasks</th>
-<th align="right">Tasks completed</th>
-<th align="right">Interaction signature match</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Payments: original rules</td>
-<td align="right">207/260 → 242/260</td>
-<td align="right">48/260 → 186/260</td>
-</tr>
-<tr>
-<td>Scheduling: original rules</td>
-<td align="right">23/260 → 235/260</td>
-<td align="right">6/260 → 53/260</td>
-</tr>
-<tr>
-<td>Payments: numerical comparison added</td>
-<td align="right">50/60 → 50/60</td>
-<td align="right">0/60 → 27/60</td>
-</tr>
-<tr>
-<td>Scheduling: argument passing added</td>
-<td align="right">29/60 → 37/60</td>
-<td align="right">0/60 → 6/60</td>
-</tr>
-</tbody></table></div>
-<p>Continuing GRPO from <code>SFT #1</code> raises basic-payment success from 207/260 to 242/260 and basic-scheduling success from 23/260 to 235/260, both above the initial Instruct model. Success on payment tasks with numerical comparison remains at 50/60, while scheduling tasks with argument passing improve from 29/60 to 37/60.</p>
-<p>Chapter 3 also tests an SFT model trained from Instruct for two epochs with varied demonstrations; it completes 3/60 numerical-payment tasks and 30/60 argument-passing scheduling tasks. Continuing GRPO from <code>SFT #1</code> here reaches 50/60 and 37/60, respectively. Both routes restore basic cross-domain completion, while their results under the added requirements differ substantially.</p>
-<p>On numerical payment tasks, trajectories matching the interaction signature increase from zero to 27/60. Although argument-passing scheduling performance recovers somewhat, success remains below Instruct&#39;s 52/60.</p>
-<h2 id="section-4-2">4.2 Action Order in Two-Tool Tasks</h2>
-<p>We compare <code>SFT #1</code> and <code>SFT-GRPO #1</code> on the same 60 two-tool tasks from Chapter 3 to check whether the model still queries the sharing policy before writing after continued training.</p>
-<p>We use the pre-write lookup definition from Chapter 1. Here, the lookup is <code>retrieve_sharing_policy</code>, and a write is a <code>create_draft</code> or <code>send_email</code> call.</p>
-<h3>Lookup and Sending</h3>
-<p>On the same two-tool task, <code>SFT #1</code> queries the sharing policy before sending. <code>SFT-GRPO #1</code> attempts to send first, then queries and sends again after being blocked. Both succeed, but the timing of the first send attempt differs. The <a href="chapter-6.en.html#case-timing">paired case in §6.1</a> gives the complete calls, tool returns, and per-trajectory judgments alongside the improvement on original combined requirements.</p>
-<h3>Two-tool task results</h3>
-<p>The two models perform as follows on the same 60 two-tool tasks:</p>
-<div class="table-wrap"><table><thead>
-<tr>
-<th>Check</th>
-<th align="right"><code>SFT #1</code></th>
-<th align="right"><code>SFT-GRPO #1</code></th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Task completed</td>
-<td align="right">50/60</td>
-<td align="right">50/60</td>
-</tr>
-<tr>
-<td>Interaction signature match</td>
-<td align="right">30/60</td>
-<td align="right">30/60</td>
-</tr>
-<tr>
-<td>Pre-write lookup condition satisfied</td>
-<td align="right">60/60</td>
-<td align="right">0/60</td>
-</tr>
-<tr>
-<td>Premature action occurred</td>
-<td align="right">0/60</td>
-<td align="right">60/60</td>
-</tr>
-</tbody></table></div>
-<p>On these 60 email two-tool tasks, both models complete the same 50 tasks. However, <code>SFT #1</code> satisfies the pre-write lookup condition on every task, while the model after continued GRPO satisfies it on none and acts prematurely on all tasks. The same 30 tasks also match the interaction signature under both models; the change is in action order.</p>
-<p>In Chapter 3, expanded SFT training reduces both task completion and pre-write lookup on the two-tool tasks. Continuing GRPO from <code>SFT #1</code> preserves their completion rate while losing the correct query order. Both forms of training improve performance on the original tasks, with deterioration on the two-tool tasks taking different forms.</p>
-<p>Together with the cross-domain results in §4.1, this shows recovery on basic tasks in unfamiliar domains, with inconsistent adaptation to added action requirements.</p>
-<p>We hypothesize that GRPO reinforces procedures effective on the original email tasks. Some of these procedures also apply to payments and scheduling, helping recover cross-domain completion rates. However, the original email tasks supply the sharing rules through the file lookup, so the model may increasingly tend to act directly after that query. When the rules move behind another tool, following the same order leads it to attempt a write before obtaining the necessary information. This could explain why cross-domain improvement and deterioration on email two-tool tasks occur together.</p>
-<h2 id="section-4-3">4.3 Adding Training Tasks for the New Tool</h2>
-<p>In the original tasks, <code>retrieve_files</code> returns file information together with whether sending is allowed and whether confirmation is required. The added tasks remove these two rules from the file response and return them through <code>retrieve_sharing_policy</code> instead. The model therefore needs an additional tool call to obtain information previously available from a single query.</p>
-<p>We again start GRPO from <code>SFT #1</code>. Each of the 60 added tasks uses four request templates, producing 240 inputs. Combined with the original 768, this gives 1,008 inputs. We call the trained model <code>SFT-GRPO #2</code>.</p>
-<p>After training, we evaluate the model on the original email tasks and two sets of 60 numerical-comparison tasks. In the two-tool numerical-comparison tasks, file size and sharing thresholds come from separate tools. In the single-tool numerical-comparison tasks, the sharing-policy tool returns these numbers together in one response.</p>
-<div class="table-wrap"><table><thead>
-<tr>
-<th>Test tasks</th>
-<th>File lookup returns</th>
-<th>Sharing-policy lookup returns</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Two-tool numerical-comparison tasks</td>
-<td>File size</td>
-<td>Approval threshold and hard sharing limit</td>
-</tr>
-<tr>
-<td>Single-tool numerical-comparison tasks</td>
-<td>File information without size</td>
-<td>File size, approval threshold, and hard sharing limit</td>
-</tr>
-</tbody></table></div>
-<p>Neither test set appears in training. The added training tasks let the model obtain the rules directly from the sharing-policy tool; the tests require it to use the returned numbers to determine whether sending is allowed and whether confirmation is required.</p>
-<div class="table-wrap"><table><thead>
-<tr>
-<th>Evaluation</th>
-<th>Behavioral field</th>
-<th align="right"><code>SFT-GRPO #1</code></th>
-<th align="right"><code>SFT-GRPO #2</code></th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Original email tasks (260)</td>
-<td>Task success</td>
-<td align="right">260/260</td>
-<td align="right">260/260</td>
-</tr>
-<tr>
-<td>Original email tasks (260)</td>
-<td>Interaction signature match</td>
-<td align="right">260/260</td>
-<td align="right">250/260</td>
-</tr>
-<tr>
-<td>Two-tool numerical-comparison tasks (60)</td>
-<td>Task success</td>
-<td align="right">50/60</td>
-<td align="right">50/60</td>
-</tr>
-<tr>
-<td>Two-tool numerical-comparison tasks (60)</td>
-<td>Interaction signature match</td>
-<td align="right">30/60</td>
-<td align="right">30/60</td>
-</tr>
-<tr>
-<td>Two-tool numerical-comparison tasks (60)</td>
-<td>Pre-write <code>retrieve_sharing_policy</code></td>
-<td align="right">0/60</td>
-<td align="right">0/60</td>
-</tr>
-<tr>
-<td>Two-tool numerical-comparison tasks (60)</td>
-<td>Premature action</td>
-<td align="right">60/60</td>
-<td align="right">60/60</td>
-</tr>
-<tr>
-<td>Single-tool numerical-comparison tasks (60)</td>
-<td>Task success</td>
-<td align="right">Not run</td>
-<td align="right">49/60</td>
-</tr>
-<tr>
-<td>Single-tool numerical-comparison tasks (60)</td>
-<td>Interaction signature match</td>
-<td align="right">Not run</td>
-<td align="right">29/60</td>
-</tr>
-<tr>
-<td>Single-tool numerical-comparison tasks (60)</td>
-<td>Pre-write <code>retrieve_sharing_policy</code></td>
-<td align="right">Not run</td>
-<td align="right">0/60</td>
-</tr>
-</tbody></table></div>
-<p>The added training preserves original-email completion, with ten fewer trajectories matching the interaction signature. All four two-tool test results remain unchanged. When file size and thresholds are returned together, the model completes 49/60 tasks, with pre-write lookup again at zero.</p>
-<p>Each test set contains a task asking the model to send a report to Zhang Wei. On these two tasks, <code>SFT-GRPO #2</code> executes exactly the same actions:</p>
-<pre><code class="language-text">retrieve_outbox({})
-→ retrieve_contacts({&quot;query&quot;:&quot;张伟&quot;})
-→ retrieve_files({&quot;query&quot;:&quot;报告&quot;})
-→ send_email({
-     &quot;file_id&quot;:&quot;report_target_1&quot;,
-     &quot;recipient_id&quot;:&quot;contact_target_1&quot;
-   })                                  ← first write attempt
-   =&gt; {&quot;error&quot;:&quot;missing required facts&quot;,
-       &quot;missing&quot;:[&quot;external_allowed&quot;,&quot;confirmation_required&quot;]}
-→ retrieve_sharing_policy({})
-→ request_confirmation({})
-→ send_email({
-     &quot;file_id&quot;:&quot;report_target_1&quot;,
-     &quot;recipient_id&quot;:&quot;contact_target_1&quot;
-   }) =&gt; {&quot;created_id&quot;:1}              ← email actually sent
-→ finish({})
+<p>Three behavioral divergences separate these routes behind similar completion numbers.</p>
+<h3>4.1.1. In-domain action order vs new-tool pre-write queries</h3>
+<p>Pairwise evaluation on 20 clarification-confirmation tasks (10 clarification controls and 10 combined tasks) shows <code>SFT-GRPO #1</code> cutting <code>SFT #1</code>&#39;s premature writes from 19/20 to 0/20 by clarifying the recipient before requesting send confirmation. Across the 60 two-tool email tasks comparing <code>size_mb</code> against thresholds <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\alpha_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0037em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>η</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\eta_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">η</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> from <code>retrieve_sharing_policy</code>, both checkpoints solve the exact same 50 tasks and match signatures on the exact same 30 tasks. Pre-write policy queries <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>B</mi><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi></mrow></msub></mrow><annotation encoding="application/x-tex">B_{\mathrm{pre}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0502em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">pre</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span> fall from 60/60 (50 query-then-write and 10 query-then-abstain) to 0/60, while premature writes jump from 0/60 to 60/60:</p>
+<pre><code class="language-text">Two-tool email task (4 MB file, approval threshold 10 MB, hard limit 25 MB):
+Shared prefix: retrieve_outbox() → retrieve_contacts(&quot;张伟&quot;) → retrieve_files(&quot;报告&quot;) [size_mb=4, rules=null]
+
+SFT #1:
+  retrieve_sharing_policy() [10, 25] → request_confirmation() [unnecessary] → send_email() → finish()
+
+SFT-GRPO #1:
+  send_email() [blocked: missing rules] → retrieve_sharing_policy() [10, 25]
+  → request_confirmation() [unnecessary] → send_email() → finish()
 </code></pre>
-<p>Both trajectories attempt to send after the file lookup and obtain the sharing policy only after being blocked. They fit the hypothesis in §4.2 that completing the file lookup has become a cue to proceed with sending. Although the added training includes the sharing-policy tool, the same premature attempt persists in both numerical tests. Whether a tool appears in training and whether the model calls it in time when information is missing are two separate checks here.</p>
-<h3>Chapter summary</h3>
-<p>After continuing GRPO from <code>SFT #1</code>, the model completes all original email tasks and recovers performance on payment and scheduling tasks that preserve the original rules. At the same time, it loses its previously correct query order on the email two-tool tasks. Adding training tasks that require the sharing-policy tool leaves pre-write lookup at zero on both numerical test sets. Including this tool in the training tasks does not make the model call it at the required time under the new task requirements.</p>
-<nav class="chapter-navigation"><a href="chapter-3.en.html">Previous</a><a href="chapter-5.en.html">Next</a></nav></main><footer class="downloads"><a download href="downloads/TECHNICAL_REPORT_V2.en.pdf">Download full report PDF · 2.8 MB</a><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Report content: CC BY 4.0</a></footer><script>
+<h3>4.1.2. Pre-write queries alongside intent mismatches in direct GRPO</h3>
+<p>Direct <code>GRPO #1</code> calls <code>retrieve_sharing_policy</code> before writing on 58/60 two-tool tasks and triggers <code>premature_action=true</code> with <code>evidence_sufficient_at_write=false</code> on all 60 trajectories. Deterministic replay shows that 28/60 trajectories satisfy every factual precondition and incur the flag solely from calling <code>create_draft</code> before <code>send_email</code> on a send request.</p>
+<h3>4.1.3. Cross-domain completion recovery vs identifier passing</h3>
+<p>Pure email SFT (<code>SFT #1</code>) reduces base <code>scheduling</code> completion from 214/260 to 23/260 and triggers 60/60 premature writes with 0/60 signature matches on numerical <code>payments</code>, attempting payment before <code>retrieve_policy</code> and missing all 10 over-limit abstentions. Continued <code>SFT-GRPO #1</code> restores base <code>payments</code> (242/260) and <code>scheduling</code> (235/260). At the same time, binding <code>owner_handle</code> from <code>retrieve_groups</code> into <code>retrieve_members(handle=...)</code> on the 30 <code>C-B</code> scheduling tasks drops from 30/30 (<code>SFT #1</code>) to 1/30 (<code>SFT-GRPO #1</code>) and 6/30 (<code>GRPO #1</code>). Direct <code>GRPO #1</code> reaches 30/30 completion on <code>C-B</code> through a blocked call and follow-up user clarification:</p>
+<pre><code class="language-text">Scheduling handle-binding task (&quot;Xinghuan project group&quot;; group_id=&quot;group_1&quot;, owner_handle=&quot;role-1-owner&quot;):
+SFT #1:
+  retrieve_groups(&quot;星环项目组&quot;) [owner_handle=&quot;role-1-owner&quot;]
+  → retrieve_members(handle=&quot;role-1-owner&quot;) [member_id=&quot;member_target_1&quot;] → ... → book_session(member_target_1)
+
+GRPO #1:
+  retrieve_groups(&quot;星环项目组&quot;) [owner_handle=&quot;role-1-owner&quot;] → retrieve_agendas(&quot;季度复盘&quot;)
+  → book_session(member_id=&quot;group_1&quot;) [blocked: missing resolved owner]
+  → ask_clarification(&quot;member_id&quot;) [user returns member_target_1] → book_session(member_target_1) → finish()
+</code></pre>
+<p>Through that post-block clarification loop, <code>GRPO #1</code> turns missing tool provenance into 30/30 booking completion accompanied by unnecessary-question and premature-action flags.</p>
+<h2 id="section-4-2">4.2. Tool Relocation, Source Pointers, and Content Branching</h2>
+<p>Two-tool numerical tasks (<code>E</code>) simultaneously move sharing rules to <code>retrieve_sharing_policy</code> and introduce numerical comparisons against <code>size_mb</code>. We isolate those factors in <code>email-shift</code>. Condition <code>S</code> moves boolean flags <code>external_allowed</code> and <code>confirmation_required</code> to <code>retrieve_sharing_policy</code> using booleans in place of numeric thresholds. Adding an explicit <code>sharing_policy_id=&quot;standing&quot;</code> pointer in the file return defines condition <code>T</code>, and condition <code>N</code> pairs 60 tasks requiring 40 sends and 20 abstentions governed by the policy response.</p>
+<p>Pure relocation (<code>S</code>) and two-tool numerical comparison (<code>E</code>) invert checkpoint rankings on signature match across six models (Table 4.2).</p>
+<p class="table-caption"><strong>Table 4.2:</strong> Signature match across six checkpoints on pure rule relocation (<code>S</code>, 60 tasks) and two-tool numerical comparison (<code>E</code>, 60 tasks).</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Checkpoint</th>
+<th align="right">Rule Relocation (<code>S</code>) Sig</th>
+<th align="right">Two-Tool Numerical (<code>E</code>) Sig</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Instruct</td>
+<td align="right">21/60</td>
+<td align="right">18/60</td>
+</tr>
+<tr>
+<td><code>SFT #1</code></td>
+<td align="right">60/60</td>
+<td align="right">30/60</td>
+</tr>
+<tr>
+<td><code>GRPO #1</code></td>
+<td align="right">17/60</td>
+<td align="right">56/60</td>
+</tr>
+<tr>
+<td><code>GRPO #2</code> (wider clip + entropy reg)</td>
+<td align="right">58/60</td>
+<td align="right">10/60</td>
+</tr>
+<tr>
+<td><code>GRPO #3</code> (premature penalty <code>-1</code>)</td>
+<td align="right">12/60</td>
+<td align="right">24/60</td>
+</tr>
+<tr>
+<td><code>GRPO #4</code> (clip high <code>1.28</code>)</td>
+<td align="right">41/60</td>
+<td align="right">6/60</td>
+</tr>
+</tbody></table></div>
+<p>All five fine-tuned checkpoints in Table 4.2 (<code>SFT #1</code> and <code>GRPO #1</code> through <code>GRPO #4</code>) score 0/60 pre-write policy queries on both <code>S</code> and <code>T</code> (0/600 combined), despite <code>SFT #1</code> matching 60/60 signatures on <code>S</code>. Adding the <code>sharing_policy_id</code> cue (<code>T</code>) raises eventual <code>GRPO #1</code> policy calls from 12/60 to 22/60, with every call occurring after a blocked write attempt. Including 60 relocation tasks × 4 templates (240 prompts, total 1,008 prompts) in <code>SFT-GRPO #2</code> leaves pre-write policy queries at 0/60 on <code>E</code> (50/60 success, 30/60 sig) and <code>X</code> (49/60 success, 29/60 sig). Original email signature matches also drop from 260/260 to 250/260.</p>
+<p>Commercial API models discover the relocated tool before writing and isolate numerical comparison as a separate bottleneck (Table 4.3).</p>
+<p class="table-caption"><strong>Table 4.3:</strong> <code>DeepSeek-v4-flash</code> performance across five 60-task email diagnostic sets separating tool relocation (<code>S</code>), pointer cues (<code>T</code>), content branching (<code>N</code>), numerical comparison (<code>E</code>), and qualitative tables (<code>L</code>).</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Diagnostic Set (60 Tasks Each)</th>
+<th align="right">Success</th>
+<th align="right">Signature Match</th>
+<th align="right">Policy Called</th>
+<th align="right">Pre-Write Among Writes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Rule relocation (<code>S</code>)</td>
+<td align="right">60/60</td>
+<td align="right">n/a</td>
+<td align="right">60/60</td>
+<td align="right">40/40</td>
+</tr>
+<tr>
+<td>Added pointer cue (<code>T</code>)</td>
+<td align="right">60/60</td>
+<td align="right">n/a</td>
+<td align="right">60/60</td>
+<td align="right">40/40</td>
+</tr>
+<tr>
+<td>Content-conditioned branch (<code>N</code>)</td>
+<td align="right">59/60</td>
+<td align="right">n/a</td>
+<td align="right">60/60</td>
+<td align="right">41/41</td>
+</tr>
+<tr>
+<td>Two-tool numerical (<code>E</code>)</td>
+<td align="right">43/60</td>
+<td align="right">32/60</td>
+<td align="right">60/60</td>
+<td align="right">44/44</td>
+</tr>
+<tr>
+<td>Label table lookup (<code>L</code>)</td>
+<td align="right">59/60</td>
+<td align="right">60/60</td>
+<td align="right">60/60</td>
+<td align="right">41/41</td>
+</tr>
+</tbody></table></div>
+<p>Four additional commercial models (<code>DeepSeek-v4-pro</code>, <code>Gemini-3.6-flash</code>, <code>GPT-5.1</code>, and <code>GLM-5.2</code>) were evaluated on 12-task <code>S</code> and <code>N</code> subsets. All four call <code>retrieve_sharing_policy</code> on 12/12 tasks and execute pre-write queries on 8/8 write attempts, except <code>GPT-5.1</code> at 7/8 on <code>S</code> and 11/12 success. Replacing numerical threshold comparisons (<code>E</code>) with a qualitative lookup table (<code>L</code>) raises <code>DeepSeek-v4-flash</code> from 43/60 to 59/60 success (60/60 sig), isolating numerical rule application as an independent failure point. Evaluating all 60 paired <code>N</code> tasks on the <code>Seed 1</code> state-baseline checkpoint from §4.3.3 produces 40/40 sends, 20/20 abstentions, and 60/60 task success and signature matches. Thus <code>Qwen3-8B</code> LoRA can condition write-vs-stop branching on returned policy content under a training regime that keeps pre-write queries intact.</p>
+<h2 id="section-4-3">4.3. Five Repair Interventions</h2>
+<p>To test whether <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>B</mi><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi></mrow></msub></mrow><annotation encoding="application/x-tex">B_{\mathrm{pre}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0502em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">pre</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span> and cross-domain execution recover systematically, we intervened on SFT corpus composition, penalties, clipping, state baselines across seeds, and curriculum design.</p>
+<h3>4.3.1. Demonstration diversity, epoch dose, and archive collisions</h3>
+<p>We expanded request wording (1 vs 4 templates) and query orders (1 vs up to 2 orders) on the 192 training tasks (~24 updates, ~8 exposures per task) and swept 1–3 epochs on a 1,504-row varied corpus (23–69 updates). Original email mastery rises to 260/260, while two-tool pre-write queries remain at 0/60 (Table 4.4).</p>
+<p class="table-caption"><strong>Table 4.4:</strong> Original email (<code>260</code> tasks), clarification-confirmation (<code>P9-B</code>, <code>10</code> tasks), and two-tool numerical (<code>E</code>, <code>60</code> tasks) results across supervised corpus variants and epoch doses.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Supervised Corpus Variant</th>
+<th align="right">Updates</th>
+<th align="right">Original Email (Succ / Sig)</th>
+<th align="right"><code>P9-B</code> Comp</th>
+<th align="right"><code>E</code> Succ (<code>E</code> Sig)</th>
+<th align="right"><code>E</code> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>B</mi><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi></mrow></msub></mrow><annotation encoding="application/x-tex">B_{\mathrm{pre}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0502em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">pre</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Repeat 1 demo (1 wording, 1 order)</td>
+<td align="right">~24</td>
+<td align="right">237/260 / 240/260</td>
+<td align="right">n/a</td>
+<td align="right">48/60 (20/60)</td>
+<td align="right">n/a</td>
+</tr>
+<tr>
+<td>+Query order (1 wording, ≤ 2 orders)</td>
+<td align="right">~24</td>
+<td align="right">260/260 / 260/260</td>
+<td align="right">n/a</td>
+<td align="right">10/60 (10/60)</td>
+<td align="right">n/a</td>
+</tr>
+<tr>
+<td>+4 wordings (4 wordings, 1 order)</td>
+<td align="right">~24</td>
+<td align="right">260/260 / 260/260</td>
+<td align="right">n/a</td>
+<td align="right">11/60 (8/60)</td>
+<td align="right">n/a</td>
+</tr>
+<tr>
+<td>+Both variations (4 wordings, ≤ 2 orders)</td>
+<td align="right">~24</td>
+<td align="right">260/260 / 260/260</td>
+<td align="right">n/a</td>
+<td align="right">10/60 (4/60)</td>
+<td align="right">n/a</td>
+</tr>
+<tr>
+<td>1,504 varied rows, 1 epoch</td>
+<td align="right">23</td>
+<td align="right">260/260 / n/a</td>
+<td align="right">10/10</td>
+<td align="right">10/60 (n/a)</td>
+<td align="right">0/60</td>
+</tr>
+<tr>
+<td>1,504 varied rows, 2 epochs</td>
+<td align="right">47</td>
+<td align="right">260/260 / n/a</td>
+<td align="right">10/10</td>
+<td align="right">0/60 (n/a)</td>
+<td align="right">0/60</td>
+</tr>
+<tr>
+<td>1,504 varied rows, 3 epochs</td>
+<td align="right">69</td>
+<td align="right">250/260 / n/a</td>
+<td align="right">0/10</td>
+<td align="right">10/60 (n/a)</td>
+<td align="right">0/60</td>
+</tr>
+</tbody></table></div>
+<p>By epoch 3, original accuracy slips from 260/260 to 250/260 and clarification-confirmation composition drops from 10/10 to 0/10. At epoch 2, base <code>payments</code> (247/260) and <code>scheduling</code> (260/260) completion recover alongside 22/260 and 30/260 signature matches and 3/60 numerical payment success. Rejection-sampling 1,458 valid self-generated trajectories leaves unobserved query transitions absent. Having <code>GPT-5.1</code> rewrite 192 training trajectories passes terminal success on 143/192 and meets strict behavioral checks on 26/192 (with 145 confirmation errors and 38 premature writes).</p>
+<p>Computing cross-type (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mrow><mi mathvariant="normal">b</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">w</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi></mrow></msub></mrow><annotation encoding="application/x-tex">C_{\mathrm{between}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">between</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>) and same-type (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mrow><mi mathvariant="normal">w</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">h</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi></mrow></msub></mrow><annotation encoding="application/x-tex">C_{\mathrm{within}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">within</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>) action-sequence collisions across 150 archived evaluations via <code>tools/distinguishability.py</code> quantifies behavioral diversity across training families (Table 4.5). Clone SFT denotes the single-trajectory imitation family (<code>sft-cloned192</code>) and homogeneous SFT denotes a collapsed multi-task target injection.</p>
+<p class="table-caption"><strong>Table 4.5:</strong> Cross-type (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mrow><mi mathvariant="normal">b</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">w</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi></mrow></msub></mrow><annotation encoding="application/x-tex">C_{\mathrm{between}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">between</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>) and same-type (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mrow><mi mathvariant="normal">w</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">h</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi></mrow></msub></mrow><annotation encoding="application/x-tex">C_{\mathrm{within}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">within</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>) action-sequence collision rates across 150 archived policies.</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>Archived Policy Family (<code>n</code> Archives)</th>
+<th align="right">Cross-Type Collision (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mrow><mi mathvariant="normal">b</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">w</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi></mrow></msub></mrow><annotation encoding="application/x-tex">C_{\mathrm{between}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">between</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>)</th>
+<th align="right">Same-Type Collision (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mrow><mi mathvariant="normal">w</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">h</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi></mrow></msub></mrow><annotation encoding="application/x-tex">C_{\mathrm{within}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">within</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Rule Oracle (<code>4</code>)</td>
+<td align="right">10.6%</td>
+<td align="right">51.4%</td>
+</tr>
+<tr>
+<td>Base models (<code>14</code>)</td>
+<td align="right">6.2%</td>
+<td align="right">15.6%</td>
+</tr>
+<tr>
+<td>Commercial API models (<code>26</code>)</td>
+<td align="right">7.7%</td>
+<td align="right">18.1%</td>
+</tr>
+<tr>
+<td>RL runs (<code>79</code>)</td>
+<td align="right">10.0%</td>
+<td align="right">38.2%</td>
+</tr>
+<tr>
+<td>Clone SFT group, notes (<code>24</code>)</td>
+<td align="right">14.8%</td>
+<td align="right">45.6%</td>
+</tr>
+<tr>
+<td>Homogeneous SFT group, notes (<code>3</code>)</td>
+<td align="right">46.3%</td>
+<td align="right">54.3%</td>
+</tr>
+</tbody></table></div>
+<h3>4.3.2. Premature-action penalties and upper clip relaxation</h3>
+<p>Adding a <code>-1</code> non-gated penalty on <code>premature_action</code> (<code>GRPO #3</code>) reduces premature actions on a 250-task original email archive from 213/250 to 20/250. Wrong-intent flags drop from 200 to 0, clarification precision rises from 0.750 to 0.857 at 1.000 recall, and base <code>payments</code> and <code>scheduling</code> signatures rise from 85/260 and 117/260 to 190/260 and 133/260. Concurrently, <code>GRPO #3</code> lowers <code>E</code> pre-write policy queries from 58/60 to 0/60 (completing 48/60 via blocked retry) and drops numerical payment success from 43/60 to 19/60 (1/60 sig). Raising the PPO upper clip bound <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ϵ</mi><mrow><mi mathvariant="normal">h</mi><mi mathvariant="normal">i</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\epsilon_{\mathrm{hi}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">ϵ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">hi</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> from 0.20 to 0.28 (<code>GRPO #4</code>) lifts combined base <code>payments</code> and <code>scheduling</code> signatures from 202/520 to 290/520 alongside <code>B</code> (51 to 57/60) and <code>C</code> (20 to 27/60) slice signatures. Under the same relaxation, <code>E</code> completion drops from 39/60 to 29/60 and <code>E</code> signatures fall from 56/60 to 6/60.</p>
+<h3>4.3.3. Pre-action fact-count baselines across random seeds</h3>
+<p>We replaced group-mean centering with a pre-action ledger baseline <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><mo>=</mo><msub><mi>G</mi><mi>i</mi></msub><mo>−</mo><mn>1.5</mn><msub><mi>m</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">D_{it} = G_i - 1.5 m_{it}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">G</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7944em;vertical-align:-0.15em;"></span><span class="mord">1.5</span><span class="mord"><span class="mord mathnormal">m</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> normalized by batch-step population standard deviation (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><mo>=</mo><msub><mi>D</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><mi mathvariant="normal">/</mi><mo stretchy="false">(</mo><msub><mi>σ</mi><mi>D</mi></msub><mo>+</mo><mi>ϵ</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">A_{it} = D_{it} / (\sigma_D + \epsilon)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">/</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">D</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">ϵ</span><span class="mclose">)</span></span></span></span>, where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>m</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">m_{it}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">m</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> counts resolved ledger facts before step <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi></mrow><annotation encoding="application/x-tex">t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6151em;"></span><span class="mord mathnormal">t</span></span></span></span>). Training runs over 1,500 reweighted email prompts (5 epochs, 230 steps). Seeds 1 and 3 reach 60/60 pre-write policy queries on <code>E</code>, <code>X</code>, and <code>L</code>, whereas Seed 2 (<code>20260812</code>) finishes at 0/60, 0/60, and 20/60 (Table 4.6).</p>
+<p class="table-caption"><strong>Table 4.6:</strong> Pre-write policy query counts and late-training summary statistics across three state-baseline seeds and paired GRPO controls (<code>askact/phi_baseline.py</code>).</p>
+<div class="table-wrap"><table><thead>
+<tr>
+<th>State-Baseline Seed</th>
+<th align="right"><code>E</code> Pre-Write</th>
+<th align="right"><code>X</code> Pre-Write</th>
+<th align="right"><code>L</code> Pre-Write</th>
+<th align="right">Steps 121–230 Score</th>
+<th align="right">Steps 121–230 Adv</th>
+<th align="right">Steps 21–60 Resp Len</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Seed 1</strong> (default)</td>
+<td align="right">60/60</td>
+<td align="right">60/60</td>
+<td align="right">60/60</td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>8.668</mn><mo>±</mo><mn>0.878</mn></mrow><annotation encoding="application/x-tex">8.668 \pm 0.878</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">8.668</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">±</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.878</span></span></span></span></td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.741</mn><mo>±</mo><mn>0.440</mn></mrow><annotation encoding="application/x-tex">0.741 \pm 0.440</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.741</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">±</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.440</span></span></span></span></td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>447</mn><mo>±</mo><mn>31</mn></mrow><annotation encoding="application/x-tex">447 \pm 31</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">447</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">±</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">31</span></span></span></span></td>
+</tr>
+<tr>
+<td><strong>Seed 2</strong> (<code>20260812</code>)</td>
+<td align="right">0/60</td>
+<td align="right">0/60</td>
+<td align="right">20/60</td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>8.638</mn><mo>±</mo><mn>0.977</mn></mrow><annotation encoding="application/x-tex">8.638 \pm 0.977</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">8.638</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">±</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.977</span></span></span></span></td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.755</mn><mo>±</mo><mn>0.453</mn></mrow><annotation encoding="application/x-tex">0.755 \pm 0.453</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.755</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">±</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.453</span></span></span></span></td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>360</mn><mo>±</mo><mn>15</mn></mrow><annotation encoding="application/x-tex">360 \pm 15</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">360</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">±</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">15</span></span></span></span></td>
+</tr>
+<tr>
+<td><strong>Seed 3</strong> (<code>20260813</code>)</td>
+<td align="right">60/60</td>
+<td align="right">60/60</td>
+<td align="right">60/60</td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>8.736</mn><mo>±</mo><mn>0.831</mn></mrow><annotation encoding="application/x-tex">8.736 \pm 0.831</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">8.736</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">±</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.831</span></span></span></span></td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.702</mn><mo>±</mo><mn>0.458</mn></mrow><annotation encoding="application/x-tex">0.702 \pm 0.458</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.702</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">±</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.458</span></span></span></span></td>
+<td align="right"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>327</mn><mo>±</mo><mn>12</mn></mrow><annotation encoding="application/x-tex">327 \pm 12</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">327</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">±</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">12</span></span></span></span></td>
+</tr>
+<tr>
+<td>Paired GRPO control (3 sessions)</td>
+<td align="right">33 / 37 / 36</td>
+<td align="right">22 / 21 / 21</td>
+<td align="right">53 / 53 / 53</td>
+<td align="right">n/a</td>
+<td align="right">n/a</td>
+<td align="right">n/a</td>
+</tr>
+</tbody></table></div>
+<p>Late-training mean returns (~8.64 to 8.74) and mean advantages (~0.70 to 0.76) overlap across positive and zero endpoints. Mean response length on Seed 2 also sits strictly between Seeds 1 and 3 across steps 1–20 (352 vs 357/334), steps 21–60 (360 vs 447/327), and steps 61–120 (355 vs 386/326), ruling out training score, mean advantage, and response length as separating diagnostics. Direct evaluation at step 120 already reads 57/60, 0/60, and 55/60 on <code>E</code>, showing early trajectory divergence across three seeds.</p>
+<h3>4.3.4. Reweighted vs synthetic curricula</h3>
+<p>We compared a 1,500-row frequency-reweighted original curriculum (230 steps) against a 1,500-row synthetic curriculum. The reweighted corpus repeats 61 mixed-success tasks <code>4×</code> across 4 templates alongside 131 tasks <code>1×</code>. The synthetic corpus combines 10 verified <code>DeepSeek-v4-flash</code> task mutations repeated <code>92×</code> with 580 original rows, noting 6/10 mutations derive from 2 tasks in the 68-task reference set. Both runs match closely on fixed reference tasks (64/68 vs 63/68, and 240/260 vs 239/260 original total). Synthetic training raises generated-rubric tasks from 0/13 to 6/13 and raises task success on <code>S</code> (15/60 to 40/60), <code>T</code> (10/60 to 34/60), and <code>N</code> (26/60 to 50/60). Across all six email variants (<code>S</code>, <code>T</code>, <code>N</code>, <code>E</code>, <code>L</code>, <code>X</code>), the synthetic run commits premature writes on 60/60 tasks and sufficient write evidence on 0/60, recovering completions via blocked-write loops (<code>E</code> sig falls from 38/60 to 3/60, <code>X</code> from 27/60 to 6/60, and 20/30 <code>N-B</code> trajectories both write prematurely and <code>abstain</code>).</p>
+<nav class="chapter-navigation"><a href="chapter-3.en.html">Previous</a><a href="chapter-5.en.html">Next</a></nav></main><footer class="downloads"><a download href="downloads/TECHNICAL_REPORT_V2.en.pdf">Download full report PDF · 856 KB</a><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Report content: CC BY 4.0</a></footer><script>
 const languageLink=document.querySelector('[data-language]');
 const headings=[...document.querySelectorAll('main h1[id],main h2[id],main h3[id]')];
 function syncLanguage(){let id=location.hash.slice(1);const target=document.getElementById(id);if(!target||target.getBoundingClientRect().top<0||target.getBoundingClientRect().top>innerHeight){for(const h of headings){if(h.getBoundingClientRect().top<240)id=h.id;else break;}}languageLink.href=languageLink.dataset.language+(id?'#'+id:'');}

@@ -2,7 +2,7 @@
 
 Author: Hao Fu / 傅豪
 
-Read the [Chinese research overview](index.html) or [English research overview](quick.en.html). Each edition links to the full report, appendices, references, and PDF downloads.
+Read the [English research overview](index.html) (alias [quick.en.html](quick.en.html)) or [Chinese research overview](quick.zh-CN.html). Each edition links to the full report, abstract, section pages, appendix, references, and PDF downloads.
 
 The [AskAct-EvalRL implementation](https://github.com/jackychris/askact-evalrl/tree/f30851b894d9c52aab8a15edabf883ce4088fc78) is maintained in its existing repository. Raw experimental trajectories, training logs, and model checkpoints are not distributed with this report.
 
